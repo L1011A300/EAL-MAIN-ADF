@@ -6,22 +6,6 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "EAL-MAIN-ADF"
-		},
-		"SkedFlexConnection_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection'"
-		},
-		"eal_edw_connection_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'eal_edw_connection'"
-		},
-		"eal_main_blob_connection_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'eal_main_blob_connection'"
-		},
-		"eal_staging_connection_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		}
 	},
 	"variables": {
@@ -64,15 +48,13 @@
 						"inputs": [
 							{
 								"referenceName": "SF_source_bi_airport",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "SF_source_airport",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					},
@@ -104,13 +86,8 @@
 										"value": "'@{pipeline().RunId}'",
 										"type": "Expression"
 									}
-								},
-								"datasetParameters": {
-									"SFAirport": {},
-									"AIRPORTtoSQL": {}
 								}
 							},
-							"staging": {},
 							"compute": {
 								"coreCount": 8,
 								"computeType": "General"
@@ -133,7 +110,6 @@
 				"lastPublishTime": "2021-06-14T17:18:57Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_bi_airport')]",
 				"[concat(variables('factoryId'), '/datasets/SF_source_airport')]",
 				"[concat(variables('factoryId'), '/dataflows/AIRPORTblobtoSQL')]"
 			]
@@ -174,15 +150,13 @@
 						"inputs": [
 							{
 								"referenceName": "SF_source_bi_flight_delay",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "SF_source_delays",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					},
@@ -214,13 +188,8 @@
 										"value": "'@{pipeline().RunId}'",
 										"type": "Expression"
 									}
-								},
-								"datasetParameters": {
-									"SFDelay": {},
-									"DelaysToSQL": {}
 								}
 							},
-							"staging": {},
 							"compute": {
 								"coreCount": 8,
 								"computeType": "General"
@@ -238,7 +207,6 @@
 				"lastPublishTime": "2021-06-14T17:18:56Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_bi_flight_delay')]",
 				"[concat(variables('factoryId'), '/datasets/SF_source_delays')]",
 				"[concat(variables('factoryId'), '/dataflows/DELAYSblobtoSQL')]"
 			]
@@ -279,15 +247,13 @@
 						"inputs": [
 							{
 								"referenceName": "SF_source_bi_equip_sched",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "SF_source_equip_sched",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					},
@@ -319,13 +285,8 @@
 										"value": "'@{pipeline().RunId}'",
 										"type": "Expression"
 									}
-								},
-								"datasetParameters": {
-									"SFEquipSched": {},
-									"EQUIPSCHEDtoSQL": {}
 								}
 							},
-							"staging": {},
 							"compute": {
 								"coreCount": 8,
 								"computeType": "General"
@@ -348,7 +309,6 @@
 				"lastPublishTime": "2021-06-14T17:18:57Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_bi_equip_sched')]",
 				"[concat(variables('factoryId'), '/datasets/SF_source_equip_sched')]",
 				"[concat(variables('factoryId'), '/dataflows/EQUIPSCHEDblobtoSQL')]"
 			]
@@ -763,15 +723,13 @@
 						"inputs": [
 							{
 								"referenceName": "SF_source_bi_flight",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "SF_source_flights",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					},
@@ -803,13 +761,8 @@
 										"value": "'@{pipeline().RunId}'",
 										"type": "Expression"
 									}
-								},
-								"datasetParameters": {
-									"SFFlight": {},
-									"FlightToSQL": {}
 								}
 							},
-							"staging": {},
 							"compute": {
 								"coreCount": 8,
 								"computeType": "General"
@@ -827,7 +780,6 @@
 				"lastPublishTime": "2021-06-14T16:02:16Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_bi_flight')]",
 				"[concat(variables('factoryId'), '/datasets/SF_source_flights')]",
 				"[concat(variables('factoryId'), '/dataflows/FLIGHTSblobtoSQL')]"
 			]
@@ -913,105 +865,7 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_bi_airport')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Source"
-				},
-				"annotations": [],
-				"type": "PostgreSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "bi",
-					"table": "airport"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_bi_equip_sched')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Source"
-				},
-				"annotations": [],
-				"type": "PostgreSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "bi",
-					"table": "equipment_sched"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_bi_flight')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Source"
-				},
-				"annotations": [],
-				"type": "PostgreSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "bi",
-					"table": "flight"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_bi_flight_delay')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Source"
-				},
-				"annotations": [],
-				"type": "PostgreSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "bi",
-					"table": "flight_delay"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_delays')]",
@@ -1058,9 +912,7 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_equip_sched')]",
@@ -1122,9 +974,7 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_flights')]",
@@ -1277,60 +1127,6 @@
 							"type": "string"
 						}
 					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SkedFlexConnection')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "PostgreSql",
-				"typeProperties": {
-					"connectionString": "[parameters('SkedFlexConnection_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/eal_edw_connection')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('eal_edw_connection_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/eal_main_blob_connection')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('eal_main_blob_connection_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/eal_staging_connection')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('eal_staging_connection_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -1567,9 +1363,7 @@
 					"table": "SF_FLIGHT_PROD"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DELAYSblobtoSQL')]",
@@ -1626,9 +1420,7 @@
 					"table": "SF_DELAYS_PROD"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AIRPORTblobtoSQL')]",
@@ -1685,9 +1477,7 @@
 					"table": "SF_AIRPORT_PROD"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/EQUIPSCHEDblobtoSQL')]",
@@ -1744,9 +1534,7 @@
 					"table": "SF_EQUIP_SCHED_PROD"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
+			"dependsOn": []
 		}
 	]
 }
