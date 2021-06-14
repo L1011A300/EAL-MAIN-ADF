@@ -80,11 +80,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"date": {
-				"type": "string"
-			}
-		},
 		"variables": {
 			"date": {
 				"type": "String"
