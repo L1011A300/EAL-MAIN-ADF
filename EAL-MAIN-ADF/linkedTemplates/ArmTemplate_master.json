@@ -1,0 +1,70 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "EAL-MAIN-ADF"
+		},
+		"SkedFlexConnection_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection'"
+		},
+		"eal_edw_connection_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'eal_edw_connection'"
+		},
+		"eal_main_blob_connection_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'eal_main_blob_connection'"
+		},
+		"eal_staging_connection_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "EAL-MAIN-ADF_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"SkedFlexConnection_connectionString": {
+						"value": "[parameters('SkedFlexConnection_connectionString')]"
+					},
+					"eal_edw_connection_connectionString": {
+						"value": "[parameters('eal_edw_connection_connectionString')]"
+					},
+					"eal_main_blob_connection_connectionString": {
+						"value": "[parameters('eal_main_blob_connection_connectionString')]"
+					},
+					"eal_staging_connection_connectionString": {
+						"value": "[parameters('eal_staging_connection_connectionString')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
