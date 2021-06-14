@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTable1",
+	"name": "SQL_FLIGHT_TABLE",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "eal_edw_connection",
@@ -7,7 +7,181 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "actual_arrival_airport",
+				"type": "nvarchar"
+			},
+			{
+				"name": "actual_arrive_airport_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "actual_depart_airport_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "actual_departure_airport",
+				"type": "nvarchar"
+			},
+			{
+				"name": "actual_oooi_in",
+				"type": "nvarchar"
+			},
+			{
+				"name": "actual_oooi_off",
+				"type": "nvarchar"
+			},
+			{
+				"name": "actual_oooi_on",
+				"type": "nvarchar"
+			},
+			{
+				"name": "actual_oooi_out",
+				"type": "nvarchar"
+			},
+			{
+				"name": "aircraft_registration_number",
+				"type": "nvarchar"
+			},
+			{
+				"name": "aircraft_type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "base_airport",
+				"type": "nvarchar"
+			},
+			{
+				"name": "base_airport_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "cargo_off",
+				"type": "nvarchar"
+			},
+			{
+				"name": "cargo_on",
+				"type": "nvarchar"
+			},
+			{
+				"name": "cargo_weight",
+				"type": "nvarchar"
+			},
+			{
+				"name": "estimated_arrival",
+				"type": "nvarchar"
+			},
+			{
+				"name": "estimated_departure",
+				"type": "nvarchar"
+			},
+			{
+				"name": "flight_date",
+				"type": "nvarchar"
+			},
+			{
+				"name": "flight_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "flight_number",
+				"type": "nvarchar"
+			},
+			{
+				"name": "flight_type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "fuel_in",
+				"type": "nvarchar"
+			},
+			{
+				"name": "fuel_out",
+				"type": "nvarchar"
+			},
+			{
+				"name": "fuel_uplift",
+				"type": "nvarchar"
+			},
+			{
+				"name": "fuel_uplifts",
+				"type": "nvarchar"
+			},
+			{
+				"name": "is_canceled",
+				"type": "nvarchar"
+			},
+			{
+				"name": "is_verified",
+				"type": "nvarchar"
+			},
+			{
+				"name": "lndg_actual_braking",
+				"type": "nvarchar"
+			},
+			{
+				"name": "lndg_midfield",
+				"type": "nvarchar"
+			},
+			{
+				"name": "lndg_rollout",
+				"type": "nvarchar"
+			},
+			{
+				"name": "lndg_touchdown_zone",
+				"type": "nvarchar"
+			},
+			{
+				"name": "maint_log_page",
+				"type": "nvarchar"
+			},
+			{
+				"name": "notes",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ops_type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "sched_arrive_airport_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "sched_depart_airport_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "scheduled_arrival",
+				"type": "nvarchar"
+			},
+			{
+				"name": "scheduled_arrival_airport",
+				"type": "nvarchar"
+			},
+			{
+				"name": "scheduled_departure",
+				"type": "nvarchar"
+			},
+			{
+				"name": "scheduled_departure_airport",
+				"type": "nvarchar"
+			},
+			{
+				"name": "updated_at",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ADF_TIMESTAMP",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "RUN_ID",
+				"type": "nvarchar"
+			}
+		],
 		"typeProperties": {
 			"schema": "dbo",
 			"table": "SF_FLIGHT_PROD"
