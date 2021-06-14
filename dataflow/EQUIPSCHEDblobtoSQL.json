@@ -1,0 +1,32 @@
+{
+	"name": "EQUIPSCHEDblobtoSQL",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SF_source_equip_sched",
+						"type": "DatasetReference"
+					},
+					"name": "SFEquipSched"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SQL_EQUIP_SCHED_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "EQUIPSCHEDtoSQL"
+				}
+			],
+			"transformations": [
+				{
+					"name": "ADDWrkflwIDandTS"
+				}
+			],
+			"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\teqp_sched_id as string,\n\t\tac_registration as string,\n\t\tstatus_code as string,\n\t\tstatus_name as string,\n\t\tstatus_description as string,\n\t\tstart_time as string,\n\t\tend_time as string,\n\t\tnotes as string,\n\t\tis_deleted as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFEquipSched\nSFEquipSched derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> ADDWrkflwIDandTS\nADDWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> EQUIPSCHEDtoSQL"
+		}
+	}
+}

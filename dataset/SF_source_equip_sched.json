@@ -20,7 +20,41 @@
 				"container": "sf-source-equip-sched"
 			}
 		},
-		"schema": {}
+		"schema": {
+			"type": "object",
+			"properties": {
+				"eqp_sched_id": {
+					"type": "integer"
+				},
+				"ac_registration": {
+					"type": "string"
+				},
+				"status_code": {
+					"type": "string"
+				},
+				"status_name": {
+					"type": "string"
+				},
+				"status_description": {
+					"type": "string"
+				},
+				"start_time": {
+					"type": "string"
+				},
+				"end_time": {
+					"type": "string"
+				},
+				"notes": {
+					"type": "string"
+				},
+				"is_deleted": {
+					"type": "boolean"
+				},
+				"updated_at": {
+					"type": "string"
+				}
+			}
+		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
 }
