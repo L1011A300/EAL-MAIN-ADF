@@ -103,11 +103,6 @@
 						}
 					}
 				],
-				"parameters": {
-					"date": {
-						"type": "string"
-					}
-				},
 				"variables": {
 					"date": {
 						"type": "String"
@@ -310,11 +305,6 @@
 						}
 					}
 				],
-				"parameters": {
-					"date": {
-						"type": "string"
-					}
-				},
 				"variables": {
 					"date": {
 						"type": "String"
