@@ -20,7 +20,62 @@
 				"container": "sf-source-airport"
 			}
 		},
-		"schema": {}
+		"schema": {
+			"type": "object",
+			"properties": {
+				"airport_id": {
+					"type": "integer"
+				},
+				"iata_code": {
+					"type": "string"
+				},
+				"icao_code": {
+					"type": "string"
+				},
+				"faa_code": {
+					"type": "string"
+				},
+				"airport_name": {
+					"type": "string"
+				},
+				"city_name": {
+					"type": "string"
+				},
+				"state_code": {
+					"type": "string"
+				},
+				"country_code": {
+					"type": "string"
+				},
+				"weather_zone": {
+					"type": "string"
+				},
+				"latitude": {
+					"type": "string"
+				},
+				"longitude": {
+					"type": "string"
+				},
+				"elevation_feet": {
+					"type": "integer"
+				},
+				"iana_timezone": {
+					"type": "string"
+				},
+				"is_base": {
+					"type": "boolean"
+				},
+				"base_initial": {
+					"type": "null"
+				},
+				"is_active": {
+					"type": "boolean"
+				},
+				"is_deleted": {
+					"type": "boolean"
+				}
+			}
+		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
 }

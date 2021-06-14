@@ -1,0 +1,32 @@
+{
+	"name": "AIRPORTblobtoSQL",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SF_source_airport",
+						"type": "DatasetReference"
+					},
+					"name": "SFAirport"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SQL_AIRPORT_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "AIRPORTtoSQL"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AddWrkflwIDandTS"
+				}
+			],
+			"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tairport_id as string,\n\t\tiata_code as string,\n\t\ticao_code as string,\n\t\tfaa_code as string,\n\t\tairport_name as string,\n\t\tcity_name as string,\n\t\tstate_code as string,\n\t\tcountry_code as string,\n\t\tweather_zone as string,\n\t\tlatitude as string,\n\t\tlongitude as string,\n\t\televation_feet as string,\n\t\tiana_timezone as string,\n\t\tis_base as boolean,\n\t\tbase_initial as string,\n\t\tis_active as boolean,\n\t\tis_deleted as boolean\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFAirport\nSFAirport derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> AIRPORTtoSQL"
+		}
+	}
+}
