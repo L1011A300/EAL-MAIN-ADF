@@ -1,0 +1,9 @@
+{
+	"name": "EAL-MAIN-ADF",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "a46e0b9d-c939-477b-bd36-02b8294b2c26",
+		"tenantId": "81cbafb6-8886-400c-826d-4293940c3d19"
+	}
+}
