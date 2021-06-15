@@ -532,6 +532,78 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SQL_AIRPORT_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_AIRPORT_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_DELAYS_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_DELAYS_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_EQUIP_SCHED_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_EQUIP_SCHED_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -539,6 +611,9 @@
 				"linkedServiceName": {
 					"referenceName": "eal_edw_connection",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -727,70 +802,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SQL_DELAYS_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_DELAYS_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_AIRPORT_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_AIRPORT_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_EQUIP_SCHED_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_EQUIP_SCHED_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FLIGHTSblobtoSQL')]",
+			"name": "[concat(parameters('factoryName'), '/AIRPORTblobtoSQL')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -799,35 +811,32 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "SF_source_flights",
+								"referenceName": "SF_source_airport",
 								"type": "DatasetReference"
 							},
-							"name": "SFFlight"
+							"name": "SFAirport"
 						}
 					],
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "SQL_FLIGHT_TABLE",
+								"referenceName": "SQL_AIRPORT_TABLE",
 								"type": "DatasetReference"
 							},
-							"name": "FlightToSQL"
+							"name": "AIRPORTtoSQL"
 						}
 					],
 					"transformations": [
 						{
 							"name": "AddWrkflwIDandTS"
-						},
-						{
-							"name": "FLTTYPEfilter"
 						}
 					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tflight_id as string,\n\t\tflight_number as string,\n\t\tflight_date as string,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tops_type as string,\n\t\tscheduled_departure as string,\n\t\tscheduled_arrival as string,\n\t\testimated_departure as string,\n\t\testimated_arrival as string,\n\t\tactual_oooi_out as string,\n\t\tactual_oooi_off as string,\n\t\tactual_oooi_on as string,\n\t\tactual_oooi_in as string,\n\t\tbase_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tsched_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_arrive_airport_id as string,\n\t\tbase_airport as string,\n\t\tscheduled_departure_airport as string,\n\t\tscheduled_arrival_airport as string,\n\t\tactual_departure_airport as string,\n\t\tactual_arrival_airport as string,\n\t\tis_verified as boolean,\n\t\tnotes as string,\n\t\tis_canceled as boolean,\n\t\tflight_type as string,\n\t\tcargo_weight as string,\n\t\tcargo_on as string,\n\t\tcargo_off as string,\n\t\tfuel_out as string,\n\t\tfuel_in as string,\n\t\tfuel_uplift as string,\n\t\tfuel_uplifts as string,\n\t\tmaint_log_page as string,\n\t\tlndg_touchdown_zone as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_actual_braking as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFFlight\nSFFlight derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS filter(flight_type <=> 'flight') ~> FLTTYPEfilter\nFLTTYPEfilter sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tactual_arrival_airport as string,\n\t\tactual_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_departure_airport as string,\n\t\tactual_oooi_in as string,\n\t\tactual_oooi_off as string,\n\t\tactual_oooi_on as string,\n\t\tactual_oooi_out as string,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tbase_airport as string,\n\t\tbase_airport_id as string,\n\t\tcargo_off as string,\n\t\tcargo_on as string,\n\t\tcargo_weight as string,\n\t\testimated_arrival as string,\n\t\testimated_departure as string,\n\t\tflight_date as string,\n\t\tflight_id as string,\n\t\tflight_number as string,\n\t\tflight_type as string,\n\t\tfuel_in as string,\n\t\tfuel_out as string,\n\t\tfuel_uplift as string,\n\t\tfuel_uplifts as string,\n\t\tis_canceled as string,\n\t\tis_verified as string,\n\t\tlndg_actual_braking as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_touchdown_zone as string,\n\t\tmaint_log_page as string,\n\t\tnotes as string,\n\t\tops_type as string,\n\t\tsched_arrive_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tscheduled_arrival as string,\n\t\tscheduled_arrival_airport as string,\n\t\tscheduled_departure as string,\n\t\tscheduled_departure_airport as string,\n\t\tupdated_at as string,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FlightToSQL"
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tairport_id as string,\n\t\tiata_code as string,\n\t\ticao_code as string,\n\t\tfaa_code as string,\n\t\tairport_name as string,\n\t\tcity_name as string,\n\t\tstate_code as string,\n\t\tcountry_code as string,\n\t\tweather_zone as string,\n\t\tlatitude as string,\n\t\tlongitude as string,\n\t\televation_feet as string,\n\t\tiana_timezone as string,\n\t\tis_base as boolean,\n\t\tbase_initial as string,\n\t\tis_active as boolean,\n\t\tis_deleted as boolean\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFAirport\nSFAirport derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> AIRPORTtoSQL"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_flights')]",
-				"[concat(variables('factoryId'), '/datasets/SQL_FLIGHT_TABLE')]"
+				"[concat(variables('factoryId'), '/datasets/SF_source_airport')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_AIRPORT_TABLE')]"
 			]
 		},
 		{
@@ -869,44 +878,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AIRPORTblobtoSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SF_source_airport",
-								"type": "DatasetReference"
-							},
-							"name": "SFAirport"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_AIRPORT_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "AIRPORTtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tairport_id as string,\n\t\tiata_code as string,\n\t\ticao_code as string,\n\t\tfaa_code as string,\n\t\tairport_name as string,\n\t\tcity_name as string,\n\t\tstate_code as string,\n\t\tcountry_code as string,\n\t\tweather_zone as string,\n\t\tlatitude as string,\n\t\tlongitude as string,\n\t\televation_feet as string,\n\t\tiana_timezone as string,\n\t\tis_base as boolean,\n\t\tbase_initial as string,\n\t\tis_active as boolean,\n\t\tis_deleted as boolean\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFAirport\nSFAirport derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> AIRPORTtoSQL"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_airport')]",
-				"[concat(variables('factoryId'), '/datasets/SQL_AIRPORT_TABLE')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/EQUIPSCHEDblobtoSQL')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -942,6 +913,47 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_equip_sched')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_EQUIP_SCHED_TABLE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FLIGHTSblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_flights",
+								"type": "DatasetReference"
+							},
+							"name": "SFFlight"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_FLIGHT_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "FlightToSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						},
+						{
+							"name": "FLTTYPEfilter"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tflight_id as string,\n\t\tflight_number as string,\n\t\tflight_date as string,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tops_type as string,\n\t\tscheduled_departure as string,\n\t\tscheduled_arrival as string,\n\t\testimated_departure as string,\n\t\testimated_arrival as string,\n\t\tactual_oooi_out as string,\n\t\tactual_oooi_off as string,\n\t\tactual_oooi_on as string,\n\t\tactual_oooi_in as string,\n\t\tbase_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tsched_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_arrive_airport_id as string,\n\t\tbase_airport as string,\n\t\tscheduled_departure_airport as string,\n\t\tscheduled_arrival_airport as string,\n\t\tactual_departure_airport as string,\n\t\tactual_arrival_airport as string,\n\t\tis_verified as boolean,\n\t\tnotes as string,\n\t\tis_canceled as boolean,\n\t\tflight_type as string,\n\t\tcargo_weight as string,\n\t\tcargo_on as string,\n\t\tcargo_off as string,\n\t\tfuel_out as string,\n\t\tfuel_in as string,\n\t\tfuel_uplift as string,\n\t\tfuel_uplifts as string,\n\t\tmaint_log_page as string,\n\t\tlndg_touchdown_zone as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_actual_braking as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFFlight\nSFFlight derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS filter(flight_type <=> 'flight') ~> FLTTYPEfilter\nFLTTYPEfilter sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tactual_arrival_airport as string,\n\t\tactual_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_departure_airport as string,\n\t\tactual_oooi_in as string,\n\t\tactual_oooi_off as string,\n\t\tactual_oooi_on as string,\n\t\tactual_oooi_out as string,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tbase_airport as string,\n\t\tbase_airport_id as string,\n\t\tcargo_off as string,\n\t\tcargo_on as string,\n\t\tcargo_weight as string,\n\t\testimated_arrival as string,\n\t\testimated_departure as string,\n\t\tflight_date as string,\n\t\tflight_id as string,\n\t\tflight_number as string,\n\t\tflight_type as string,\n\t\tfuel_in as string,\n\t\tfuel_out as string,\n\t\tfuel_uplift as string,\n\t\tfuel_uplifts as string,\n\t\tis_canceled as string,\n\t\tis_verified as string,\n\t\tlndg_actual_braking as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_touchdown_zone as string,\n\t\tmaint_log_page as string,\n\t\tnotes as string,\n\t\tops_type as string,\n\t\tsched_arrive_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tscheduled_arrival as string,\n\t\tscheduled_arrival_airport as string,\n\t\tscheduled_departure as string,\n\t\tscheduled_departure_airport as string,\n\t\tupdated_at as string,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FlightToSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_flights')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_FLIGHT_TABLE')]"
 			]
 		}
 	]
