@@ -4,6 +4,12 @@
 		"description": "ETL job that populates dbo.SF_EQUIP_SCHED_PROD SQL table",
 		"annotations": [],
 		"runtimeState": "Started",
+		"pipeline": {
+			"pipelineReference": {
+				"referenceName": "Equip_sched_data",
+				"type": "PipelineReference"
+			}
+		},
 		"type": "TumblingWindowTrigger",
 		"typeProperties": {
 			"frequency": "Hour",
