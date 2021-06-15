@@ -1,0 +1,28 @@
+{
+	"name": "DELAYS trigger",
+	"properties": {
+		"description": "ETL job that populates dbo.SF_DELAYS_PROD SQL table",
+		"annotations": [],
+		"runtimeState": "Started",
+		"type": "TumblingWindowTrigger",
+		"typeProperties": {
+			"frequency": "Hour",
+			"interval": 24,
+			"startTime": "2021-06-16T08:00:00Z",
+			"delay": "00:00:00",
+			"maxConcurrency": 50,
+			"retryPolicy": {
+				"intervalInSeconds": 30
+			},
+			"dependsOn": [
+				{
+					"type": "TumblingWindowTriggerDependencyReference",
+					"referenceTrigger": {
+						"referenceName": "FLIGHT trigger",
+						"type": "TriggerReference"
+					}
+				}
+			]
+		}
+	}
+}
