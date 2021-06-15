@@ -4,6 +4,12 @@
 		"description": "ETL job that populates dbo.SF_FLIGHT_PROD SQL table",
 		"annotations": [],
 		"runtimeState": "Started",
+		"pipeline": {
+			"pipelineReference": {
+				"referenceName": "Flight_data",
+				"type": "PipelineReference"
+			}
+		},
 		"type": "TumblingWindowTrigger",
 		"typeProperties": {
 			"frequency": "Hour",
@@ -18,7 +24,7 @@
 				{
 					"type": "TumblingWindowTriggerDependencyReference",
 					"referenceTrigger": {
-						"referenceName": "Airports trigger",
+						"referenceName": "AIRPORT trigger",
 						"type": "TriggerReference"
 					}
 				}
