@@ -1,5 +1,5 @@
 {
-	"name": "Airports trigger",
+	"name": "AIRPORT trigger",
 	"properties": {
 		"description": "ETL job that populates dbo.SF_AIRPORT_PROD SQL table",
 		"annotations": [],
