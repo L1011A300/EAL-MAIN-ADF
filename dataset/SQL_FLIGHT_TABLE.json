@@ -97,11 +97,11 @@
 			},
 			{
 				"name": "fuel_in",
-				"type": "decimal(4,1)"
+				"type": "float"
 			},
 			{
 				"name": "fuel_out",
-				"type": "decimal(4,1)"
+				"type": "float"
 			},
 			{
 				"name": "fuel_uplift",
