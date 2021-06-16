@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "ETL job that populates dbo.SF_AIRPORT_PROD SQL table",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"type": "TumblingWindowTrigger",
 		"typeProperties": {
 			"frequency": "Hour",
