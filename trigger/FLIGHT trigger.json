@@ -22,11 +22,7 @@
 			},
 			"dependsOn": [
 				{
-					"type": "TumblingWindowTriggerDependencyReference",
-					"referenceTrigger": {
-						"referenceName": "AIRPORT trigger",
-						"type": "TriggerReference"
-					}
+					"type": "SelfDependencyTumblingWindowTriggerReference"
 				}
 			]
 		}
