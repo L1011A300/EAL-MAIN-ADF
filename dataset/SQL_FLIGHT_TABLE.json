@@ -29,19 +29,19 @@
 			},
 			{
 				"name": "actual_oooi_in",
-				"type": "datetime2"
+				"type": "datetime"
 			},
 			{
 				"name": "actual_oooi_off",
-				"type": "datetime2"
+				"type": "datetime"
 			},
 			{
 				"name": "actual_oooi_on",
-				"type": "datetime2"
+				"type": "datetime"
 			},
 			{
 				"name": "actual_oooi_out",
-				"type": "datetime2"
+				"type": "datetime"
 			},
 			{
 				"name": "aircraft_registration_number",
@@ -73,11 +73,11 @@
 			},
 			{
 				"name": "estimated_arrival",
-				"type": "datetime2"
+				"type": "datetime"
 			},
 			{
 				"name": "estimated_departure",
-				"type": "datetime2"
+				"type": "datetime"
 			},
 			{
 				"name": "flight_date",
@@ -165,7 +165,7 @@
 			},
 			{
 				"name": "scheduled_departure",
-				"type": "datetime2"
+				"type": "datetime"
 			},
 			{
 				"name": "scheduled_departure_airport",
@@ -173,11 +173,11 @@
 			},
 			{
 				"name": "updated_at",
-				"type": "datetime2"
+				"type": "datetime"
 			},
 			{
 				"name": "ADF_TIMESTAMP",
-				"type": "datetime2",
+				"type": "datetime",
 				"scale": 7
 			},
 			{
