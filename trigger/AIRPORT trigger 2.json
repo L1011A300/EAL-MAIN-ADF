@@ -1,0 +1,17 @@
+{
+	"name": "AIRPORT trigger 2",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 24,
+				"startTime": "2021-06-16T14:40:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
