@@ -13,6 +13,41 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DELAYSblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_delays",
+								"type": "DatasetReference"
+							},
+							"name": "SFDelay"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_DELAYS_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "DelaysToSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tflight_id as string,\n\t\tdelay_type as string,\n\t\tduration_mins as string,\n\t\tdelay_code as string,\n\t\tdelay_code_name as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFDelay\nSFDelay derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DelaysToSQL"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/EQUIPSCHEDblobtoSQL')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -285,7 +320,9 @@
 				"annotations": [],
 				"lastPublishTime": "2021-06-14T17:18:56Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DELAYSblobtoSQL')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Equip_sched_data')]",
@@ -908,7 +945,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Airport trigger 3')]",
+			"name": "[concat(parameters('factoryName'), '/AIRPORT trigger 4')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -923,9 +960,9 @@
 				},
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
-					"frequency": "Hour",
-					"interval": 24,
-					"startTime": "2021-06-16T14:38:00Z",
+					"frequency": "Minute",
+					"interval": 5,
+					"startTime": "2021-06-16T14:53:00Z",
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
