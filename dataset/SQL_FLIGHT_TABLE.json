@@ -29,19 +29,19 @@
 			},
 			{
 				"name": "actual_oooi_in",
-				"type": "nvarchar"
+				"type": "datetime2"
 			},
 			{
 				"name": "actual_oooi_off",
-				"type": "nvarchar"
+				"type": "datetime2"
 			},
 			{
 				"name": "actual_oooi_on",
-				"type": "nvarchar"
+				"type": "datetime2"
 			},
 			{
 				"name": "actual_oooi_out",
-				"type": "nvarchar"
+				"type": "datetime2"
 			},
 			{
 				"name": "aircraft_registration_number",
@@ -61,27 +61,27 @@
 			},
 			{
 				"name": "cargo_off",
-				"type": "nvarchar"
+				"type": "int"
 			},
 			{
 				"name": "cargo_on",
-				"type": "nvarchar"
+				"type": "int"
 			},
 			{
 				"name": "cargo_weight",
-				"type": "nvarchar"
+				"type": "int"
 			},
 			{
 				"name": "estimated_arrival",
-				"type": "nvarchar"
+				"type": "datetime2"
 			},
 			{
 				"name": "estimated_departure",
-				"type": "nvarchar"
+				"type": "datetime2"
 			},
 			{
 				"name": "flight_date",
-				"type": "nvarchar"
+				"type": "date"
 			},
 			{
 				"name": "flight_id",
@@ -97,15 +97,15 @@
 			},
 			{
 				"name": "fuel_in",
-				"type": "nvarchar"
+				"type": "decimal(4,1)"
 			},
 			{
 				"name": "fuel_out",
-				"type": "nvarchar"
+				"type": "decimal(4,1)"
 			},
 			{
 				"name": "fuel_uplift",
-				"type": "nvarchar"
+				"type": "int"
 			},
 			{
 				"name": "fuel_uplifts",
@@ -157,7 +157,7 @@
 			},
 			{
 				"name": "scheduled_arrival",
-				"type": "nvarchar"
+				"type": "datetime2"
 			},
 			{
 				"name": "scheduled_arrival_airport",
@@ -165,7 +165,7 @@
 			},
 			{
 				"name": "scheduled_departure",
-				"type": "nvarchar"
+				"type": "datetime2"
 			},
 			{
 				"name": "scheduled_departure_airport",
@@ -173,7 +173,7 @@
 			},
 			{
 				"name": "updated_at",
-				"type": "nvarchar"
+				"type": "datetime2"
 			},
 			{
 				"name": "ADF_TIMESTAMP",
