@@ -768,6 +768,7 @@
 								},
 								"datasetParameters": {
 									"SFFlight": {},
+									"AirportReferenceJSON": {},
 									"FlightToSQL": {}
 								}
 							},
