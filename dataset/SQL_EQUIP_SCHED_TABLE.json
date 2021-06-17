@@ -10,7 +10,57 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "eqp_sched_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ac_registration",
+				"type": "nvarchar"
+			},
+			{
+				"name": "status_code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "status_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "status_description",
+				"type": "nvarchar"
+			},
+			{
+				"name": "start_time",
+				"type": "datetime"
+			},
+			{
+				"name": "end_time",
+				"type": "datetime"
+			},
+			{
+				"name": "notes",
+				"type": "nvarchar"
+			},
+			{
+				"name": "is_deleted",
+				"type": "bit"
+			},
+			{
+				"name": "updated_at",
+				"type": "datetime"
+			},
+			{
+				"name": "ADF_TIMESTAMP",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "RUN_ID",
+				"type": "nvarchar"
+			}
+		],
 		"typeProperties": {
 			"schema": "dbo",
 			"table": "SF_EQUIP_SCHED_PROD"
