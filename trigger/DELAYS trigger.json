@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table",
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "Delay_data",
