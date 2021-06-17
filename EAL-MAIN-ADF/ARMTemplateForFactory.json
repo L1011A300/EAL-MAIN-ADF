@@ -1275,54 +1275,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SQL_DELAYS_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_DELAYS_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_EQUIP_SCHED_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_EQUIP_SCHED_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1579,7 +1531,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table",
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Airport_data",
@@ -1611,7 +1563,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table",
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Delay_data",
@@ -1652,7 +1604,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table",
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Equip_sched_data",
@@ -1693,7 +1645,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table",
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Flight_data",
@@ -1795,7 +1747,7 @@
 							"name": "AddWrkflwIDandTS"
 						}
 					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tflight_id as string,\n\t\tdelay_type as string,\n\t\tduration_mins as string,\n\t\tdelay_code as string,\n\t\tdelay_code_name as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFDelay\nSFDelay derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DelaysToSQL"
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tflight_id as string,\n\t\tdelay_type as string,\n\t\tduration_mins as string,\n\t\tdelay_code as string,\n\t\tdelay_code_name as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFDelay\nSFDelay derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tflight_id as string,\n\t\tdelay_type as string,\n\t\tduration_mins as integer,\n\t\tdelay_code as string,\n\t\tdelay_code_name as string,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DelaysToSQL"
 				}
 			},
 			"dependsOn": [
@@ -1833,7 +1785,7 @@
 							"name": "ADDWrkflwIDandTS"
 						}
 					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\teqp_sched_id as string,\n\t\tac_registration as string,\n\t\tstatus_code as string,\n\t\tstatus_name as string,\n\t\tstatus_description as string,\n\t\tstart_time as string,\n\t\tend_time as string,\n\t\tnotes as string,\n\t\tis_deleted as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFEquipSched\nSFEquipSched derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> ADDWrkflwIDandTS\nADDWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> EQUIPSCHEDtoSQL"
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\teqp_sched_id as string,\n\t\tac_registration as string,\n\t\tstatus_code as string,\n\t\tstatus_name as string,\n\t\tstatus_description as string,\n\t\tstart_time as string,\n\t\tend_time as string,\n\t\tnotes as string,\n\t\tis_deleted as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFEquipSched\nSFEquipSched derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> ADDWrkflwIDandTS\nADDWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\teqp_sched_id as string,\n\t\tac_registration as string,\n\t\tstatus_code as string,\n\t\tstatus_name as string,\n\t\tstatus_description as string,\n\t\tstart_time as timestamp,\n\t\tend_time as timestamp,\n\t\tnotes as string,\n\t\tis_deleted as boolean,\n\t\tupdated_at as timestamp,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> EQUIPSCHEDtoSQL"
 				}
 			},
 			"dependsOn": [
@@ -2028,6 +1980,134 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "SF_AIRPORT_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_EQUIP_SCHED_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "eqp_sched_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ac_registration",
+						"type": "nvarchar"
+					},
+					{
+						"name": "status_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "status_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "status_description",
+						"type": "nvarchar"
+					},
+					{
+						"name": "start_time",
+						"type": "datetime"
+					},
+					{
+						"name": "end_time",
+						"type": "datetime"
+					},
+					{
+						"name": "notes",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_deleted",
+						"type": "bit"
+					},
+					{
+						"name": "updated_at",
+						"type": "datetime"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_EQUIP_SCHED_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_DELAYS_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "flight_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "delay_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "duration_mins",
+						"type": "smallint"
+					},
+					{
+						"name": "delay_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "delay_code_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_DELAYS_PROD"
 				}
 			},
 			"dependsOn": [
