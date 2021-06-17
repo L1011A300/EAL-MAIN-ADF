@@ -10,7 +10,37 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "flight_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "delay_type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "duration_mins",
+				"type": "smallint"
+			},
+			{
+				"name": "delay_code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "delay_code_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ADF_TIMESTAMP",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "RUN_ID",
+				"type": "nvarchar"
+			}
+		],
 		"typeProperties": {
 			"schema": "dbo",
 			"table": "SF_DELAYS_PROD"
