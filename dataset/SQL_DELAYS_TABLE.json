@@ -13,7 +13,7 @@
 		"schema": [
 			{
 				"name": "flight_id",
-				"type": "nvarchar"
+				"type": "int"
 			},
 			{
 				"name": "delay_type",

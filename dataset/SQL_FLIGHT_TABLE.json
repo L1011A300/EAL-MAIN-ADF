@@ -85,7 +85,7 @@
 			},
 			{
 				"name": "flight_id",
-				"type": "nvarchar"
+				"type": "int"
 			},
 			{
 				"name": "flight_number",
