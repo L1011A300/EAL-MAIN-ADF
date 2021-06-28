@@ -4,6 +4,12 @@
 		"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 7 a.m.",
 		"annotations": [],
 		"runtimeState": "Started",
+		"pipeline": {
+			"pipelineReference": {
+				"referenceName": "Equip_sched_data",
+				"type": "PipelineReference"
+			}
+		},
 		"type": "TumblingWindowTrigger",
 		"typeProperties": {
 			"frequency": "Hour",
