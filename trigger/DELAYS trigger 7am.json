@@ -14,7 +14,15 @@
 			"retryPolicy": {
 				"intervalInSeconds": 30
 			},
-			"dependsOn": []
+			"dependsOn": [
+				{
+					"type": "TumblingWindowTriggerDependencyReference",
+					"referenceTrigger": {
+						"referenceName": "AIRPORT trigger 7am",
+						"type": "TriggerReference"
+					}
+				}
+			]
 		}
 	}
 }
