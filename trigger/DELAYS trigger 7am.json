@@ -4,6 +4,12 @@
 		"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 7 a.m. EDT",
 		"annotations": [],
 		"runtimeState": "Started",
+		"pipeline": {
+			"pipelineReference": {
+				"referenceName": "Delay_data",
+				"type": "PipelineReference"
+			}
+		},
 		"type": "TumblingWindowTrigger",
 		"typeProperties": {
 			"frequency": "Hour",
