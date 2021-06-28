@@ -4,12 +4,6 @@
 		"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table",
 		"annotations": [],
 		"runtimeState": "Stopped",
-		"pipeline": {
-			"pipelineReference": {
-				"referenceName": "Flight_data",
-				"type": "PipelineReference"
-			}
-		},
 		"type": "TumblingWindowTrigger",
 		"typeProperties": {
 			"frequency": "Hour",
