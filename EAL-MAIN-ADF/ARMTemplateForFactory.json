@@ -1377,6 +1377,60 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SQL_DELAYS_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "flight_id",
+						"type": "int"
+					},
+					{
+						"name": "delay_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "duration_mins",
+						"type": "smallint"
+					},
+					{
+						"name": "delay_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "delay_code_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_DELAYS_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQL_EQUIP_SCHED_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1451,6 +1505,204 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "actual_arrival_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_arrive_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_depart_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_departure_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_oooi_in",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_off",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_on",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_out",
+						"type": "datetime"
+					},
+					{
+						"name": "aircraft_registration_number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "aircraft_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "base_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "base_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cargo_off",
+						"type": "int"
+					},
+					{
+						"name": "cargo_on",
+						"type": "int"
+					},
+					{
+						"name": "cargo_weight",
+						"type": "int"
+					},
+					{
+						"name": "estimated_arrival",
+						"type": "datetime"
+					},
+					{
+						"name": "estimated_departure",
+						"type": "datetime"
+					},
+					{
+						"name": "flight_date",
+						"type": "date"
+					},
+					{
+						"name": "flight_id",
+						"type": "int"
+					},
+					{
+						"name": "flight_number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "flight_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "fuel_in",
+						"type": "float"
+					},
+					{
+						"name": "fuel_out",
+						"type": "float"
+					},
+					{
+						"name": "fuel_uplift",
+						"type": "int"
+					},
+					{
+						"name": "fuel_uplifts",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_canceled",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_verified",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_actual_braking",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_midfield",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_rollout",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_touchdown_zone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "maint_log_page",
+						"type": "nvarchar"
+					},
+					{
+						"name": "notes",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ops_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sched_arrive_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sched_depart_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "scheduled_arrival",
+						"type": "datetime2"
+					},
+					{
+						"name": "scheduled_arrival_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "scheduled_departure",
+						"type": "datetime"
+					},
+					{
+						"name": "scheduled_departure_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "updated_at",
+						"type": "datetime"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_FLIGHT_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SkedFlexConnection')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -1509,14 +1761,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table",
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "Airport_data",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
+				"runtimeState": "Stopped",
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -1530,9 +1775,7 @@
 					"dependsOn": []
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Airport_data')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DELAYS trigger')]",
@@ -1541,14 +1784,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table",
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "Delay_data",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
+				"runtimeState": "Stopped",
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -1571,7 +1807,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Delay_data')]",
 				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger')]"
 			]
 		},
@@ -1582,14 +1817,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table",
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "Equip_sched_data",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
+				"runtimeState": "Stopped",
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -1612,7 +1840,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Equip_sched_data')]",
 				"[concat(variables('factoryId'), '/triggers/DELAYS trigger')]"
 			]
 		},
@@ -1623,14 +1850,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table",
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "Flight_data",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
+				"runtimeState": "Stopped",
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -1653,7 +1873,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Flight_data')]",
 				"[concat(variables('factoryId'), '/triggers/EQUIP_SCHD trigger')]"
 			]
 		},
@@ -1863,255 +2082,158 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/AIRPORT trigger 7am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
+				"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table at 7 a.m. EDT",
 				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "actual_arrival_airport",
-						"type": "nvarchar"
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Airport_data",
+						"type": "PipelineReference"
 					},
-					{
-						"name": "actual_arrive_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "actual_depart_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "actual_departure_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "actual_oooi_in",
-						"type": "datetime"
-					},
-					{
-						"name": "actual_oooi_off",
-						"type": "datetime"
-					},
-					{
-						"name": "actual_oooi_on",
-						"type": "datetime"
-					},
-					{
-						"name": "actual_oooi_out",
-						"type": "datetime"
-					},
-					{
-						"name": "aircraft_registration_number",
-						"type": "nvarchar"
-					},
-					{
-						"name": "aircraft_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "base_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "base_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "cargo_off",
-						"type": "int"
-					},
-					{
-						"name": "cargo_on",
-						"type": "int"
-					},
-					{
-						"name": "cargo_weight",
-						"type": "int"
-					},
-					{
-						"name": "estimated_arrival",
-						"type": "datetime"
-					},
-					{
-						"name": "estimated_departure",
-						"type": "datetime"
-					},
-					{
-						"name": "flight_date",
-						"type": "date"
-					},
-					{
-						"name": "flight_id",
-						"type": "int"
-					},
-					{
-						"name": "flight_number",
-						"type": "nvarchar"
-					},
-					{
-						"name": "flight_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "fuel_in",
-						"type": "float"
-					},
-					{
-						"name": "fuel_out",
-						"type": "float"
-					},
-					{
-						"name": "fuel_uplift",
-						"type": "int"
-					},
-					{
-						"name": "fuel_uplifts",
-						"type": "nvarchar"
-					},
-					{
-						"name": "is_canceled",
-						"type": "nvarchar"
-					},
-					{
-						"name": "is_verified",
-						"type": "nvarchar"
-					},
-					{
-						"name": "lndg_actual_braking",
-						"type": "nvarchar"
-					},
-					{
-						"name": "lndg_midfield",
-						"type": "nvarchar"
-					},
-					{
-						"name": "lndg_rollout",
-						"type": "nvarchar"
-					},
-					{
-						"name": "lndg_touchdown_zone",
-						"type": "nvarchar"
-					},
-					{
-						"name": "maint_log_page",
-						"type": "nvarchar"
-					},
-					{
-						"name": "notes",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ops_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "sched_arrive_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "sched_depart_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "scheduled_arrival",
-						"type": "datetime2"
-					},
-					{
-						"name": "scheduled_arrival_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "scheduled_departure",
-						"type": "datetime"
-					},
-					{
-						"name": "scheduled_departure_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "updated_at",
-						"type": "datetime"
-					},
-					{
-						"name": "ADF_TIMESTAMP",
-						"type": "datetime",
-						"scale": 7
-					},
-					{
-						"name": "RUN_ID",
-						"type": "nvarchar"
-					}
-				],
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
 				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_FLIGHT_PROD"
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-06-28T11:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+				"[concat(variables('factoryId'), '/pipelines/Airport_data')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SQL_DELAYS_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/DELAYS trigger 7am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
+				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 7 a.m. EDT",
 				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "flight_id",
-						"type": "int"
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Delay_data",
+						"type": "PipelineReference"
 					},
-					{
-						"name": "delay_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "duration_mins",
-						"type": "smallint"
-					},
-					{
-						"name": "delay_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "delay_code_name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ADF_TIMESTAMP",
-						"type": "datetime2",
-						"scale": 7
-					},
-					{
-						"name": "RUN_ID",
-						"type": "nvarchar"
-					}
-				],
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
 				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_DELAYS_PROD"
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-06-28T11:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "AIRPORT trigger 7am",
+								"type": "TriggerReference"
+							}
+						}
+					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+				"[concat(variables('factoryId'), '/pipelines/Delay_data')]",
+				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger 7am')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHED trigger 7am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 7 a.m.",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Equip_sched_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-06-28T11:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "DELAYS trigger 7am",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Equip_sched_data')]",
+				"[concat(variables('factoryId'), '/triggers/DELAYS trigger 7am')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FLIGHT trigger 7am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table at 7 a.m. EDT",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Flight_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-06-28T11:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "EQUIP_SCHED trigger 7am",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Flight_data')]",
+				"[concat(variables('factoryId'), '/triggers/EQUIP_SCHED trigger 7am')]"
 			]
 		}
 	]
