@@ -237,6 +237,11 @@
 				]
 			}
 		],
+		"variables": {
+			"date": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
