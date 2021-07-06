@@ -1,0 +1,121 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "EAL-MAIN-ADF"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_user_category')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+						"container": "sf-source-user-category"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"user_id": {
+							"type": "integer"
+						},
+						"category_type": {
+							"type": "string"
+						},
+						"effective_start": {
+							"type": "string"
+						},
+						"effective_end": {
+							"type": "null"
+						},
+						"base_icao_code": {
+							"type": "string"
+						},
+						"base_iata_code": {
+							"type": "string"
+						},
+						"base_faa_code": {
+							"type": "string"
+						},
+						"base_name": {
+							"type": "string"
+						},
+						"equipment_group_name": {
+							"type": "string"
+						},
+						"equipment_group_code": {
+							"type": "string"
+						},
+						"position_name": {
+							"type": "string"
+						},
+						"position_code": {
+							"type": "string"
+						},
+						"updated_at": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/USERCATEGORYblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_user_category",
+								"type": "DatasetReference"
+							},
+							"name": "SFUserCategory"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_USER_CATEGORY_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "USERCATEGORYtoSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tuser_id as string,\n\t\tcategory_type as string,\n\t\teffective_start as string,\n\t\teffective_end as string,\n\t\tbase_icao_code as string,\n\t\tbase_iata_code as string,\n\t\tbase_faa_code as string,\n\t\tbase_name as string,\n\t\tequipment_group_name as string,\n\t\tequipment_group_code as string,\n\t\tposition_name as string,\n\t\tposition_code as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFUserCategory\nSFUserCategory derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> USERCATEGORYtoSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_user_category')]"
+			]
+		}
+	]
+}
