@@ -34,7 +34,7 @@
 							{
 								"source": {
 									"name": "user_id",
-									"type": "string"
+									"type": "varchar"
 								},
 								"sink": {
 									"path": "$['user_id']"
@@ -43,7 +43,7 @@
 							{
 								"source": {
 									"name": "payroll_id",
-									"type": "string"
+									"type": "varchar"
 								},
 								"sink": {
 									"path": "$['payroll_id']"
@@ -52,7 +52,7 @@
 							{
 								"source": {
 									"name": "employee_id",
-									"type": "Int32"
+									"type": "varchar"
 								},
 								"sink": {
 									"path": "$['employee_id']"
@@ -160,7 +160,7 @@
 							{
 								"source": {
 									"name": "company_rank",
-									"type": "string"
+									"type": "varchar"
 								},
 								"sink": {
 									"path": "$['company_rank']"
@@ -169,7 +169,7 @@
 							{
 								"source": {
 									"name": "pilot_rank",
-									"type": "string"
+									"type": "varchar"
 								},
 								"sink": {
 									"path": "$['pilot_rank']"
@@ -178,7 +178,7 @@
 							{
 								"source": {
 									"name": "fa_rank",
-									"type": "string"
+									"type": "varchar"
 								},
 								"sink": {
 									"path": "$['fa_rank']"
