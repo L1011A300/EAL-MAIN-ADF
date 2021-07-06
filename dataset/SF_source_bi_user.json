@@ -1,0 +1,16 @@
+{
+	"name": "SF_source_bi_user",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SkedFlexConnection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "PostgreSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "bi",
+			"table": "user"
+		}
+	}
+}
