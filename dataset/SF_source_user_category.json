@@ -1,0 +1,19 @@
+{
+	"name": "SF_source_user_category",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+				"container": "sf-source-user-category"
+			}
+		},
+		"schema": {}
+	}
+}
