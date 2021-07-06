@@ -258,7 +258,10 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "USERblobtoSQL",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"parameters": {
+							"run_id": "@pipeline().RunId"
+						}
 					},
 					"compute": {
 						"coreCount": 8,
