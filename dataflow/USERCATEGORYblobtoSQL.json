@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "SQL_USER_TABLE",
+						"referenceName": "SQL_USER_CATEGORY_TABLE",
 						"type": "DatasetReference"
 					},
 					"name": "USERCATEGORYtoSQL"
