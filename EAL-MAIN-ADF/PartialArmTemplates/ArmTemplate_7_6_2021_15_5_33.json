@@ -1,0 +1,740 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "EAL-MAIN-ADF"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_bi_user')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SkedFlexConnection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "bi",
+					"table": "user"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_bi_user_category')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SkedFlexConnection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "bi",
+					"table": "user_category"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_user')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+						"container": "sf-source-user"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_user_category')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+						"container": "sf-source-user-category"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/user_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF user data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "user_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['user_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "payroll_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['payroll_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "employee_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['employee_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "username",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['username']"
+										}
+									},
+									{
+										"source": {
+											"name": "first_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['first_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "middle_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['middle_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "last_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['last_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "preferred_nickname",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['preferred_nickname']"
+										}
+									},
+									{
+										"source": {
+											"name": "email",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['email']"
+										}
+									},
+									{
+										"source": {
+											"name": "pilot_license",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['pilot_license']"
+										}
+									},
+									{
+										"source": {
+											"name": "phone_numbers",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['phone_numbers']"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_birth",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date_of_birth']"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_hire",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date_of_hire']"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_longevity",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date_of_longevity']"
+										}
+									},
+									{
+										"source": {
+											"name": "company_rank",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['company_rank']"
+										}
+									},
+									{
+										"source": {
+											"name": "pilot_rank",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['pilot_rank']"
+										}
+									},
+									{
+										"source": {
+											"name": "fa_rank",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['fa_rank']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									},
+									{
+										"source": {
+											"name": "enabled",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['enabled']"
+										}
+									},
+									{
+										"source": {
+											"name": "deleted",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['deleted']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_disabled",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_disabled']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_user",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_user",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "USERblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF user data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "USERblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								}
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_bi_user')]",
+				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
+				"[concat(variables('factoryId'), '/dataflows/USERblobtoSQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/user_category_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF user category data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "user_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['user_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "category_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['category_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "effective_start",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['effective_start']"
+										}
+									},
+									{
+										"source": {
+											"name": "effective_end",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['effective_end']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_icao_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_icao_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_iata_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_iata_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_faa_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_faa_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "equipment_group_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['equipment_group_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "equipment_group_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['equipment_group_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "position_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['position_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "position_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['position_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_user_category",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_user_category",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "USERCATEGORYblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF user category data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "USERCATEGORYblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								}
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_bi_user_category')]",
+				"[concat(variables('factoryId'), '/datasets/SF_source_user_category')]",
+				"[concat(variables('factoryId'), '/dataflows/USERCATEGORYblobtoSQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/USERblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_user",
+								"type": "DatasetReference"
+							},
+							"name": "SFUser"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_USER_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "USERtoSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFUser\nSFUser derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> USERtoSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_USER_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_USER_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/USERCATEGORYblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_user_category",
+								"type": "DatasetReference"
+							},
+							"name": "SFUserCategory"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_USER_CATEGORY_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "USERCATEGORYtoSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFUserCategory\nSFUserCategory derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> USERCATEGORYtoSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_user_category')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_USER_CATEGORY_TABLE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_USER_CATEGORY_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_USER_CATEGORY_PROD"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
