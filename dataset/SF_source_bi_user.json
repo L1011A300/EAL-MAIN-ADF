@@ -5,6 +5,9 @@
 			"referenceName": "SkedFlexConnection",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Source"
+		},
 		"annotations": [],
 		"type": "PostgreSqlTable",
 		"schema": [],

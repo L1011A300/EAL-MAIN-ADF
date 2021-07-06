@@ -5,6 +5,9 @@
 			"referenceName": "eal_main_blob_connection",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Azure blob"
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
