@@ -260,7 +260,10 @@
 						"referenceName": "USERblobtoSQL",
 						"type": "DataFlowReference",
 						"parameters": {
-							"run_id": "@pipeline().RunId"
+							"run_id": {
+								"value": "'@{pipeline().RunId}'",
+								"type": "Expression"
+							}
 						}
 					},
 					"compute": {
