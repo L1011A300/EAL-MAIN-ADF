@@ -1050,319 +1050,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/user_data')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "SF user data to Azure blob",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "PostgreSqlSource"
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": true,
-							"logSettings": {
-								"enableCopyActivityLog": true,
-								"copyActivityLogSettings": {
-									"logLevel": "Info",
-									"enableReliableLogging": false
-								},
-								"logLocationSettings": {
-									"linkedServiceName": {
-										"referenceName": "eal_main_blob_connection",
-										"type": "LinkedServiceReference"
-									}
-								}
-							},
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "user_id",
-											"type": "varchar"
-										},
-										"sink": {
-											"path": "$['user_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "payroll_id",
-											"type": "varchar"
-										},
-										"sink": {
-											"path": "$['payroll_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "employee_id",
-											"type": "varchar"
-										},
-										"sink": {
-											"path": "$['employee_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "username",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['username']"
-										}
-									},
-									{
-										"source": {
-											"name": "first_name",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['first_name']"
-										}
-									},
-									{
-										"source": {
-											"name": "middle_name",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['middle_name']"
-										}
-									},
-									{
-										"source": {
-											"name": "last_name",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['last_name']"
-										}
-									},
-									{
-										"source": {
-											"name": "preferred_nickname",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['preferred_nickname']"
-										}
-									},
-									{
-										"source": {
-											"name": "email",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['email']"
-										}
-									},
-									{
-										"source": {
-											"name": "pilot_license",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['pilot_license']"
-										}
-									},
-									{
-										"source": {
-											"name": "phone_numbers",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['phone_numbers']"
-										}
-									},
-									{
-										"source": {
-											"name": "date_of_birth",
-											"type": "DateTime"
-										},
-										"sink": {
-											"path": "$['date_of_birth']"
-										}
-									},
-									{
-										"source": {
-											"name": "date_of_hire",
-											"type": "DateTime"
-										},
-										"sink": {
-											"path": "$['date_of_hire']"
-										}
-									},
-									{
-										"source": {
-											"name": "date_of_longevity",
-											"type": "DateTime"
-										},
-										"sink": {
-											"path": "$['date_of_longevity']"
-										}
-									},
-									{
-										"source": {
-											"name": "company_rank",
-											"type": "varchar"
-										},
-										"sink": {
-											"path": "$['company_rank']"
-										}
-									},
-									{
-										"source": {
-											"name": "pilot_rank",
-											"type": "varchar"
-										},
-										"sink": {
-											"path": "$['pilot_rank']"
-										}
-									},
-									{
-										"source": {
-											"name": "fa_rank",
-											"type": "varchar"
-										},
-										"sink": {
-											"path": "$['fa_rank']"
-										}
-									},
-									{
-										"source": {
-											"name": "updated_at",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['updated_at']"
-										}
-									},
-									{
-										"source": {
-											"name": "enabled",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['enabled']"
-										}
-									},
-									{
-										"source": {
-											"name": "deleted",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['deleted']"
-										}
-									},
-									{
-										"source": {
-											"name": "is_disabled",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['is_disabled']"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SF_source_bi_user",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SF_source_user",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "USERblobtoSQL",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "SF user data to Azure blob",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "USERblobtoSQL",
-								"type": "DataFlowReference",
-								"parameters": {
-									"run_id": {
-										"value": "'@{pipeline().RunId}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"SFUser": {},
-									"USERtoSQL": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"variables": {
-					"date": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_bi_user')]",
-				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
-				"[concat(variables('factoryId'), '/dataflows/USERblobtoSQL')]",
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_airport')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -3048,6 +2735,319 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/user_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF user data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Info",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "eal_main_blob_connection",
+										"type": "LinkedServiceReference"
+									}
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "user_id",
+											"type": "string"
+										},
+										"sink": {
+											"path": "$['user_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "payroll_id",
+											"type": "string"
+										},
+										"sink": {
+											"path": "$['payroll_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "employee_id",
+											"type": "string"
+										},
+										"sink": {
+											"path": "$['employee_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "username",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['username']"
+										}
+									},
+									{
+										"source": {
+											"name": "first_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['first_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "middle_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['middle_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "last_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['last_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "preferred_nickname",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['preferred_nickname']"
+										}
+									},
+									{
+										"source": {
+											"name": "email",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['email']"
+										}
+									},
+									{
+										"source": {
+											"name": "pilot_license",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['pilot_license']"
+										}
+									},
+									{
+										"source": {
+											"name": "phone_numbers",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['phone_numbers']"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_birth",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date_of_birth']"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_hire",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date_of_hire']"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_longevity",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date_of_longevity']"
+										}
+									},
+									{
+										"source": {
+											"name": "company_rank",
+											"type": "string"
+										},
+										"sink": {
+											"path": "$['company_rank']"
+										}
+									},
+									{
+										"source": {
+											"name": "pilot_rank",
+											"type": "string"
+										},
+										"sink": {
+											"path": "$['pilot_rank']"
+										}
+									},
+									{
+										"source": {
+											"name": "fa_rank",
+											"type": "string"
+										},
+										"sink": {
+											"path": "$['fa_rank']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									},
+									{
+										"source": {
+											"name": "enabled",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['enabled']"
+										}
+									},
+									{
+										"source": {
+											"name": "deleted",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['deleted']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_disabled",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_disabled']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_user",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_user",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "USERblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF user data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "USERblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFUser": {},
+									"USERtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_bi_user')]",
+				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
+				"[concat(variables('factoryId'), '/dataflows/USERblobtoSQL')]",
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
 			]
 		}
 	]
