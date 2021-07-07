@@ -3352,7 +3352,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "USERblobtoSQL",
+								"referenceName": "USERblobtoSQL_copy1",
 								"type": "DataFlowReference",
 								"parameters": {
 									"run_id": {
@@ -3384,7 +3384,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_bi_user')]",
 				"[concat(variables('factoryId'), '/datasets/SF_source_bi_user_text')]",
-				"[concat(variables('factoryId'), '/dataflows/USERblobtoSQL')]",
+				"[concat(variables('factoryId'), '/dataflows/USERblobtoSQL_copy1')]",
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
 			]
 		},
@@ -3416,6 +3416,44 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/USERblobtoSQL_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_bi_user_text",
+								"type": "DatasetReference"
+							},
+							"name": "SFUser"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_USER_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "USERtoSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SFUser\nSFUser derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> USERtoSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_bi_user_text')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
 			]
 		}
 	]
