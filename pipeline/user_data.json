@@ -29,11 +29,12 @@
 					},
 					"enableStaging": false,
 					"enableSkipIncompatibleRow": true,
+					"validateDataConsistency": true,
 					"logSettings": {
 						"enableCopyActivityLog": true,
 						"copyActivityLogSettings": {
 							"logLevel": "Info",
-							"enableReliableLogging": false
+							"enableReliableLogging": true
 						},
 						"logLocationSettings": {
 							"linkedServiceName": {
@@ -45,6 +46,33 @@
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
+							{
+								"source": {
+									"name": "user_id",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['user_id']"
+								}
+							},
+							{
+								"source": {
+									"name": "payroll_id",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['payroll_id']"
+								}
+							},
+							{
+								"source": {
+									"name": "employee_id",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['employee_id']"
+								}
+							},
 							{
 								"source": {
 									"name": "username",
@@ -142,6 +170,33 @@
 								},
 								"sink": {
 									"path": "$['date_of_longevity']"
+								}
+							},
+							{
+								"source": {
+									"name": "company_rank",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['company_rank']"
+								}
+							},
+							{
+								"source": {
+									"name": "pilot_rank",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['pilot_rank']"
+								}
+							},
+							{
+								"source": {
+									"name": "fa_rank",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['fa_rank']"
 								}
 							},
 							{
