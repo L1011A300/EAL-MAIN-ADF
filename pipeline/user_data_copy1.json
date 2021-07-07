@@ -295,7 +295,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "USERblobtoSQL",
+						"referenceName": "USERblobtoSQL_copy1",
 						"type": "DataFlowReference",
 						"parameters": {
 							"run_id": {
