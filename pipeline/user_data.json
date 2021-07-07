@@ -47,33 +47,6 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "user_id",
-									"type": "string"
-								},
-								"sink": {
-									"path": "$['user_id']"
-								}
-							},
-							{
-								"source": {
-									"name": "payroll_id",
-									"type": "string"
-								},
-								"sink": {
-									"path": "$['payroll_id']"
-								}
-							},
-							{
-								"source": {
-									"name": "employee_id",
-									"type": "string"
-								},
-								"sink": {
-									"path": "$['employee_id']"
-								}
-							},
-							{
-								"source": {
 									"name": "username",
 									"type": "String"
 								},
@@ -169,33 +142,6 @@
 								},
 								"sink": {
 									"path": "$['date_of_longevity']"
-								}
-							},
-							{
-								"source": {
-									"name": "company_rank",
-									"type": "string"
-								},
-								"sink": {
-									"path": "$['company_rank']"
-								}
-							},
-							{
-								"source": {
-									"name": "pilot_rank",
-									"type": "string"
-								},
-								"sink": {
-									"path": "$['pilot_rank']"
-								}
-							},
-							{
-								"source": {
-									"name": "fa_rank",
-									"type": "string"
-								},
-								"sink": {
-									"path": "$['fa_rank']"
 								}
 							},
 							{
