@@ -1686,7 +1686,7 @@
 									{
 										"source": {
 											"name": "employee_id",
-											"type": "Int32"
+											"type": "String"
 										},
 										"sink": {
 											"path": "$['employee_id']"

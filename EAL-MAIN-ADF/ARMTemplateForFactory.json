@@ -2795,7 +2795,7 @@
 									{
 										"source": {
 											"name": "employee_id",
-											"type": "Int32"
+											"type": "String"
 										},
 										"sink": {
 											"path": "$['employee_id']"
@@ -3034,8 +3034,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_bi_user')]",
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
-				"[concat(variables('factoryId'), '/dataflows/USERblobtoSQL')]",
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+				"[concat(variables('factoryId'), '/dataflows/USERblobtoSQL')]"
 			]
 		}
 	]
