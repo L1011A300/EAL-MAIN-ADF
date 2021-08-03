@@ -285,6 +285,54 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_bi_pairing')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SkedFlexConnection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "bi",
+					"table": "pairing"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_bi_pairing_item')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SkedFlexConnection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "bi",
+					"table": "pairing_item"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_bi_user')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -620,7 +668,7 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": {
-							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+							"value": "@concat(concat('bi-user-',split(utcnow(),'T')[0]),'.json')",
 							"type": "Expression"
 						},
 						"container": "sf-source-user"
@@ -650,7 +698,7 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": {
-							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+							"value": "@concat(concat('bi-user-category-',split(utcnow(),'T')[0]),'.json')",
 							"type": "Expression"
 						},
 						"container": "sf-source-user-category"
@@ -801,134 +849,6 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "SF_AIRPORT_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_DELAYS_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "flight_id",
-						"type": "int"
-					},
-					{
-						"name": "delay_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "duration_mins",
-						"type": "smallint"
-					},
-					{
-						"name": "delay_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "delay_code_name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ADF_TIMESTAMP",
-						"type": "datetime2",
-						"scale": 7
-					},
-					{
-						"name": "RUN_ID",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_DELAYS_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_EQUIP_SCHED_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "eqp_sched_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ac_registration",
-						"type": "nvarchar"
-					},
-					{
-						"name": "status_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "status_name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "status_description",
-						"type": "nvarchar"
-					},
-					{
-						"name": "start_time",
-						"type": "datetime"
-					},
-					{
-						"name": "end_time",
-						"type": "datetime"
-					},
-					{
-						"name": "notes",
-						"type": "nvarchar"
-					},
-					{
-						"name": "is_deleted",
-						"type": "bit"
-					},
-					{
-						"name": "updated_at",
-						"type": "datetime"
-					},
-					{
-						"name": "ADF_TIMESTAMP",
-						"type": "datetime2",
-						"scale": 7
-					},
-					{
-						"name": "RUN_ID",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_EQUIP_SCHED_PROD"
 				}
 			},
 			"dependsOn": [
