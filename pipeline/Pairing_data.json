@@ -29,7 +29,84 @@
 					},
 					"enableStaging": false,
 					"enableSkipIncompatibleRow": false,
-					"validateDataConsistency": false
+					"validateDataConsistency": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "pairing_id",
+									"type": "Int64"
+								},
+								"sink": {
+									"path": "$['pairing_id']"
+								}
+							},
+							{
+								"source": {
+									"name": "user_id",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['user_id']"
+								}
+							},
+							{
+								"source": {
+									"name": "position",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['position']"
+								}
+							},
+							{
+								"source": {
+									"name": "name",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['name']"
+								}
+							},
+							{
+								"source": {
+									"name": "date",
+									"type": "DateTime"
+								},
+								"sink": {
+									"path": "$['date']"
+								}
+							},
+							{
+								"source": {
+									"name": "start_date",
+									"type": "DateTime"
+								},
+								"sink": {
+									"path": "$['start_date']"
+								}
+							},
+							{
+								"source": {
+									"name": "end_date",
+									"type": "DateTime"
+								},
+								"sink": {
+									"path": "$['end_date']"
+								}
+							},
+							{
+								"source": {
+									"name": "updated_at",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['updated_at']"
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
