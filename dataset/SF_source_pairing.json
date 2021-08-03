@@ -1,0 +1,22 @@
+{
+	"name": "SF_source_pairing",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure blob"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "@concat(concat('bi-pairing-',split(utcnow(),'T')[0]),'.json')",
+				"container": "sf-source-pairing"
+			}
+		},
+		"schema": {}
+	}
+}

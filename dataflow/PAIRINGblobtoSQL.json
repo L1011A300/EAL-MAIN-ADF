@@ -1,0 +1,24 @@
+{
+	"name": "PAIRINGblobtoSQL",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SF_source_pairing",
+						"type": "DatasetReference"
+					},
+					"name": "SFPairing"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "AddWrkflwIDandTS"
+				}
+			],
+			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairing\nSFPairing derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS"
+		}
+	}
+}
