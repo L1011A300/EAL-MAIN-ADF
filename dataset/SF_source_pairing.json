@@ -17,6 +17,34 @@
 				"container": "sf-source-pairing"
 			}
 		},
-		"schema": {}
+		"schema": {
+			"type": "object",
+			"properties": {
+				"pairing_id": {
+					"type": "integer"
+				},
+				"user_id": {
+					"type": "integer"
+				},
+				"position": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"date": {
+					"type": "string"
+				},
+				"start_date": {
+					"type": "string"
+				},
+				"end_date": {
+					"type": "string"
+				},
+				"updated_at": {
+					"type": "string"
+				}
+			}
+		}
 	}
 }
