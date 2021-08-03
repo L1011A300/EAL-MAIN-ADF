@@ -13,7 +13,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+				"fileName": {
+					"value": "@concat(concat('bi-user-category-',split(utcnow(),'T')[0]),'.json')",
+					"type": "Expression"
+				},
 				"container": "sf-source-user-category"
 			}
 		},
