@@ -5,9 +5,54 @@
 			"referenceName": "eal_edw_connection",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "SQL tables"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "date",
+				"type": "date"
+			},
+			{
+				"name": "end_date",
+				"type": "date"
+			},
+			{
+				"name": "name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pairing_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "position",
+				"type": "nvarchar"
+			},
+			{
+				"name": "start_date",
+				"type": "date"
+			},
+			{
+				"name": "updated_at",
+				"type": "nvarchar"
+			},
+			{
+				"name": "user_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ADF_TIMESTAMP",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "RUN_ID",
+				"type": "nvarchar"
+			}
+		],
 		"typeProperties": {
 			"schema": "dbo",
 			"table": "SF_PAIRING_PROD"
