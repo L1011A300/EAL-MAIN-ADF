@@ -1,0 +1,19 @@
+{
+	"name": "SF_source_bi_pairing",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SkedFlexConnection",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Source"
+		},
+		"annotations": [],
+		"type": "PostgreSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "bi",
+			"table": "pairing"
+		}
+	}
+}
