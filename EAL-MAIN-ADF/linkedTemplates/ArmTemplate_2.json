@@ -1192,7 +1192,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pairing_data')]",
+			"name": "[concat(parameters('factoryName'), '/Pairing_data')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
