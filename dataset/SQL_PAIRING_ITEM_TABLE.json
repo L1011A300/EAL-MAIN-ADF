@@ -10,17 +10,7 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [
-			{
-				"name": "ADF_TIMESTAMP",
-				"type": "datetime2",
-				"scale": 7
-			},
-			{
-				"name": "RUN_ID",
-				"type": "nvarchar"
-			}
-		],
+		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
 			"table": "SF_PAIRING_ITEM_PROD"
