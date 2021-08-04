@@ -1,5 +1,5 @@
 {
-	"name": "SQL_FLIGHT_OFFLINE",
+	"name": "SQL_FLIGHT_OFFLINE_TABLE",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "eal_edw_connection",
