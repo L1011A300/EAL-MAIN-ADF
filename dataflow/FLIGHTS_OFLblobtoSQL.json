@@ -22,7 +22,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "SQL_FLIGHT_OFFLINE",
+						"referenceName": "SQL_FLIGHT_OFFLINE_TABLE",
 						"type": "DatasetReference"
 					},
 					"name": "FlightToSQL"

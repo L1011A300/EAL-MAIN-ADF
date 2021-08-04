@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "SF user data to Azure blob",
+				"name": "SF pairing item data to Azure blob",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -44,56 +44,110 @@
 							},
 							{
 								"source": {
-									"name": "user_id",
-									"type": "Int32"
+									"name": "pairing_item_id",
+									"type": "Int64"
 								},
 								"sink": {
-									"path": "$['user_id']"
+									"path": "$['pairing_item_id']"
 								}
 							},
 							{
 								"source": {
-									"name": "position",
+									"name": "pairing_item_type",
 									"type": "String"
 								},
 								"sink": {
-									"path": "$['position']"
+									"path": "$['pairing_item_type']"
 								}
 							},
 							{
 								"source": {
-									"name": "name",
+									"name": "flight_id",
+									"type": "Int64"
+								},
+								"sink": {
+									"path": "$['flight_id']"
+								}
+							},
+							{
+								"source": {
+									"name": "shift_name",
 									"type": "String"
 								},
 								"sink": {
-									"path": "$['name']"
+									"path": "$['shift_name']"
 								}
 							},
 							{
 								"source": {
-									"name": "date",
-									"type": "DateTime"
+									"name": "shift_start_time",
+									"type": "String"
 								},
 								"sink": {
-									"path": "$['date']"
+									"path": "$['shift_start_time']"
 								}
 							},
 							{
 								"source": {
-									"name": "start_date",
-									"type": "DateTime"
+									"name": "shift_end_time",
+									"type": "String"
 								},
 								"sink": {
-									"path": "$['start_date']"
+									"path": "$['shift_end_time']"
 								}
 							},
 							{
 								"source": {
-									"name": "end_date",
-									"type": "DateTime"
+									"name": "shift_type",
+									"type": "String"
 								},
 								"sink": {
-									"path": "$['end_date']"
+									"path": "$['shift_type']"
+								}
+							},
+							{
+								"source": {
+									"name": "shift_is_work",
+									"type": "Boolean"
+								},
+								"sink": {
+									"path": "$['shift_is_work']"
+								}
+							},
+							{
+								"source": {
+									"name": "shift_is_reserve",
+									"type": "Boolean"
+								},
+								"sink": {
+									"path": "$['shift_is_reserve']"
+								}
+							},
+							{
+								"source": {
+									"name": "shift_is_sick",
+									"type": "Boolean"
+								},
+								"sink": {
+									"path": "$['shift_is_sick']"
+								}
+							},
+							{
+								"source": {
+									"name": "shift_is_training",
+									"type": "Boolean"
+								},
+								"sink": {
+									"path": "$['shift_is_training']"
+								}
+							},
+							{
+								"source": {
+									"name": "shift_is_vacation",
+									"type": "Boolean"
+								},
+								"sink": {
+									"path": "$['shift_is_vacation']"
 								}
 							},
 							{
@@ -126,7 +180,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "SF user data to Azure blob",
+						"activity": "SF pairing item data to Azure blob",
 						"dependencyConditions": [
 							"Succeeded"
 						]

@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "SF user data to Azure blob",
+				"name": "SF pairing data to Azure blob",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -126,7 +126,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "SF user data to Azure blob",
+						"activity": "SF pairing data to Azure blob",
 						"dependencyConditions": [
 							"Succeeded"
 						]

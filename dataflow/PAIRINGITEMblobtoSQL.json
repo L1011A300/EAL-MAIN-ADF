@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "SQL_PAIRING_ITEM",
+						"referenceName": "SQL_PAIRING_ITEM_TABLE",
 						"type": "DatasetReference"
 					},
 					"name": "PARINGITEMtoSQL"
