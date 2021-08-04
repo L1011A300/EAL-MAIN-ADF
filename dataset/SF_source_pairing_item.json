@@ -5,11 +5,19 @@
 			"referenceName": "eal_main_blob_connection",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Azure blob"
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobStorageLocation"
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat(concat('bi-pairing-item-',split(utcnow(),'T')[0]),'.json')",
+					"type": "Expression"
+				},
+				"container": "sf-source-pairingitem"
 			}
 		},
 		"schema": {}
