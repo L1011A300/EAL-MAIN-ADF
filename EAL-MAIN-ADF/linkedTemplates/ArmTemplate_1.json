@@ -856,7 +856,65 @@
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
-				"schema": [],
+				"schema": [
+					{
+						"name": "shift_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "user_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "start_time",
+						"type": "datetime"
+					},
+					{
+						"name": "end_time",
+						"type": "datetime"
+					},
+					{
+						"name": "type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_work",
+						"type": "bit"
+					},
+					{
+						"name": "is_reserve",
+						"type": "bit"
+					},
+					{
+						"name": "is_sick",
+						"type": "bit"
+					},
+					{
+						"name": "is_training",
+						"type": "bit"
+					},
+					{
+						"name": "is_vacation",
+						"type": "bit"
+					},
+					{
+						"name": "updated_at",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "SF_SHIFT_PROD"
