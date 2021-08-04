@@ -355,6 +355,70 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "date",
+						"type": "date"
+					},
+					{
+						"name": "end_date",
+						"type": "date"
+					},
+					{
+						"name": "name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pairing_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "position",
+						"type": "nvarchar"
+					},
+					{
+						"name": "start_date",
+						"type": "date"
+					},
+					{
+						"name": "updated_at",
+						"type": "nvarchar"
+					},
+					{
+						"name": "user_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_PAIRING_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQL_USER_CATEGORY_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -446,7 +510,10 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "@concat(concat('bi-pairing-',split(utcnow(),'T')[0]),'.json')",
+						"fileName": {
+							"value": "@concat(concat('bi-pairing-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
 						"container": "sf-source-pairing"
 					}
 				},
@@ -466,82 +533,18 @@
 							"type": "string"
 						},
 						"date": {
-							"type": "string"
+							"type": "date"
 						},
 						"start_date": {
-							"type": "string"
+							"type": "date"
 						},
 						"end_date": {
-							"type": "string"
+							"type": "date"
 						},
 						"updated_at": {
 							"type": "string"
 						}
 					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "date",
-						"type": "date"
-					},
-					{
-						"name": "end_date",
-						"type": "date"
-					},
-					{
-						"name": "name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "pairing_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "position",
-						"type": "nvarchar"
-					},
-					{
-						"name": "start_date",
-						"type": "date"
-					},
-					{
-						"name": "updated_at",
-						"type": "nvarchar"
-					},
-					{
-						"name": "user_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ADF_TIMESTAMP",
-						"type": "datetime2",
-						"scale": 7
-					},
-					{
-						"name": "RUN_ID",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_PAIRING_PROD"
 				}
 			},
 			"dependsOn": []
@@ -849,6 +852,44 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PAIRINGblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_pairing",
+								"type": "DatasetReference"
+							},
+							"name": "SFPairing"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_PAIRING_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "PARINGtoSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tpairing_id as string,\n\t\tuser_id as string,\n\t\tposition as string,\n\t\tname as string,\n\t\tdate as string,\n\t\tstart_date as string,\n\t\tend_date as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairing\nSFPairing derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tdate as date,\n\t\tend_date as date,\n\t\tname as string,\n\t\tpairing_id as string,\n\t\tposition as string,\n\t\tstart_date as date,\n\t\tupdated_at as string,\n\t\tuser_id as string,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tdate,\n\t\tend_date,\n\t\tname,\n\t\tpairing_id,\n\t\tposition,\n\t\tstart_date,\n\t\tupdated_at,\n\t\tuser_id,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t)) ~> PARINGtoSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_pairing')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_PAIRING_TABLE')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/USERCATEGORYblobtoSQL')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -920,44 +961,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PAIRINGblobtoSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SF_source_pairing",
-								"type": "DatasetReference"
-							},
-							"name": "SFPairing"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_PAIRING_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "PARINGtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tpairing_id as string,\n\t\tuser_id as string,\n\t\tposition as string,\n\t\tname as string,\n\t\tdate as string,\n\t\tstart_date as string,\n\t\tend_date as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairing\nSFPairing derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tdate as date,\n\t\tend_date as date,\n\t\tname as string,\n\t\tpairing_id as string,\n\t\tposition as string,\n\t\tstart_date as date,\n\t\tupdated_at as string,\n\t\tuser_id as string,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tdate,\n\t\tend_date,\n\t\tname,\n\t\tpairing_id,\n\t\tposition,\n\t\tstart_date,\n\t\tupdated_at,\n\t\tuser_id,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t)) ~> PARINGtoSQL"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_pairing')]",
-				"[concat(variables('factoryId'), '/datasets/SQL_PAIRING_TABLE')]"
 			]
 		},
 		{
