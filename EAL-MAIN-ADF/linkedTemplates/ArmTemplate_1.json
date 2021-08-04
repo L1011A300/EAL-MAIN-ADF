@@ -13,6 +13,177 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_user_category')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-user-category-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-user-category"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"user_id": {
+							"type": "integer"
+						},
+						"category_type": {
+							"type": "string"
+						},
+						"effective_start": {
+							"type": "string"
+						},
+						"effective_end": {
+							"type": "null"
+						},
+						"base_icao_code": {
+							"type": "string"
+						},
+						"base_iata_code": {
+							"type": "string"
+						},
+						"base_faa_code": {
+							"type": "string"
+						},
+						"base_name": {
+							"type": "string"
+						},
+						"equipment_group_name": {
+							"type": "string"
+						},
+						"equipment_group_code": {
+							"type": "string"
+						},
+						"position_name": {
+							"type": "string"
+						},
+						"position_code": {
+							"type": "string"
+						},
+						"updated_at": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_AIRPORT_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "iata_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "icao_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "faa_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "airport_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "city_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "state_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "country_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "weather_zone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "latitude",
+						"type": "float"
+					},
+					{
+						"name": "longitude",
+						"type": "float"
+					},
+					{
+						"name": "elevation_feet",
+						"type": "smallint"
+					},
+					{
+						"name": "iana_timezone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_base",
+						"type": "bit"
+					},
+					{
+						"name": "base_initial",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_active",
+						"type": "bit"
+					},
+					{
+						"name": "is_deleted",
+						"type": "bit"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_AIRPORT_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQL_DELAYS_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -137,7 +308,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_OFFLINE')]",
+			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_OFFLINE_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -355,6 +526,28 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_ITEM_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_PAIRING_ITEM_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -494,112 +687,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_pairing')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-pairing-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-pairing"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"pairing_id": {
-							"type": "integer"
-						},
-						"user_id": {
-							"type": "integer"
-						},
-						"position": {
-							"type": "string"
-						},
-						"name": {
-							"type": "string"
-						},
-						"date": {
-							"type": "date"
-						},
-						"start_date": {
-							"type": "date"
-						},
-						"end_date": {
-							"type": "date"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_pairing_item')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-pairing-item-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-pairingitem"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_ITEM')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_PAIRING_ITEM_PROD"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHD trigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -665,7 +752,9 @@
 					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tairport_id as string,\n\t\tiata_code as string,\n\t\ticao_code as string,\n\t\tfaa_code as string,\n\t\tairport_name as string,\n\t\tcity_name as string,\n\t\tstate_code as string,\n\t\tcountry_code as string,\n\t\tweather_zone as string,\n\t\tlatitude as string,\n\t\tlongitude as string,\n\t\televation_feet as string,\n\t\tiana_timezone as string,\n\t\tis_base as boolean,\n\t\tbase_initial as string,\n\t\tis_active as boolean,\n\t\tis_deleted as boolean\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFAirport\nSFAirport derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tairport_id as string,\n\t\tiata_code as string,\n\t\ticao_code as string,\n\t\tfaa_code as string,\n\t\tairport_name as string,\n\t\tcity_name as string,\n\t\tstate_code as string,\n\t\tcountry_code as string,\n\t\tweather_zone as string,\n\t\tlatitude as double,\n\t\tlongitude as double,\n\t\televation_feet as integer,\n\t\tiana_timezone as string,\n\t\tis_base as boolean,\n\t\tbase_initial as string,\n\t\tis_active as boolean,\n\t\tis_deleted as boolean,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> AIRPORTtoSQL"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SQL_AIRPORT_TABLE')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DELAYSblobtoSQL')]",
@@ -767,7 +856,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "SQL_FLIGHT_OFFLINE",
+								"referenceName": "SQL_FLIGHT_OFFLINE_TABLE",
 								"type": "DatasetReference"
 							},
 							"name": "FlightToSQL"
@@ -809,7 +898,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SQL_FLIGHT_OFFLINE')]"
+				"[concat(variables('factoryId'), '/datasets/SQL_FLIGHT_OFFLINE_TABLE')]"
 			]
 		},
 		{
@@ -902,6 +991,43 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PAIRINGITEMblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_pairing_item",
+								"type": "DatasetReference"
+							},
+							"name": "SFPairingItem"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_PAIRING_ITEM_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "PARINGITEMtoSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairingItem\nSFPairingItem derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t)) ~> PARINGITEMtoSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SQL_PAIRING_ITEM_TABLE')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PAIRINGblobtoSQL')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -935,7 +1061,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_pairing')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_PAIRING_TABLE')]"
 			]
 		},
@@ -973,44 +1098,8 @@
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_user_category')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_CATEGORY_TABLE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/USERblobtoSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SF_source_user",
-								"type": "DatasetReference"
-							},
-							"name": "SFUser"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_USER_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "USERtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFUser\nSFUser derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> USERtoSQL"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
 			]
 		}
 	]

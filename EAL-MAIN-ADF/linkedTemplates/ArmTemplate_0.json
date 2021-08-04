@@ -651,6 +651,94 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_pairing')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-pairing-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-pairing"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"pairing_id": {
+							"type": "integer"
+						},
+						"user_id": {
+							"type": "integer"
+						},
+						"position": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"date": {
+							"type": "date"
+						},
+						"start_date": {
+							"type": "date"
+						},
+						"end_date": {
+							"type": "date"
+						},
+						"updated_at": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_pairing_item')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-pairing-item-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-pairingitem"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_user')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -678,181 +766,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_user_category')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-user-category-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-user-category"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"user_id": {
-							"type": "integer"
-						},
-						"category_type": {
-							"type": "string"
-						},
-						"effective_start": {
-							"type": "string"
-						},
-						"effective_end": {
-							"type": "null"
-						},
-						"base_icao_code": {
-							"type": "string"
-						},
-						"base_iata_code": {
-							"type": "string"
-						},
-						"base_faa_code": {
-							"type": "string"
-						},
-						"base_name": {
-							"type": "string"
-						},
-						"equipment_group_name": {
-							"type": "string"
-						},
-						"equipment_group_code": {
-							"type": "string"
-						},
-						"position_name": {
-							"type": "string"
-						},
-						"position_code": {
-							"type": "string"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_AIRPORT_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "iata_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "icao_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "faa_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "airport_name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "city_name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "state_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "country_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "weather_zone",
-						"type": "nvarchar"
-					},
-					{
-						"name": "latitude",
-						"type": "float"
-					},
-					{
-						"name": "longitude",
-						"type": "float"
-					},
-					{
-						"name": "elevation_feet",
-						"type": "smallint"
-					},
-					{
-						"name": "iana_timezone",
-						"type": "nvarchar"
-					},
-					{
-						"name": "is_base",
-						"type": "bit"
-					},
-					{
-						"name": "base_initial",
-						"type": "nvarchar"
-					},
-					{
-						"name": "is_active",
-						"type": "bit"
-					},
-					{
-						"name": "is_deleted",
-						"type": "bit"
-					},
-					{
-						"name": "ADF_TIMESTAMP",
-						"type": "datetime2",
-						"scale": 7
-					},
-					{
-						"name": "RUN_ID",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_AIRPORT_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
 			]
 		}
 	]

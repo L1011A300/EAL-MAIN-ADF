@@ -1,0 +1,568 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "EAL-MAIN-ADF"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Pairing_Item_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF pairing item data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "pairing_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['pairing_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "pairing_item_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['pairing_item_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "pairing_item_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['pairing_item_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "flight_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['flight_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_start_time",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_start_time']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_end_time",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_end_time']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_work",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_work']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_reserve",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_reserve']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_sick",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_sick']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_training",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_training']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_vacation",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_vacation']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_pairing_item",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_pairing_item",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "PAIRINGITEMblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF pairing item data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "PAIRINGITEMblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								}
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/PAIRINGITEMblobtoSQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Pairing_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF pairing data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "pairing_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['pairing_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "user_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['user_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "position",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['position']"
+										}
+									},
+									{
+										"source": {
+											"name": "name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['name']"
+										}
+									},
+									{
+										"source": {
+											"name": "date",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date']"
+										}
+									},
+									{
+										"source": {
+											"name": "start_date",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['start_date']"
+										}
+									},
+									{
+										"source": {
+											"name": "end_date",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['end_date']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_pairing",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_pairing",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "PAIRINGblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF pairing data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "PAIRINGblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								}
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_OFFLINE_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SQL_FLIGHT_OFFLINE_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_ITEM_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_PAIRING_ITEM_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FLIGHTS_OFLblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_flights",
+								"type": "DatasetReference"
+							},
+							"name": "SFFlight"
+						},
+						{
+							"dataset": {
+								"referenceName": "SF_source_airport",
+								"type": "DatasetReference"
+							},
+							"name": "AirportReferenceJSON"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_FLIGHT_OFFLINE_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "FlightToSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						},
+						{
+							"name": "AircraftTYPEfilter"
+						},
+						{
+							"name": "PareAirportReference"
+						},
+						{
+							"name": "SchdDepAirportLookup"
+						},
+						{
+							"name": "UpdateSchdDepAirportCode"
+						},
+						{
+							"name": "RemoveSchdDepAirportCols"
+						},
+						{
+							"name": "SchdArrAirportLookup"
+						},
+						{
+							"name": "UpdateSchdArrAirportCode"
+						},
+						{
+							"name": "RemoveSchArrAirportCols"
+						},
+						{
+							"name": "RemoveOOOIcolumns"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tflight_id as string,\n\t\tflight_number as string,\n\t\tflight_date as string,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tops_type as string,\n\t\tscheduled_departure as string,\n\t\tscheduled_arrival as string,\n\t\testimated_departure as string,\n\t\testimated_arrival as string,\n\t\tactual_oooi_out as string,\n\t\tactual_oooi_off as string,\n\t\tactual_oooi_on as string,\n\t\tactual_oooi_in as string,\n\t\tbase_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tsched_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_arrive_airport_id as string,\n\t\tbase_airport as string,\n\t\tscheduled_departure_airport as string,\n\t\tscheduled_arrival_airport as string,\n\t\tactual_departure_airport as string,\n\t\tactual_arrival_airport as string,\n\t\tis_verified as boolean,\n\t\tnotes as string,\n\t\tis_canceled as boolean,\n\t\tflight_type as string,\n\t\tcargo_weight as string,\n\t\tcargo_on as string,\n\t\tcargo_off as string,\n\t\tfuel_out as string,\n\t\tfuel_in as string,\n\t\tfuel_uplift as string,\n\t\tfuel_uplifts as string,\n\t\tmaint_log_page as string,\n\t\tlndg_touchdown_zone as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_actual_braking as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine',\n\tdateFormats: ['yyyy-MM-dd'],\n\ttimestampFormats: ['yyyy-MM-dd\\'T\\'HH:mm:ss'],\n\tpreferredIntegralType: 'integer',\n\tpreferredFractionalType: 'decimal') ~> SFFlight\nsource(output(\n\t\tairport_id as string,\n\t\tiata_code as string,\n\t\ticao_code as string,\n\t\tfaa_code as string,\n\t\tairport_name as string,\n\t\tcity_name as string,\n\t\tstate_code as string,\n\t\tcountry_code as string,\n\t\tweather_zone as string,\n\t\tlatitude as string,\n\t\tlongitude as string,\n\t\televation_feet as string,\n\t\tiana_timezone as string,\n\t\tis_base as boolean,\n\t\tbase_initial as string,\n\t\tis_active as boolean,\n\t\tis_deleted as boolean\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> AirportReferenceJSON\nSFFlight derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nRemoveOOOIcolumns filter(aircraft_type <=> 'OFL') ~> AircraftTYPEfilter\nAirportReferenceJSON select(mapColumn(\n\t\tairport_id,\n\t\tiata_code,\n\t\ticao_code,\n\t\tfaa_code\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> PareAirportReference\nAircraftTYPEfilter, PareAirportReference lookup(sched_depart_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> SchdDepAirportLookup\nSchdDepAirportLookup derive(scheduled_departure_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateSchdDepAirportCode\nUpdateSchdDepAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tbase_airport,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveSchdDepAirportCols\nRemoveSchdDepAirportCols, PareAirportReference lookup(sched_arrive_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> SchdArrAirportLookup\nSchdArrAirportLookup derive(scheduled_arrival_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateSchdArrAirportCode\nUpdateSchdArrAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tbase_airport,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveSchArrAirportCols\nAddWrkflwIDandTS select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tbase_airport,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveOOOIcolumns\nRemoveSchArrAirportCols sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FlightToSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SQL_FLIGHT_OFFLINE_TABLE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PAIRINGITEMblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_pairing_item",
+								"type": "DatasetReference"
+							},
+							"name": "SFPairingItem"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_PAIRING_ITEM_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "PARINGITEMtoSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairingItem\nSFPairingItem derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t)) ~> PARINGITEMtoSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SQL_PAIRING_ITEM_TABLE')]"
+			]
+		}
+	]
+}

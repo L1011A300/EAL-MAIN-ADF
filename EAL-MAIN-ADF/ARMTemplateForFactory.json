@@ -879,13 +879,250 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Pairing_Item_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF pairing item data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "pairing_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['pairing_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "pairing_item_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['pairing_item_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "pairing_item_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['pairing_item_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "flight_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['flight_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_start_time",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_start_time']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_end_time",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_end_time']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_work",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_work']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_reserve",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_reserve']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_sick",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_sick']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_training",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_training']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_vacation",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_vacation']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_pairing_item",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_pairing_item",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "PAIRINGITEMblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF pairing item data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "PAIRINGITEMblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFPairingItem": {},
+									"PARINGITEMtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_bi_pairing_item')]",
+				"[concat(variables('factoryId'), '/datasets/SF_source_pairing_item')]",
+				"[concat(variables('factoryId'), '/dataflows/PAIRINGITEMblobtoSQL')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Pairing_data')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "SF user data to Azure blob",
+						"name": "SF pairing data to Azure blob",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -1010,7 +1247,7 @@
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
-								"activity": "SF user data to Azure blob",
+								"activity": "SF pairing data to Azure blob",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2135,6 +2372,94 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_pairing')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-pairing-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-pairing"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"pairing_id": {
+							"type": "integer"
+						},
+						"user_id": {
+							"type": "integer"
+						},
+						"position": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"date": {
+							"type": "date"
+						},
+						"start_date": {
+							"type": "date"
+						},
+						"end_date": {
+							"type": "date"
+						},
+						"updated_at": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_pairing_item')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-pairing-item-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-pairingitem"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_user')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2468,7 +2793,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_OFFLINE')]",
+			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_OFFLINE_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2683,6 +3008,30 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "SF_FLIGHT_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_ITEM_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_PAIRING_ITEM_PROD"
 				}
 			},
 			"dependsOn": [
@@ -3272,7 +3621,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "SQL_FLIGHT_OFFLINE",
+								"referenceName": "SQL_FLIGHT_OFFLINE_TABLE",
 								"type": "DatasetReference"
 							},
 							"name": "FlightToSQL"
@@ -3316,7 +3665,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_flights')]",
 				"[concat(variables('factoryId'), '/datasets/SF_source_airport')]",
-				"[concat(variables('factoryId'), '/datasets/SQL_FLIGHT_OFFLINE')]"
+				"[concat(variables('factoryId'), '/datasets/SQL_FLIGHT_OFFLINE_TABLE')]"
 			]
 		},
 		{
@@ -3408,6 +3757,44 @@
 				"[concat(variables('factoryId'), '/datasets/SF_source_flights')]",
 				"[concat(variables('factoryId'), '/datasets/SF_source_airport')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_FLIGHT_TABLE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PAIRINGITEMblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_pairing_item",
+								"type": "DatasetReference"
+							},
+							"name": "SFPairingItem"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_PAIRING_ITEM_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "PARINGITEMtoSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairingItem\nSFPairingItem derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t)) ~> PARINGITEMtoSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_pairing_item')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_PAIRING_ITEM_TABLE')]"
 			]
 		},
 		{
@@ -3522,339 +3909,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_pairing')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-pairing-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-pairing"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"pairing_id": {
-							"type": "integer"
-						},
-						"user_id": {
-							"type": "integer"
-						},
-						"position": {
-							"type": "string"
-						},
-						"name": {
-							"type": "string"
-						},
-						"date": {
-							"type": "date"
-						},
-						"start_date": {
-							"type": "date"
-						},
-						"end_date": {
-							"type": "date"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Pairing_Item_data')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "SF user data to Azure blob",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "PostgreSqlSource"
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": false,
-							"validateDataConsistency": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "pairing_id",
-											"type": "Int64"
-										},
-										"sink": {
-											"path": "$['pairing_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "user_id",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['user_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "position",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['position']"
-										}
-									},
-									{
-										"source": {
-											"name": "name",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['name']"
-										}
-									},
-									{
-										"source": {
-											"name": "date",
-											"type": "DateTime"
-										},
-										"sink": {
-											"path": "$['date']"
-										}
-									},
-									{
-										"source": {
-											"name": "start_date",
-											"type": "DateTime"
-										},
-										"sink": {
-											"path": "$['start_date']"
-										}
-									},
-									{
-										"source": {
-											"name": "end_date",
-											"type": "DateTime"
-										},
-										"sink": {
-											"path": "$['end_date']"
-										}
-									},
-									{
-										"source": {
-											"name": "updated_at",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['updated_at']"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SF_source_bi_pairing_item",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SF_source_pairing_item",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "PAIRINGITEMblobtoSQL",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "SF user data to Azure blob",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "PAIRINGITEMblobtoSQL",
-								"type": "DataFlowReference",
-								"parameters": {
-									"run_id": {
-										"value": "'@{pipeline().RunId}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"SFPairingItem": {},
-									"PARINGITEMtoSQL": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"variables": {
-					"date": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_bi_pairing_item')]",
-				"[concat(variables('factoryId'), '/datasets/SF_source_pairing_item')]",
-				"[concat(variables('factoryId'), '/dataflows/PAIRINGITEMblobtoSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PAIRINGITEMblobtoSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SF_source_pairing_item",
-								"type": "DatasetReference"
-							},
-							"name": "SFPairingItem"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_PAIRING_ITEM",
-								"type": "DatasetReference"
-							},
-							"name": "PARINGITEMtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairingItem\nSFPairingItem derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t)) ~> PARINGITEMtoSQL"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_pairing_item')]",
-				"[concat(variables('factoryId'), '/datasets/SQL_PAIRING_ITEM')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_pairing_item')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-pairing-item-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-pairingitem"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_ITEM')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_PAIRING_ITEM_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
 			]
 		}
 	]
