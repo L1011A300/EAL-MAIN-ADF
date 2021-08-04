@@ -1,5 +1,5 @@
 {
-	"name": "SQL_PAIRING_ITEM",
+	"name": "SQL_PAIRING_ITEM_TABLE",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "eal_edw_connection",
