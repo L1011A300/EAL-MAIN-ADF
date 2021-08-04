@@ -1,0 +1,32 @@
+{
+	"name": "PAIRINGITEMblobtoSQL",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SF_source_pairing_item",
+						"type": "DatasetReference"
+					},
+					"name": "SFPairingItem"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SQL_PAIRING_ITEM",
+						"type": "DatasetReference"
+					},
+					"name": "PARINGITEMtoSQL"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AddWrkflwIDandTS"
+				}
+			],
+			"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairingItem\nSFPairingItem derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t)) ~> PARINGITEMtoSQL"
+		}
+	}
+}
