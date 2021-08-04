@@ -1,0 +1,32 @@
+{
+	"name": "SHIFTblobtoSQL",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SF_source_shift",
+						"type": "DatasetReference"
+					},
+					"name": "SFShift"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SQL_SHIFT_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "SHIFTtoSQL"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AddWrkflwIDandTS"
+				}
+			],
+			"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tshift_id as string,\n\t\tuser_id as string,\n\t\tname as string,\n\t\tstart_time as string,\n\t\tend_time as string,\n\t\ttype as string,\n\t\tis_work as boolean,\n\t\tis_reserve as boolean,\n\t\tis_sick as boolean,\n\t\tis_training as boolean,\n\t\tis_vacation as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFShift\nSFShift derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> SHIFTtoSQL"
+		}
+	}
+}
