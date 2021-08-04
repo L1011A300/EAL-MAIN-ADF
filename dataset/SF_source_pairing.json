@@ -13,7 +13,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "@concat(concat('bi-pairing-',split(utcnow(),'T')[0]),'.json')",
+				"fileName": {
+					"value": "@concat(concat('bi-pairing-',split(utcnow(),'T')[0]),'.json')",
+					"type": "Expression"
+				},
 				"container": "sf-source-pairing"
 			}
 		},
@@ -33,13 +36,13 @@
 					"type": "string"
 				},
 				"date": {
-					"type": "string"
+					"type": "date"
 				},
 				"start_date": {
-					"type": "string"
+					"type": "date"
 				},
 				"end_date": {
-					"type": "string"
+					"type": "date"
 				},
 				"updated_at": {
 					"type": "string"
