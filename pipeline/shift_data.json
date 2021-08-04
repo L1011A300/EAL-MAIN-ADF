@@ -29,7 +29,120 @@
 					},
 					"enableStaging": false,
 					"enableSkipIncompatibleRow": false,
-					"validateDataConsistency": false
+					"validateDataConsistency": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "shift_id",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['shift_id']"
+								}
+							},
+							{
+								"source": {
+									"name": "user_id",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['user_id']"
+								}
+							},
+							{
+								"source": {
+									"name": "name",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['name']"
+								}
+							},
+							{
+								"source": {
+									"name": "start_time",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['start_time']"
+								}
+							},
+							{
+								"source": {
+									"name": "end_time",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['end_time']"
+								}
+							},
+							{
+								"source": {
+									"name": "type",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['type']"
+								}
+							},
+							{
+								"source": {
+									"name": "is_work",
+									"type": "Boolean"
+								},
+								"sink": {
+									"path": "$['is_work']"
+								}
+							},
+							{
+								"source": {
+									"name": "is_reserve",
+									"type": "Boolean"
+								},
+								"sink": {
+									"path": "$['is_reserve']"
+								}
+							},
+							{
+								"source": {
+									"name": "is_sick",
+									"type": "Boolean"
+								},
+								"sink": {
+									"path": "$['is_sick']"
+								}
+							},
+							{
+								"source": {
+									"name": "is_training",
+									"type": "Boolean"
+								},
+								"sink": {
+									"path": "$['is_training']"
+								}
+							},
+							{
+								"source": {
+									"name": "is_vacation",
+									"type": "Boolean"
+								},
+								"sink": {
+									"path": "$['is_vacation']"
+								}
+							},
+							{
+								"source": {
+									"name": "updated_at",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['updated_at']"
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
