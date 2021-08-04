@@ -753,6 +753,78 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_bi_shift')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SkedFlexConnection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "bi",
+					"table": "shift"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_shift')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-shift-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-shift"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_SHIFT_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_SHIFT_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHD trigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -1054,118 +1126,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SQL_FLIGHT_TABLE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PAIRINGITEMblobtoSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SF_source_pairing_item",
-								"type": "DatasetReference"
-							},
-							"name": "SFPairingItem"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_PAIRING_ITEM_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "PARINGITEMtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tpairing_id as string,\n\t\tpairing_item_id as string,\n\t\tpairing_item_type as string,\n\t\tflight_id as string,\n\t\tshift_name as string,\n\t\tshift_start_time as string,\n\t\tshift_end_time as string,\n\t\tshift_type as string,\n\t\tshift_is_work as boolean,\n\t\tshift_is_reserve as boolean,\n\t\tshift_is_sick as boolean,\n\t\tshift_is_training as boolean,\n\t\tshift_is_vacation as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairingItem\nSFPairingItem derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tpairing_id as string,\n\t\tpairing_item_id as string,\n\t\tpairing_item_type as string,\n\t\tflight_id as string,\n\t\tshift_name as string,\n\t\tshift_start_time as timestamp,\n\t\tshift_end_time as timestamp,\n\t\tshift_type as string,\n\t\tshift_is_work as boolean,\n\t\tshift_is_reserve as boolean,\n\t\tshift_is_sick as boolean,\n\t\tshift_is_training as boolean,\n\t\tshift_is_vacation as boolean,\n\t\tupdated_at as timestamp,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> PARINGITEMtoSQL"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SQL_PAIRING_ITEM_TABLE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PAIRINGblobtoSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SF_source_pairing",
-								"type": "DatasetReference"
-							},
-							"name": "SFPairing"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_PAIRING_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "PARINGtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tpairing_id as string,\n\t\tuser_id as string,\n\t\tposition as string,\n\t\tname as string,\n\t\tdate as string,\n\t\tstart_date as string,\n\t\tend_date as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairing\nSFPairing derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tdate as date,\n\t\tend_date as date,\n\t\tname as string,\n\t\tpairing_id as string,\n\t\tposition as string,\n\t\tstart_date as date,\n\t\tupdated_at as string,\n\t\tuser_id as string,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tdate,\n\t\tend_date,\n\t\tname,\n\t\tpairing_id,\n\t\tposition,\n\t\tstart_date,\n\t\tupdated_at,\n\t\tuser_id,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t)) ~> PARINGtoSQL"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SQL_PAIRING_TABLE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/USERCATEGORYblobtoSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SF_source_user_category",
-								"type": "DatasetReference"
-							},
-							"name": "SFUserCategory"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_USER_CATEGORY_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "USERCATEGORYtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tuser_id as string,\n\t\tcategory_type as string,\n\t\teffective_start as string,\n\t\teffective_end as string,\n\t\tbase_icao_code as string,\n\t\tbase_iata_code as string,\n\t\tbase_faa_code as string,\n\t\tbase_name as string,\n\t\tequipment_group_name as string,\n\t\tequipment_group_code as string,\n\t\tposition_name as string,\n\t\tposition_code as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFUserCategory\nSFUserCategory derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> USERCATEGORYtoSQL"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_user_category')]",
-				"[concat(variables('factoryId'), '/datasets/SQL_USER_CATEGORY_TABLE')]"
 			]
 		}
 	]
