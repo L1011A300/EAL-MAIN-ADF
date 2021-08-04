@@ -3061,30 +3061,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_ITEM_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_PAIRING_ITEM_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -3835,7 +3811,7 @@
 							"name": "AddWrkflwIDandTS"
 						}
 					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tpairing_id as string,\n\t\tpairing_item_id as string,\n\t\tpairing_item_type as string,\n\t\tflight_id as string,\n\t\tshift_name as string,\n\t\tshift_start_time as string,\n\t\tshift_end_time as string,\n\t\tshift_type as string,\n\t\tshift_is_work as boolean,\n\t\tshift_is_reserve as boolean,\n\t\tshift_is_sick as boolean,\n\t\tshift_is_training as boolean,\n\t\tshift_is_vacation as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairingItem\nSFPairingItem derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> PARINGITEMtoSQL"
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tpairing_id as string,\n\t\tpairing_item_id as string,\n\t\tpairing_item_type as string,\n\t\tflight_id as string,\n\t\tshift_name as string,\n\t\tshift_start_time as string,\n\t\tshift_end_time as string,\n\t\tshift_type as string,\n\t\tshift_is_work as boolean,\n\t\tshift_is_reserve as boolean,\n\t\tshift_is_sick as boolean,\n\t\tshift_is_training as boolean,\n\t\tshift_is_vacation as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairingItem\nSFPairingItem derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tpairing_id as string,\n\t\tpairing_item_id as string,\n\t\tpairing_item_type as string,\n\t\tflight_id as string,\n\t\tshift_name as string,\n\t\tshift_start_time as timestamp,\n\t\tshift_end_time as timestamp,\n\t\tshift_type as string,\n\t\tshift_is_work as boolean,\n\t\tshift_is_reserve as boolean,\n\t\tshift_is_sick as boolean,\n\t\tshift_is_training as boolean,\n\t\tshift_is_vacation as boolean,\n\t\tupdated_at as timestamp,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> PARINGITEMtoSQL"
 				}
 			},
 			"dependsOn": [
@@ -3955,6 +3931,96 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_ITEM_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "pairing_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pairing_item_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pairing_item_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "flight_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "shift_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "shift_start_time",
+						"type": "datetime"
+					},
+					{
+						"name": "shift_end_time",
+						"type": "datetime"
+					},
+					{
+						"name": "shift_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "shift_is_work",
+						"type": "bit"
+					},
+					{
+						"name": "shift_is_reserve",
+						"type": "bit"
+					},
+					{
+						"name": "shift_is_sick",
+						"type": "bit"
+					},
+					{
+						"name": "shift_is_training",
+						"type": "bit"
+					},
+					{
+						"name": "shift_is_vacation",
+						"type": "bit"
+					},
+					{
+						"name": "updated_at",
+						"type": "datetime"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_PAIRING_ITEM_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
 			]
 		}
 	]
