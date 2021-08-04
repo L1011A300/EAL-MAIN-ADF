@@ -122,7 +122,7 @@
 				]
 			},
 			{
-				"name": "PAIRINGblobtoSQL",
+				"name": "PAIRINGITEMblobtoSQL",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
@@ -142,7 +142,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "PAIRINGblobtoSQL",
+						"referenceName": "PAIRINGITEMblobtoSQL",
 						"type": "DataFlowReference",
 						"parameters": {
 							"run_id": {
