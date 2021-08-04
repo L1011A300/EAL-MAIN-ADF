@@ -43,43 +43,6 @@
 						"type": "DatasetReference"
 					}
 				]
-			},
-			{
-				"name": "USERblobtoSQL",
-				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "SF shift data to Azure blob",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "1.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataflow": {
-						"referenceName": "USERblobtoSQL",
-						"type": "DataFlowReference",
-						"parameters": {
-							"run_id": {
-								"value": "'@{pipeline().RunId}'",
-								"type": "Expression"
-							}
-						}
-					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					},
-					"traceLevel": "Fine"
-				}
 			}
 		],
 		"variables": {

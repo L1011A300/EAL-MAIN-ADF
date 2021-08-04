@@ -1,0 +1,19 @@
+{
+	"name": "SQL_SHIFT_TABLE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_edw_connection",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SQL tables"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "SF_SHIFT_PROD"
+		}
+	}
+}
