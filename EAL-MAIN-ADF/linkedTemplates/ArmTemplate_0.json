@@ -732,7 +732,53 @@
 						"container": "sf-source-pairingitem"
 					}
 				},
-				"schema": {}
+				"schema": {
+					"type": "object",
+					"properties": {
+						"pairing_id": {
+							"type": "integer"
+						},
+						"pairing_item_id": {
+							"type": "integer"
+						},
+						"pairing_item_type": {
+							"type": "string"
+						},
+						"flight_id": {
+							"type": "null"
+						},
+						"shift_name": {
+							"type": "string"
+						},
+						"shift_start_time": {
+							"type": "string"
+						},
+						"shift_end_time": {
+							"type": "string"
+						},
+						"shift_type": {
+							"type": "string"
+						},
+						"shift_is_work": {
+							"type": "boolean"
+						},
+						"shift_is_reserve": {
+							"type": "boolean"
+						},
+						"shift_is_sick": {
+							"type": "boolean"
+						},
+						"shift_is_training": {
+							"type": "boolean"
+						},
+						"shift_is_vacation": {
+							"type": "boolean"
+						},
+						"updated_at": {
+							"type": "string"
+						}
+					}
+				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
