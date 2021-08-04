@@ -10,7 +10,73 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "pairing_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pairing_item_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pairing_item_type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "flight_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "shift_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "shift_start_time",
+				"type": "datetime"
+			},
+			{
+				"name": "shift_end_time",
+				"type": "datetime"
+			},
+			{
+				"name": "shift_type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "shift_is_work",
+				"type": "bit"
+			},
+			{
+				"name": "shift_is_reserve",
+				"type": "bit"
+			},
+			{
+				"name": "shift_is_sick",
+				"type": "bit"
+			},
+			{
+				"name": "shift_is_training",
+				"type": "bit"
+			},
+			{
+				"name": "shift_is_vacation",
+				"type": "bit"
+			},
+			{
+				"name": "updated_at",
+				"type": "datetime"
+			},
+			{
+				"name": "ADF_TIMESTAMP",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "RUN_ID",
+				"type": "nvarchar"
+			}
+		],
 		"typeProperties": {
 			"schema": "dbo",
 			"table": "SF_PAIRING_ITEM_PROD"
