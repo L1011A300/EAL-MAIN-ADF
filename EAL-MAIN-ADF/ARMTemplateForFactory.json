@@ -3074,17 +3074,7 @@
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "ADF_TIMESTAMP",
-						"type": "datetime2",
-						"scale": 7
-					},
-					{
-						"name": "RUN_ID",
-						"type": "nvarchar"
-					}
-				],
+				"schema": [],
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "SF_PAIRING_ITEM_PROD"
@@ -3845,7 +3835,7 @@
 							"name": "AddWrkflwIDandTS"
 						}
 					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tpairing_id as string,\n\t\tpairing_item_id as string,\n\t\tpairing_item_type as string,\n\t\tflight_id as string,\n\t\tshift_name as string,\n\t\tshift_start_time as string,\n\t\tshift_end_time as string,\n\t\tshift_type as string,\n\t\tshift_is_work as boolean,\n\t\tshift_is_reserve as boolean,\n\t\tshift_is_sick as boolean,\n\t\tshift_is_training as boolean,\n\t\tshift_is_vacation as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairingItem\nSFPairingItem derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> PARINGITEMtoSQL"
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tpairing_id as string,\n\t\tpairing_item_id as string,\n\t\tpairing_item_type as string,\n\t\tflight_id as string,\n\t\tshift_name as string,\n\t\tshift_start_time as string,\n\t\tshift_end_time as string,\n\t\tshift_type as string,\n\t\tshift_is_work as boolean,\n\t\tshift_is_reserve as boolean,\n\t\tshift_is_sick as boolean,\n\t\tshift_is_training as boolean,\n\t\tshift_is_vacation as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairingItem\nSFPairingItem derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> PARINGITEMtoSQL"
 				}
 			},
 			"dependsOn": [
