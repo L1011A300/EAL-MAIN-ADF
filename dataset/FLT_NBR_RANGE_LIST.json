@@ -1,0 +1,12 @@
+{
+	"name": "FLT_NBR_RANGE_LIST",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SharePointOnlineList1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SharePointOnlineListResource",
+		"schema": []
+	}
+}
