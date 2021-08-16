@@ -1028,18 +1028,18 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DELAYS trigger 630 am')]",
+			"name": "[concat(parameters('factoryName'), '/DELAYS trigger 7am')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 6:30 a.m. EDT",
+				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 7 a.m. EDT",
 				"annotations": [],
 				"runtimeState": "Stopped",
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
 					"interval": 24,
-					"startTime": "2021-08-16T10:30:00Z",
+					"startTime": "2021-06-28T11:00:00Z",
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
@@ -1050,7 +1050,7 @@
 						{
 							"type": "TumblingWindowTriggerDependencyReference",
 							"referenceTrigger": {
-								"referenceName": "AIRPORT trigger 630 am",
+								"referenceName": "AIRPORT trigger 7am",
 								"type": "TriggerReference"
 							}
 						}
@@ -1091,40 +1091,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHD trigger 630 am')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 6:30 a.m.",
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"type": "TumblingWindowTrigger",
-				"typeProperties": {
-					"frequency": "Hour",
-					"interval": 24,
-					"startTime": "2021-08-16T10:30:00Z",
-					"delay": "00:00:00",
-					"maxConcurrency": 50,
-					"retryPolicy": {
-						"count": 5,
-						"intervalInSeconds": 240
-					},
-					"dependsOn": [
-						{
-							"type": "TumblingWindowTriggerDependencyReference",
-							"referenceTrigger": {
-								"referenceName": "DELAYS trigger 630 am",
-								"type": "TriggerReference"
-							}
-						}
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/triggers/DELAYS trigger 630 am')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHD trigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -1155,6 +1121,40 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/triggers/DELAYS trigger')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHED trigger 7am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 7 a.m.",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-06-28T11:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"count": 5,
+						"intervalInSeconds": 240
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "DELAYS trigger 7am",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/triggers/DELAYS trigger 7am')]"
 			]
 		},
 		{

@@ -3746,6 +3746,13 @@
 				"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table at 6:30 a.m. EDT",
 				"annotations": [],
 				"runtimeState": "Stopped",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Airport_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -3760,7 +3767,9 @@
 					"dependsOn": []
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Airport_data')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AIRPORT trigger 7am')]",
@@ -3769,14 +3778,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table at 7 a.m. EDT",
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "Airport_data",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
+				"runtimeState": "Stopped",
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -3791,9 +3793,7 @@
 					"dependsOn": []
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Airport_data')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AIRPORT trigger')]",
@@ -3826,6 +3826,13 @@
 				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 6:30 a.m. EDT",
 				"annotations": [],
 				"runtimeState": "Stopped",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Delay_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -3849,6 +3856,7 @@
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Delay_data')]",
 				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger 630 am')]"
 			]
 		},
@@ -3859,14 +3867,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 7 a.m. EDT",
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "Delay_data",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
+				"runtimeState": "Stopped",
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -3890,7 +3891,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Delay_data')]",
 				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger 7am')]"
 			]
 		},
@@ -3935,6 +3935,13 @@
 				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 6:30 a.m.",
 				"annotations": [],
 				"runtimeState": "Stopped",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Equip_sched_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -3958,6 +3965,7 @@
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Equip_sched_data')]",
 				"[concat(variables('factoryId'), '/triggers/DELAYS trigger 630 am')]"
 			]
 		},
@@ -4001,14 +4009,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 7 a.m.",
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "Equip_sched_data",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
+				"runtimeState": "Stopped",
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -4032,7 +4033,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Equip_sched_data')]",
 				"[concat(variables('factoryId'), '/triggers/DELAYS trigger 7am')]"
 			]
 		},
@@ -4043,14 +4043,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table at 7 a.m. EDT",
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "Flight_data",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
+				"runtimeState": "Stopped",
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -4074,7 +4067,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Flight_data')]",
 				"[concat(variables('factoryId'), '/triggers/EQUIP_SCHED trigger 7am')]"
 			]
 		},
@@ -4587,6 +4579,13 @@
 				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table at 6:30 a.m. EDT",
 				"annotations": [],
 				"runtimeState": "Stopped",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Flight_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -4610,6 +4609,7 @@
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Flight_data')]",
 				"[concat(variables('factoryId'), '/triggers/EQUIP_SCHD trigger 630 am')]"
 			]
 		}
