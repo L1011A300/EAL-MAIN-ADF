@@ -3754,7 +3754,7 @@
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
-						"count": 0,
+						"count": 5,
 						"intervalInSeconds": 240
 					},
 					"dependsOn": []
@@ -3834,7 +3834,8 @@
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
-						"intervalInSeconds": 30
+						"count": 5,
+						"intervalInSeconds": 240
 					},
 					"dependsOn": [
 						{
@@ -3942,7 +3943,8 @@
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
-						"intervalInSeconds": 30
+						"count": 5,
+						"intervalInSeconds": 240
 					},
 					"dependsOn": [
 						{
@@ -4593,7 +4595,8 @@
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
-						"intervalInSeconds": 30
+						"count": 5,
+						"intervalInSeconds": 240
 					},
 					"dependsOn": [
 						{
