@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "EAL-MAIN-ADF"
 		},
+		"SharePointOnlineList1_servicePrincipalKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalKey' of 'SharePointOnlineList1'"
+		},
 		"SkedFlexConnection_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection'"
@@ -22,6 +26,10 @@
 		"eal_staging_connection_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
+		},
+		"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "azasqadmin-d"
 		}
 	},
 	"variables": {
@@ -1299,6 +1307,225 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/shift_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF shift data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "shift_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['shift_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "user_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['user_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['name']"
+										}
+									},
+									{
+										"source": {
+											"name": "start_time",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['start_time']"
+										}
+									},
+									{
+										"source": {
+											"name": "end_time",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['end_time']"
+										}
+									},
+									{
+										"source": {
+											"name": "type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['type']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_work",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_work']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_reserve",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_reserve']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_sick",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_sick']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_training",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_training']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_vacation",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_vacation']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_shift",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_shift",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "SHIFTblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF shift data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SHIFTblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFShift": {},
+									"SHIFTtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_bi_shift')]",
+				"[concat(variables('factoryId'), '/datasets/SF_source_shift')]",
+				"[concat(variables('factoryId'), '/dataflows/SHIFTblobtoSQL')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/user_category_data')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2054,6 +2281,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_bi_shift')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SkedFlexConnection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "bi",
+					"table": "shift"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_bi_user')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2493,6 +2744,76 @@
 							"type": "boolean"
 						},
 						"shift_is_vacation": {
+							"type": "boolean"
+						},
+						"updated_at": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_shift')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-shift-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-shift"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"shift_id": {
+							"type": "integer"
+						},
+						"user_id": {
+							"type": "integer"
+						},
+						"name": {
+							"type": "string"
+						},
+						"start_time": {
+							"type": "string"
+						},
+						"end_time": {
+							"type": "string"
+						},
+						"type": {
+							"type": "string"
+						},
+						"is_work": {
+							"type": "boolean"
+						},
+						"is_reserve": {
+							"type": "boolean"
+						},
+						"is_sick": {
+							"type": "boolean"
+						},
+						"is_training": {
+							"type": "boolean"
+						},
+						"is_vacation": {
 							"type": "boolean"
 						},
 						"updated_at": {
@@ -3061,6 +3382,96 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_ITEM_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "pairing_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pairing_item_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pairing_item_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "flight_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "shift_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "shift_start_time",
+						"type": "datetime"
+					},
+					{
+						"name": "shift_end_time",
+						"type": "datetime"
+					},
+					{
+						"name": "shift_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "shift_is_work",
+						"type": "bit"
+					},
+					{
+						"name": "shift_is_reserve",
+						"type": "bit"
+					},
+					{
+						"name": "shift_is_sick",
+						"type": "bit"
+					},
+					{
+						"name": "shift_is_training",
+						"type": "bit"
+					},
+					{
+						"name": "shift_is_vacation",
+						"type": "bit"
+					},
+					{
+						"name": "updated_at",
+						"type": "datetime"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_PAIRING_ITEM_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -3127,6 +3538,88 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SQL_SHIFT_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "shift_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "user_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "start_time",
+						"type": "datetime"
+					},
+					{
+						"name": "end_time",
+						"type": "datetime"
+					},
+					{
+						"name": "type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_work",
+						"type": "bit"
+					},
+					{
+						"name": "is_reserve",
+						"type": "bit"
+					},
+					{
+						"name": "is_sick",
+						"type": "bit"
+					},
+					{
+						"name": "is_training",
+						"type": "bit"
+					},
+					{
+						"name": "is_vacation",
+						"type": "bit"
+					},
+					{
+						"name": "updated_at",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_SHIFT_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQL_USER_CATEGORY_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -3173,6 +3666,25 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SharePointOnlineList1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SharePointOnlineList",
+				"typeProperties": {
+					"siteUrl": "https://dyaops.sharepoint.com/sites/EAL_OPS_REPORTS",
+					"tenantId": "81cbafb6-8886-400c-826d-4293940c3d19",
+					"servicePrincipalId": "[parameters('SharePointOnlineList1_properties_typeProperties_servicePrincipalId')]",
+					"servicePrincipalKey": {
+						"type": "SecureString",
+						"value": "[parameters('SharePointOnlineList1_servicePrincipalKey')]"
+					}
+				}
+			},
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SkedFlexConnection')]",
@@ -3227,6 +3739,30 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AIRPORT trigger 630 am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table at 6:30 a.m. EDT",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-08-16T10:30:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"count": 0,
+						"intervalInSeconds": 240
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AIRPORT trigger 7am')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -3249,7 +3785,8 @@
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
-						"intervalInSeconds": 30
+						"count": 5,
+						"intervalInSeconds": 240
 					},
 					"dependsOn": []
 				}
@@ -3282,6 +3819,39 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DELAYS trigger 630 am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 6:30 a.m. EDT",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-08-16T10:30:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "AIRPORT trigger 630 am",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger 630 am')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DELAYS trigger 7am')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -3304,7 +3874,8 @@
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
-						"intervalInSeconds": 30
+						"count": 5,
+						"intervalInSeconds": 240
 					},
 					"dependsOn": [
 						{
@@ -3353,6 +3924,39 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHD trigger 630 am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 6:30 a.m.",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-08-16T10:30:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "DELAYS trigger 630 am",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/triggers/DELAYS trigger 630 am')]"
 			]
 		},
 		{
@@ -3411,7 +4015,8 @@
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
-						"intervalInSeconds": 30
+						"count": 5,
+						"intervalInSeconds": 240
 					},
 					"dependsOn": [
 						{
@@ -3452,7 +4057,8 @@
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
-						"intervalInSeconds": 30
+						"count": 5,
+						"intervalInSeconds": 240
 					},
 					"dependsOn": [
 						{
@@ -3858,6 +4464,44 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SHIFTblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_shift",
+								"type": "DatasetReference"
+							},
+							"name": "SFShift"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_SHIFT_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "SHIFTtoSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tshift_id as string,\n\t\tuser_id as string,\n\t\tname as string,\n\t\tstart_time as string,\n\t\tend_time as string,\n\t\ttype as string,\n\t\tis_work as boolean,\n\t\tis_reserve as boolean,\n\t\tis_sick as boolean,\n\t\tis_training as boolean,\n\t\tis_vacation as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFShift\nSFShift derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tshift_id as string,\n\t\tuser_id as string,\n\t\tname as string,\n\t\tstart_time as timestamp,\n\t\tend_time as timestamp,\n\t\ttype as string,\n\t\tis_work as boolean,\n\t\tis_reserve as boolean,\n\t\tis_sick as boolean,\n\t\tis_training as boolean,\n\t\tis_vacation as boolean,\n\t\tupdated_at as string,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> SHIFTtoSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_shift')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_SHIFT_TABLE')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/USERCATEGORYblobtoSQL')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -3934,526 +4578,36 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_ITEM_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/FLIGHT trigger 630 am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
+				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table at 6:30 a.m. EDT",
 				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "pairing_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "pairing_item_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "pairing_item_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "flight_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "shift_name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "shift_start_time",
-						"type": "datetime"
-					},
-					{
-						"name": "shift_end_time",
-						"type": "datetime"
-					},
-					{
-						"name": "shift_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "shift_is_work",
-						"type": "bit"
-					},
-					{
-						"name": "shift_is_reserve",
-						"type": "bit"
-					},
-					{
-						"name": "shift_is_sick",
-						"type": "bit"
-					},
-					{
-						"name": "shift_is_training",
-						"type": "bit"
-					},
-					{
-						"name": "shift_is_vacation",
-						"type": "bit"
-					},
-					{
-						"name": "updated_at",
-						"type": "datetime"
-					},
-					{
-						"name": "ADF_TIMESTAMP",
-						"type": "datetime2",
-						"scale": 7
-					},
-					{
-						"name": "RUN_ID",
-						"type": "nvarchar"
-					}
-				],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
 				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_PAIRING_ITEM_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_bi_shift')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Source"
-				},
-				"annotations": [],
-				"type": "PostgreSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "bi",
-					"table": "shift"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/shift_data')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "SF shift data to Azure blob",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "PostgreSqlSource"
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": false,
-							"validateDataConsistency": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "shift_id",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['shift_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "user_id",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['user_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "name",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['name']"
-										}
-									},
-									{
-										"source": {
-											"name": "start_time",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['start_time']"
-										}
-									},
-									{
-										"source": {
-											"name": "end_time",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['end_time']"
-										}
-									},
-									{
-										"source": {
-											"name": "type",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['type']"
-										}
-									},
-									{
-										"source": {
-											"name": "is_work",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['is_work']"
-										}
-									},
-									{
-										"source": {
-											"name": "is_reserve",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['is_reserve']"
-										}
-									},
-									{
-										"source": {
-											"name": "is_sick",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['is_sick']"
-										}
-									},
-									{
-										"source": {
-											"name": "is_training",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['is_training']"
-										}
-									},
-									{
-										"source": {
-											"name": "is_vacation",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['is_vacation']"
-										}
-									},
-									{
-										"source": {
-											"name": "updated_at",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['updated_at']"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SF_source_bi_shift",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SF_source_shift",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-08-16T10:30:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
 					},
-					{
-						"name": "SHIFTblobtoSQL",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "SF shift data to Azure blob",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "SHIFTblobtoSQL",
-								"type": "DataFlowReference",
-								"parameters": {
-									"run_id": {
-										"value": "'@{pipeline().RunId}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"SFShift": {},
-									"SHIFTtoSQL": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"variables": {
-					"date": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_bi_shift')]",
-				"[concat(variables('factoryId'), '/datasets/SF_source_shift')]",
-				"[concat(variables('factoryId'), '/dataflows/SHIFTblobtoSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_shift')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-shift-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-shift"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"shift_id": {
-							"type": "integer"
-						},
-						"user_id": {
-							"type": "integer"
-						},
-						"name": {
-							"type": "string"
-						},
-						"start_time": {
-							"type": "string"
-						},
-						"end_time": {
-							"type": "string"
-						},
-						"type": {
-							"type": "string"
-						},
-						"is_work": {
-							"type": "boolean"
-						},
-						"is_reserve": {
-							"type": "boolean"
-						},
-						"is_sick": {
-							"type": "boolean"
-						},
-						"is_training": {
-							"type": "boolean"
-						},
-						"is_vacation": {
-							"type": "boolean"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SHIFTblobtoSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
+					"dependsOn": [
 						{
-							"dataset": {
-								"referenceName": "SF_source_shift",
-								"type": "DatasetReference"
-							},
-							"name": "SFShift"
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "EQUIP_SCHD trigger 630 am",
+								"type": "TriggerReference"
+							}
 						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_SHIFT_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "SHIFTtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tshift_id as string,\n\t\tuser_id as string,\n\t\tname as string,\n\t\tstart_time as string,\n\t\tend_time as string,\n\t\ttype as string,\n\t\tis_work as boolean,\n\t\tis_reserve as boolean,\n\t\tis_sick as boolean,\n\t\tis_training as boolean,\n\t\tis_vacation as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFShift\nSFShift derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tshift_id as string,\n\t\tuser_id as string,\n\t\tname as string,\n\t\tstart_time as timestamp,\n\t\tend_time as timestamp,\n\t\ttype as string,\n\t\tis_work as boolean,\n\t\tis_reserve as boolean,\n\t\tis_sick as boolean,\n\t\tis_training as boolean,\n\t\tis_vacation as boolean,\n\t\tupdated_at as string,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> SHIFTtoSQL"
+					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_shift')]",
-				"[concat(variables('factoryId'), '/datasets/SQL_SHIFT_TABLE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_SHIFT_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "shift_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "user_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "start_time",
-						"type": "datetime"
-					},
-					{
-						"name": "end_time",
-						"type": "datetime"
-					},
-					{
-						"name": "type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "is_work",
-						"type": "bit"
-					},
-					{
-						"name": "is_reserve",
-						"type": "bit"
-					},
-					{
-						"name": "is_sick",
-						"type": "bit"
-					},
-					{
-						"name": "is_training",
-						"type": "bit"
-					},
-					{
-						"name": "is_vacation",
-						"type": "bit"
-					},
-					{
-						"name": "updated_at",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ADF_TIMESTAMP",
-						"type": "datetime2",
-						"scale": 7
-					},
-					{
-						"name": "RUN_ID",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_SHIFT_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+				"[concat(variables('factoryId'), '/triggers/EQUIP_SCHD trigger 630 am')]"
 			]
 		}
 	]

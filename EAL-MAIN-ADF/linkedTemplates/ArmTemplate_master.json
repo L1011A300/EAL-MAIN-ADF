@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "EAL-MAIN-ADF"
 		},
+		"SharePointOnlineList1_servicePrincipalKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalKey' of 'SharePointOnlineList1'"
+		},
 		"SkedFlexConnection_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection'"
@@ -22,6 +26,10 @@
 		"eal_staging_connection_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
+		},
+		"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "azasqadmin-d"
 		},
 		"containerUri": {
 			"type": "string",
@@ -50,6 +58,9 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"SharePointOnlineList1_servicePrincipalKey": {
+						"value": "[parameters('SharePointOnlineList1_servicePrincipalKey')]"
+					},
 					"SkedFlexConnection_connectionString": {
 						"value": "[parameters('SkedFlexConnection_connectionString')]"
 					},
@@ -61,6 +72,9 @@
 					},
 					"eal_staging_connection_connectionString": {
 						"value": "[parameters('eal_staging_connection_connectionString')]"
+					},
+					"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
+						"value": "[parameters('SharePointOnlineList1_properties_typeProperties_servicePrincipalId')]"
 					}
 				}
 			},
@@ -104,6 +118,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'EAL-MAIN-ADF_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "EAL-MAIN-ADF_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'EAL-MAIN-ADF_ArmTemplate_2')]"
 			]
 		}
 	]

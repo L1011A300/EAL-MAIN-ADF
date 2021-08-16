@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "EAL-MAIN-ADF"
 		},
+		"SharePointOnlineList1_servicePrincipalKey": {
+			"value": ""
+		},
 		"SkedFlexConnection_connectionString": {
 			"value": ""
 		},
@@ -16,6 +19,9 @@
 		},
 		"eal_staging_connection_connectionString": {
 			"value": ""
+		},
+		"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
+			"value": "azasqadmin-d"
 		}
 	}
 }

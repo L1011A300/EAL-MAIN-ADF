@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "EAL-MAIN-ADF"
 		},
+		"SharePointOnlineList1_servicePrincipalKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalKey' of 'SharePointOnlineList1'"
+		},
 		"SkedFlexConnection_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection'"
@@ -22,12 +26,35 @@
 		"eal_staging_connection_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
+		},
+		"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "azasqadmin-d"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/SharePointOnlineList1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SharePointOnlineList",
+				"typeProperties": {
+					"siteUrl": "https://dyaops.sharepoint.com/sites/EAL_OPS_REPORTS",
+					"tenantId": "81cbafb6-8886-400c-826d-4293940c3d19",
+					"servicePrincipalId": "[parameters('SharePointOnlineList1_properties_typeProperties_servicePrincipalId')]",
+					"servicePrincipalKey": {
+						"type": "SecureString",
+						"value": "[parameters('SharePointOnlineList1_servicePrincipalKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SkedFlexConnection')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -76,6 +103,30 @@
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
 					"connectionString": "[parameters('eal_staging_connection_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AIRPORT trigger 630 am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table at 6:30 a.m. EDT",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-08-16T10:30:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"count": 0,
+						"intervalInSeconds": 240
+					},
+					"dependsOn": []
 				}
 			},
 			"dependsOn": []
@@ -326,6 +377,30 @@
 				"typeProperties": {
 					"schema": "bi",
 					"table": "pairing_item"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_bi_shift')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SkedFlexConnection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "bi",
+					"table": "shift"
 				}
 			},
 			"dependsOn": [
@@ -645,170 +720,6 @@
 						}
 					}
 				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_pairing')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-pairing-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-pairing"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"pairing_id": {
-							"type": "integer"
-						},
-						"user_id": {
-							"type": "integer"
-						},
-						"position": {
-							"type": "string"
-						},
-						"name": {
-							"type": "string"
-						},
-						"date": {
-							"type": "date"
-						},
-						"start_date": {
-							"type": "date"
-						},
-						"end_date": {
-							"type": "date"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_pairing_item')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-pairing-item-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-pairingitem"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"pairing_id": {
-							"type": "integer"
-						},
-						"pairing_item_id": {
-							"type": "integer"
-						},
-						"pairing_item_type": {
-							"type": "string"
-						},
-						"flight_id": {
-							"type": "null"
-						},
-						"shift_name": {
-							"type": "string"
-						},
-						"shift_start_time": {
-							"type": "string"
-						},
-						"shift_end_time": {
-							"type": "string"
-						},
-						"shift_type": {
-							"type": "string"
-						},
-						"shift_is_work": {
-							"type": "boolean"
-						},
-						"shift_is_reserve": {
-							"type": "boolean"
-						},
-						"shift_is_sick": {
-							"type": "boolean"
-						},
-						"shift_is_training": {
-							"type": "boolean"
-						},
-						"shift_is_vacation": {
-							"type": "boolean"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_user')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-user-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-user"
-					}
-				},
-				"schema": {}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
