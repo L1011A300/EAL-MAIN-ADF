@@ -1,0 +1,21 @@
+{
+	"name": "Airport trigger 630 am",
+	"properties": {
+		"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table at 6:30 a.m. EDT",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"type": "TumblingWindowTrigger",
+		"typeProperties": {
+			"frequency": "Hour",
+			"interval": 24,
+			"startTime": "2021-08-16T10:30:00Z",
+			"delay": "00:00:00",
+			"maxConcurrency": 50,
+			"retryPolicy": {
+				"count": 5,
+				"intervalInSeconds": 240
+			},
+			"dependsOn": []
+		}
+	}
+}
