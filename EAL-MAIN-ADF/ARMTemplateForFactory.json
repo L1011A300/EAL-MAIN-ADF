@@ -3745,7 +3745,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table at 6:30 a.m. EDT",
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Airport_data",
@@ -3825,7 +3825,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 6:30 a.m. EDT",
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Delay_data",
@@ -3934,7 +3934,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 6:30 a.m.",
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Equip_sched_data",
@@ -4578,7 +4578,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table at 6:30 a.m. EDT",
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Flight_data",
