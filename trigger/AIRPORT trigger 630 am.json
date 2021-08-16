@@ -1,5 +1,5 @@
 {
-	"name": "Airport trigger 630 am",
+	"name": "AIRPORT trigger 630 am",
 	"properties": {
 		"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table at 6:30 a.m. EDT",
 		"annotations": [],
