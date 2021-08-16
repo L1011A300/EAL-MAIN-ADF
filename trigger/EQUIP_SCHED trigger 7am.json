@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 7 a.m.",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "Equip_sched_data",
