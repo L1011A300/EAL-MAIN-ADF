@@ -13,7 +13,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "2D_Radixx_TCN_IET_20210818.TCN",
 				"container": "radixx-source-tcn"
 			},
 			"columnDelimiter": "",
