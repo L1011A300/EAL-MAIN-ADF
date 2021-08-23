@@ -3,22 +3,6 @@
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Stopped",
-		"pipeline": {
-			"pipelineReference": {
-				"referenceName": "TCN_TEST_COPY",
-				"type": "PipelineReference"
-			},
-			"parameters": {
-				"windowStart": {
-					"type": "Expression",
-					"value": "@trigger().outputs.windowStartTime"
-				},
-				"windowEnd": {
-					"type": "Expression",
-					"value": "@trigger().outputs.windowEndTime"
-				}
-			}
-		},
 		"type": "TumblingWindowTrigger",
 		"typeProperties": {
 			"frequency": "Minute",
