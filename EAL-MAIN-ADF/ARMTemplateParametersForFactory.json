@@ -5,6 +5,12 @@
 		"factoryName": {
 			"value": "EAL-MAIN-ADF"
 		},
+		"MIS_Choice_password": {
+			"value": ""
+		},
+		"Radixx_FTP_password": {
+			"value": ""
+		},
 		"SharePointOnlineList1_servicePrincipalKey": {
 			"value": ""
 		},
@@ -20,8 +26,26 @@
 		"eal_staging_connection_connectionString": {
 			"value": ""
 		},
+		"MIS_Choice_properties_typeProperties_url": {
+			"value": "https://api.airline-choice.com/rest/"
+		},
+		"MIS_Choice_properties_typeProperties_userName": {
+			"value": "eastern-test"
+		},
+		"Radixx_FTP_properties_typeProperties_host": {
+			"value": "66.35.82.100"
+		},
+		"Radixx_FTP_properties_typeProperties_userName": {
+			"value": "ealftp01"
+		},
 		"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
-			"value": "azasqadmin-d"
+			"value": "9269a1f1-59ff-4866-97bc-78de45083f85"
+		},
+		"Trigger_esu_properties_pipeline_parameters_windowStart": {
+			"value": "@trigger().outputs.windowStartTime"
+		},
+		"Trigger_esu_properties_pipeline_parameters_windowEnd": {
+			"value": "@trigger().outputs.windowEndTime"
 		}
 	}
 }

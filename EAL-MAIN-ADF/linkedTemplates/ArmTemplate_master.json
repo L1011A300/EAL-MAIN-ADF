@@ -7,6 +7,14 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "EAL-MAIN-ADF"
 		},
+		"MIS_Choice_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MIS_Choice'"
+		},
+		"Radixx_FTP_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Radixx_FTP'"
+		},
 		"SharePointOnlineList1_servicePrincipalKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalKey' of 'SharePointOnlineList1'"
@@ -27,9 +35,33 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
+		"MIS_Choice_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.airline-choice.com/rest/"
+		},
+		"MIS_Choice_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "eastern-test"
+		},
+		"Radixx_FTP_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "66.35.82.100"
+		},
+		"Radixx_FTP_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "ealftp01"
+		},
 		"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
 			"type": "string",
-			"defaultValue": "azasqadmin-d"
+			"defaultValue": "9269a1f1-59ff-4866-97bc-78de45083f85"
+		},
+		"Trigger_esu_properties_pipeline_parameters_windowStart": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
+		"Trigger_esu_properties_pipeline_parameters_windowEnd": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowEndTime"
 		},
 		"containerUri": {
 			"type": "string",
@@ -58,6 +90,12 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"MIS_Choice_password": {
+						"value": "[parameters('MIS_Choice_password')]"
+					},
+					"Radixx_FTP_password": {
+						"value": "[parameters('Radixx_FTP_password')]"
+					},
 					"SharePointOnlineList1_servicePrincipalKey": {
 						"value": "[parameters('SharePointOnlineList1_servicePrincipalKey')]"
 					},
@@ -72,6 +110,18 @@
 					},
 					"eal_staging_connection_connectionString": {
 						"value": "[parameters('eal_staging_connection_connectionString')]"
+					},
+					"MIS_Choice_properties_typeProperties_url": {
+						"value": "[parameters('MIS_Choice_properties_typeProperties_url')]"
+					},
+					"MIS_Choice_properties_typeProperties_userName": {
+						"value": "[parameters('MIS_Choice_properties_typeProperties_userName')]"
+					},
+					"Radixx_FTP_properties_typeProperties_host": {
+						"value": "[parameters('Radixx_FTP_properties_typeProperties_host')]"
+					},
+					"Radixx_FTP_properties_typeProperties_userName": {
+						"value": "[parameters('Radixx_FTP_properties_typeProperties_userName')]"
 					},
 					"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('SharePointOnlineList1_properties_typeProperties_servicePrincipalId')]"
@@ -133,6 +183,12 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"Trigger_esu_properties_pipeline_parameters_windowStart": {
+						"value": "[parameters('Trigger_esu_properties_pipeline_parameters_windowStart')]"
+					},
+					"Trigger_esu_properties_pipeline_parameters_windowEnd": {
+						"value": "[parameters('Trigger_esu_properties_pipeline_parameters_windowEnd')]"
 					}
 				}
 			},

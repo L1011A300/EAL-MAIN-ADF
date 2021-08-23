@@ -6,12 +6,1726 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "EAL-MAIN-ADF"
+		},
+		"Trigger_esu_properties_pipeline_parameters_windowStart": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
+		"Trigger_esu_properties_pipeline_parameters_windowEnd": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowEndTime"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Flight_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF_Flight_data_to_Azure_blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "flight_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['flight_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "flight_number",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['flight_number']"
+										}
+									},
+									{
+										"source": {
+											"name": "flight_date",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['flight_date']"
+										}
+									},
+									{
+										"source": {
+											"name": "aircraft_registration_number",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['aircraft_registration_number']"
+										}
+									},
+									{
+										"source": {
+											"name": "aircraft_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['aircraft_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "ops_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['ops_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "scheduled_departure",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['scheduled_departure']"
+										}
+									},
+									{
+										"source": {
+											"name": "scheduled_arrival",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['scheduled_arrival']"
+										}
+									},
+									{
+										"source": {
+											"name": "estimated_departure",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['estimated_departure']"
+										}
+									},
+									{
+										"source": {
+											"name": "estimated_arrival",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['estimated_arrival']"
+										}
+									},
+									{
+										"source": {
+											"name": "actual_oooi_out",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['actual_oooi_out']"
+										}
+									},
+									{
+										"source": {
+											"name": "actual_oooi_off",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['actual_oooi_off']"
+										}
+									},
+									{
+										"source": {
+											"name": "actual_oooi_on",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['actual_oooi_on']"
+										}
+									},
+									{
+										"source": {
+											"name": "actual_oooi_in",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['actual_oooi_in']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_airport_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['base_airport_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "sched_depart_airport_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['sched_depart_airport_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "sched_arrive_airport_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['sched_arrive_airport_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "actual_depart_airport_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['actual_depart_airport_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "actual_arrive_airport_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['actual_arrive_airport_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_airport",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_airport']"
+										}
+									},
+									{
+										"source": {
+											"name": "scheduled_departure_airport",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['scheduled_departure_airport']"
+										}
+									},
+									{
+										"source": {
+											"name": "scheduled_arrival_airport",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['scheduled_arrival_airport']"
+										}
+									},
+									{
+										"source": {
+											"name": "actual_departure_airport",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['actual_departure_airport']"
+										}
+									},
+									{
+										"source": {
+											"name": "actual_arrival_airport",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['actual_arrival_airport']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_verified",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_verified']"
+										}
+									},
+									{
+										"source": {
+											"name": "notes",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['notes']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_canceled",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_canceled']"
+										}
+									},
+									{
+										"source": {
+											"name": "flight_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['flight_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "cargo_weight",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['cargo_weight']"
+										}
+									},
+									{
+										"source": {
+											"name": "cargo_on",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['cargo_on']"
+										}
+									},
+									{
+										"source": {
+											"name": "cargo_off",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['cargo_off']"
+										}
+									},
+									{
+										"source": {
+											"name": "fuel_out",
+											"type": "Decimal"
+										},
+										"sink": {
+											"path": "$['fuel_out']"
+										}
+									},
+									{
+										"source": {
+											"name": "fuel_in",
+											"type": "Decimal"
+										},
+										"sink": {
+											"path": "$['fuel_in']"
+										}
+									},
+									{
+										"source": {
+											"name": "fuel_uplift",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['fuel_uplift']"
+										}
+									},
+									{
+										"source": {
+											"name": "fuel_uplifts",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['fuel_uplifts']"
+										}
+									},
+									{
+										"source": {
+											"name": "maint_log_page",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['maint_log_page']"
+										}
+									},
+									{
+										"source": {
+											"name": "lndg_touchdown_zone",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['lndg_touchdown_zone']"
+										}
+									},
+									{
+										"source": {
+											"name": "lndg_midfield",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['lndg_midfield']"
+										}
+									},
+									{
+										"source": {
+											"name": "lndg_rollout",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['lndg_rollout']"
+										}
+									},
+									{
+										"source": {
+											"name": "lndg_actual_braking",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['lndg_actual_braking']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_flight",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_flights",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "FLIGHTblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF_Flight_data_to_Azure_blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FLIGHTSblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFFlight": {},
+									"AirportReferenceJSON": {},
+									"FlightToSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-06-14T16:02:16Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Flight_offline_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FLIGHTOFLblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FLIGHTS_OFLblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFFlight": {},
+									"AirportReferenceJSON": {},
+									"FlightToSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-06-14T16:02:16Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Pairing_Item_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF pairing item data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "pairing_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['pairing_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "pairing_item_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['pairing_item_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "pairing_item_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['pairing_item_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "flight_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['flight_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_start_time",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_start_time']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_end_time",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_end_time']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_work",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_work']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_reserve",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_reserve']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_sick",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_sick']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_training",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_training']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_vacation",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_vacation']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_pairing_item",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_pairing_item",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "PAIRINGITEMblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF pairing item data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "PAIRINGITEMblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFPairingItem": {},
+									"PARINGITEMtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Pairing_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF pairing data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "pairing_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['pairing_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "user_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['user_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "position",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['position']"
+										}
+									},
+									{
+										"source": {
+											"name": "name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['name']"
+										}
+									},
+									{
+										"source": {
+											"name": "date",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date']"
+										}
+									},
+									{
+										"source": {
+											"name": "start_date",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['start_date']"
+										}
+									},
+									{
+										"source": {
+											"name": "end_date",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['end_date']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_pairing",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_pairing",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "PAIRINGblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF pairing data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "PAIRINGblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFPairing": {},
+									"PARINGtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/shift_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF shift data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "shift_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['shift_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "user_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['user_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['name']"
+										}
+									},
+									{
+										"source": {
+											"name": "start_time",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['start_time']"
+										}
+									},
+									{
+										"source": {
+											"name": "end_time",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['end_time']"
+										}
+									},
+									{
+										"source": {
+											"name": "type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['type']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_work",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_work']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_reserve",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_reserve']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_sick",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_sick']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_training",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_training']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_vacation",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_vacation']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_shift",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_shift",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "SHIFTblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF shift data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SHIFTblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFShift": {},
+									"SHIFTtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/user_category_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF user category data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "user_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['user_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "category_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['category_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "effective_start",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['effective_start']"
+										}
+									},
+									{
+										"source": {
+											"name": "effective_end",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['effective_end']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_icao_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_icao_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_iata_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_iata_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_faa_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_faa_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "equipment_group_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['equipment_group_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "equipment_group_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['equipment_group_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "position_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['position_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "position_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['position_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_user_category",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_user_category",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "USERCATEGORYblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF user category data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "USERCATEGORYblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFUserCategory": {},
+									"USERCATEGORYtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/user_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF user data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "user_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['user_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "payroll_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['payroll_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "employee_id",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['employee_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "username",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['username']"
+										}
+									},
+									{
+										"source": {
+											"name": "first_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['first_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "middle_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['middle_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "last_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['last_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "preferred_nickname",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['preferred_nickname']"
+										}
+									},
+									{
+										"source": {
+											"name": "email",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['email']"
+										}
+									},
+									{
+										"source": {
+											"name": "pilot_license",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['pilot_license']"
+										}
+									},
+									{
+										"source": {
+											"name": "phone_numbers",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['phone_numbers']"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_birth",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date_of_birth']"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_hire",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date_of_hire']"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_longevity",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date_of_longevity']"
+										}
+									},
+									{
+										"source": {
+											"name": "company_rank",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['company_rank']"
+										}
+									},
+									{
+										"source": {
+											"name": "pilot_rank",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['pilot_rank']"
+										}
+									},
+									{
+										"source": {
+											"name": "fa_rank",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['fa_rank']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									},
+									{
+										"source": {
+											"name": "enabled",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['enabled']"
+										}
+									},
+									{
+										"source": {
+											"name": "deleted",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['deleted']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_disabled",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_disabled']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_user",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_user",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "USERblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF user data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "USERblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFUser": {},
+									"USERtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FLIGHT trigger 7am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table at 7 a.m. EDT",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-06-28T11:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"count": 5,
+						"intervalInSeconds": 240
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "EQUIP_SCHED trigger 7am",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/FLIGHT trigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
@@ -39,6 +1753,44 @@
 							}
 						}
 					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Trigger_esu')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "TCN_TEST_COPY",
+						"type": "PipelineReference"
+					},
+					"parameters": {
+						"windowStart": {
+							"type": "Expression",
+							"value": "[parameters('Trigger_esu_properties_pipeline_parameters_windowStart')]"
+						},
+						"windowEnd": {
+							"type": "Expression",
+							"value": "[parameters('Trigger_esu_properties_pipeline_parameters_windowEnd')]"
+						}
+					}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Minute",
+					"interval": 15,
+					"startTime": "2021-08-22T19:45:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
 				}
 			},
 			"dependsOn": []
@@ -194,6 +1946,7 @@
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Flight_data')]",
 				"[concat(variables('factoryId'), '/triggers/EQUIP_SCHD trigger 630 am')]"
 			]
 		}
