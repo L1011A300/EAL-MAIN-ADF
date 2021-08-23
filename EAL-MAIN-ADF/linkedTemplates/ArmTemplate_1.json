@@ -13,28 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_bi_shift')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Source"
-				},
-				"annotations": [],
-				"type": "PostgreSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "bi",
-					"table": "shift"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_bi_user')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1331,6 +1309,28 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "SF_USER_CATEGORY_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_USER_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_USER_PROD"
 				}
 			},
 			"dependsOn": []
