@@ -13,6 +13,48 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SQL_USER_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_USER_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_qk2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "radixx-source-tcn"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DELAYS trigger 7am')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -74,6 +116,96 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TCN_COPY_TEST')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_qk2",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "radixx-source-tcn//"
+							},
+							{
+								"name": "Destination",
+								"value": "radixx-destination-tcn//"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"modifiedDatetimeStart": {
+										"value": "@pipeline().parameters.windowStart",
+										"type": "Expression"
+									},
+									"modifiedDatetimeEnd": {
+										"value": "@pipeline().parameters.windowEnd",
+										"type": "Expression"
+									},
+									"wildcardFileName": "*"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"skipErrorFile": {
+								"fileMissing": true
+							},
+							"validateDataConsistency": false
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_qk2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_qk2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"parameters": {
+					"windowStart": {
+						"type": "String"
+					},
+					"windowEnd": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_qk2')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHD trigger')]",
@@ -576,7 +708,9 @@
 					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFUser\nSFUser derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> USERtoSQL"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Airport_data')]",
@@ -885,774 +1019,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/EQUIPSCHEDblobtoSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Flight_data')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "SF_Flight_data_to_Azure_blob",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "PostgreSqlSource"
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "flight_id",
-											"type": "Int64"
-										},
-										"sink": {
-											"path": "$['flight_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "flight_number",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['flight_number']"
-										}
-									},
-									{
-										"source": {
-											"name": "flight_date",
-											"type": "DateTime"
-										},
-										"sink": {
-											"path": "$['flight_date']"
-										}
-									},
-									{
-										"source": {
-											"name": "aircraft_registration_number",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['aircraft_registration_number']"
-										}
-									},
-									{
-										"source": {
-											"name": "aircraft_type",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['aircraft_type']"
-										}
-									},
-									{
-										"source": {
-											"name": "ops_type",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['ops_type']"
-										}
-									},
-									{
-										"source": {
-											"name": "scheduled_departure",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['scheduled_departure']"
-										}
-									},
-									{
-										"source": {
-											"name": "scheduled_arrival",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['scheduled_arrival']"
-										}
-									},
-									{
-										"source": {
-											"name": "estimated_departure",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['estimated_departure']"
-										}
-									},
-									{
-										"source": {
-											"name": "estimated_arrival",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['estimated_arrival']"
-										}
-									},
-									{
-										"source": {
-											"name": "actual_oooi_out",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['actual_oooi_out']"
-										}
-									},
-									{
-										"source": {
-											"name": "actual_oooi_off",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['actual_oooi_off']"
-										}
-									},
-									{
-										"source": {
-											"name": "actual_oooi_on",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['actual_oooi_on']"
-										}
-									},
-									{
-										"source": {
-											"name": "actual_oooi_in",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['actual_oooi_in']"
-										}
-									},
-									{
-										"source": {
-											"name": "base_airport_id",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['base_airport_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "sched_depart_airport_id",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['sched_depart_airport_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "sched_arrive_airport_id",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['sched_arrive_airport_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "actual_depart_airport_id",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['actual_depart_airport_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "actual_arrive_airport_id",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['actual_arrive_airport_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "base_airport",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['base_airport']"
-										}
-									},
-									{
-										"source": {
-											"name": "scheduled_departure_airport",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['scheduled_departure_airport']"
-										}
-									},
-									{
-										"source": {
-											"name": "scheduled_arrival_airport",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['scheduled_arrival_airport']"
-										}
-									},
-									{
-										"source": {
-											"name": "actual_departure_airport",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['actual_departure_airport']"
-										}
-									},
-									{
-										"source": {
-											"name": "actual_arrival_airport",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['actual_arrival_airport']"
-										}
-									},
-									{
-										"source": {
-											"name": "is_verified",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['is_verified']"
-										}
-									},
-									{
-										"source": {
-											"name": "notes",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['notes']"
-										}
-									},
-									{
-										"source": {
-											"name": "is_canceled",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['is_canceled']"
-										}
-									},
-									{
-										"source": {
-											"name": "flight_type",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['flight_type']"
-										}
-									},
-									{
-										"source": {
-											"name": "cargo_weight",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['cargo_weight']"
-										}
-									},
-									{
-										"source": {
-											"name": "cargo_on",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['cargo_on']"
-										}
-									},
-									{
-										"source": {
-											"name": "cargo_off",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['cargo_off']"
-										}
-									},
-									{
-										"source": {
-											"name": "fuel_out",
-											"type": "Decimal"
-										},
-										"sink": {
-											"path": "$['fuel_out']"
-										}
-									},
-									{
-										"source": {
-											"name": "fuel_in",
-											"type": "Decimal"
-										},
-										"sink": {
-											"path": "$['fuel_in']"
-										}
-									},
-									{
-										"source": {
-											"name": "fuel_uplift",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['fuel_uplift']"
-										}
-									},
-									{
-										"source": {
-											"name": "fuel_uplifts",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['fuel_uplifts']"
-										}
-									},
-									{
-										"source": {
-											"name": "maint_log_page",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['maint_log_page']"
-										}
-									},
-									{
-										"source": {
-											"name": "lndg_touchdown_zone",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['lndg_touchdown_zone']"
-										}
-									},
-									{
-										"source": {
-											"name": "lndg_midfield",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['lndg_midfield']"
-										}
-									},
-									{
-										"source": {
-											"name": "lndg_rollout",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['lndg_rollout']"
-										}
-									},
-									{
-										"source": {
-											"name": "lndg_actual_braking",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['lndg_actual_braking']"
-										}
-									},
-									{
-										"source": {
-											"name": "updated_at",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['updated_at']"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SF_source_bi_flight",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SF_source_flights",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "FLIGHTblobtoSQL",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "SF_Flight_data_to_Azure_blob",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "FLIGHTSblobtoSQL",
-								"type": "DataFlowReference",
-								"parameters": {
-									"run_id": {
-										"value": "'@{pipeline().RunId}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"SFFlight": {},
-									"AirportReferenceJSON": {},
-									"FlightToSQL": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"variables": {
-					"date": {
-						"type": "String"
-					}
-				},
-				"annotations": [],
-				"lastPublishTime": "2021-06-14T16:02:16Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/FLIGHTSblobtoSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Flight_offline_data')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "FLIGHTOFLblobtoSQL",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "FLIGHTS_OFLblobtoSQL",
-								"type": "DataFlowReference",
-								"parameters": {
-									"run_id": {
-										"value": "'@{pipeline().RunId}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"SFFlight": {},
-									"AirportReferenceJSON": {},
-									"FlightToSQL": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"variables": {
-					"date": {
-						"type": "String"
-					}
-				},
-				"annotations": [],
-				"lastPublishTime": "2021-06-14T16:02:16Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/FLIGHTS_OFLblobtoSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Pairing_Item_data')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "SF pairing item data to Azure blob",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "PostgreSqlSource"
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": false,
-							"validateDataConsistency": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "pairing_id",
-											"type": "Int64"
-										},
-										"sink": {
-											"path": "$['pairing_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "pairing_item_id",
-											"type": "Int64"
-										},
-										"sink": {
-											"path": "$['pairing_item_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "pairing_item_type",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['pairing_item_type']"
-										}
-									},
-									{
-										"source": {
-											"name": "flight_id",
-											"type": "Int64"
-										},
-										"sink": {
-											"path": "$['flight_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "shift_name",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['shift_name']"
-										}
-									},
-									{
-										"source": {
-											"name": "shift_start_time",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['shift_start_time']"
-										}
-									},
-									{
-										"source": {
-											"name": "shift_end_time",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['shift_end_time']"
-										}
-									},
-									{
-										"source": {
-											"name": "shift_type",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['shift_type']"
-										}
-									},
-									{
-										"source": {
-											"name": "shift_is_work",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['shift_is_work']"
-										}
-									},
-									{
-										"source": {
-											"name": "shift_is_reserve",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['shift_is_reserve']"
-										}
-									},
-									{
-										"source": {
-											"name": "shift_is_sick",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['shift_is_sick']"
-										}
-									},
-									{
-										"source": {
-											"name": "shift_is_training",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['shift_is_training']"
-										}
-									},
-									{
-										"source": {
-											"name": "shift_is_vacation",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['shift_is_vacation']"
-										}
-									},
-									{
-										"source": {
-											"name": "updated_at",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['updated_at']"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SF_source_bi_pairing_item",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SF_source_pairing_item",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "PAIRINGITEMblobtoSQL",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "SF pairing item data to Azure blob",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "PAIRINGITEMblobtoSQL",
-								"type": "DataFlowReference",
-								"parameters": {
-									"run_id": {
-										"value": "'@{pipeline().RunId}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"SFPairingItem": {},
-									"PARINGITEMtoSQL": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"variables": {
-					"date": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/PAIRINGITEMblobtoSQL')]"
 			]
 		}
 	]
