@@ -1,0 +1,17 @@
+{
+	"name": "DestinationDataset_esu",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "radixx-destination-tcn"
+			}
+		}
+	}
+}
