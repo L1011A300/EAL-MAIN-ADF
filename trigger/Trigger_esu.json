@@ -2,7 +2,7 @@
 	"name": "Trigger_esu",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "TCN_TEST_COPY",
