@@ -2,7 +2,7 @@
 	"name": "Trigger_qk2",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "TCN_COPY_TEST",
