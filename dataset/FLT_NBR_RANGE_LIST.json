@@ -7,6 +7,9 @@
 		},
 		"annotations": [],
 		"type": "SharePointOnlineListResource",
-		"schema": []
+		"schema": [],
+		"typeProperties": {
+			"listName": "FLT_NBR_RANGE"
+		}
 	}
 }
