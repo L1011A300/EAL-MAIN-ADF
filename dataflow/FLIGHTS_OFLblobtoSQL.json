@@ -1,6 +1,9 @@
 {
 	"name": "FLIGHTS_OFLblobtoSQL",
 	"properties": {
+		"folder": {
+			"name": "Inactive"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

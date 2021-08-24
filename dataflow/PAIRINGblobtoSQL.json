@@ -1,6 +1,9 @@
 {
 	"name": "PAIRINGblobtoSQL",
 	"properties": {
+		"folder": {
+			"name": "Inactive"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

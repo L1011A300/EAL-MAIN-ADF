@@ -1,6 +1,9 @@
 {
 	"name": "USERCATEGORYblobtoSQL",
 	"properties": {
+		"folder": {
+			"name": "Inactive"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

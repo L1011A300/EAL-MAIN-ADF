@@ -1,6 +1,9 @@
 {
 	"name": "DELAYSblobtoSQL",
 	"properties": {
+		"folder": {
+			"name": "PROD"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

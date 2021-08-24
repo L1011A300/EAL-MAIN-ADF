@@ -1,6 +1,9 @@
 {
 	"name": "EQUIPSCHEDblobtoSQL",
 	"properties": {
+		"folder": {
+			"name": "PROD"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
