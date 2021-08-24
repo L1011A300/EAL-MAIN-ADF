@@ -200,6 +200,9 @@
 				"type": "String"
 			}
 		},
+		"folder": {
+			"name": "Inactive"
+		},
 		"annotations": []
 	}
 }
