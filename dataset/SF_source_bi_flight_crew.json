@@ -1,0 +1,20 @@
+{
+	"name": "SF_source_bi_flight_crew",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SkedFlexConnection",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Source"
+		},
+		"annotations": [],
+		"type": "PostgreSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "bi",
+			"table": "flight_crew"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
