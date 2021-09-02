@@ -5073,92 +5073,11 @@
 									},
 									{
 										"source": {
-											"name": "category_type",
-											"type": "String"
+											"name": "position_id",
+											"type": "Int32"
 										},
 										"sink": {
-											"path": "$['category_type']"
-										}
-									},
-									{
-										"source": {
-											"name": "effective_start",
-											"type": "DateTime"
-										},
-										"sink": {
-											"path": "$['effective_start']"
-										}
-									},
-									{
-										"source": {
-											"name": "effective_end",
-											"type": "DateTime"
-										},
-										"sink": {
-											"path": "$['effective_end']"
-										}
-									},
-									{
-										"source": {
-											"name": "base_icao_code",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['base_icao_code']"
-										}
-									},
-									{
-										"source": {
-											"name": "base_iata_code",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['base_iata_code']"
-										}
-									},
-									{
-										"source": {
-											"name": "base_faa_code",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['base_faa_code']"
-										}
-									},
-									{
-										"source": {
-											"name": "base_name",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['base_name']"
-										}
-									},
-									{
-										"source": {
-											"name": "equipment_group_name",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['equipment_group_name']"
-										}
-									},
-									{
-										"source": {
-											"name": "equipment_group_code",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['equipment_group_code']"
-										}
-									},
-									{
-										"source": {
-											"name": "position_name",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['position_name']"
+											"path": "$['position_id']"
 										}
 									},
 									{
@@ -5172,11 +5091,29 @@
 									},
 									{
 										"source": {
-											"name": "updated_at",
-											"type": "String"
+											"name": "trip_id",
+											"type": "Int64"
 										},
 										"sink": {
-											"path": "$['updated_at']"
+											"path": "$['trip_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "flight_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['flight_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_deadhead",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_deadhead']"
 										}
 									}
 								]
@@ -5280,50 +5217,7 @@
 						"container": "sf-source-user-category"
 					}
 				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"user_id": {
-							"type": "integer"
-						},
-						"category_type": {
-							"type": "string"
-						},
-						"effective_start": {
-							"type": "string"
-						},
-						"effective_end": {
-							"type": "null"
-						},
-						"base_icao_code": {
-							"type": "string"
-						},
-						"base_iata_code": {
-							"type": "string"
-						},
-						"base_faa_code": {
-							"type": "string"
-						},
-						"base_name": {
-							"type": "string"
-						},
-						"equipment_group_name": {
-							"type": "string"
-						},
-						"equipment_group_code": {
-							"type": "string"
-						},
-						"position_name": {
-							"type": "string"
-						},
-						"position_code": {
-							"type": "string"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
+				"schema": {}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
@@ -5362,7 +5256,7 @@
 							"name": "AddWrkflwIDandTS"
 						}
 					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tuser_id as string,\n\t\tcategory_type as string,\n\t\teffective_start as string,\n\t\teffective_end as string,\n\t\tbase_icao_code as string,\n\t\tbase_iata_code as string,\n\t\tbase_faa_code as string,\n\t\tbase_name as string,\n\t\tequipment_group_name as string,\n\t\tequipment_group_code as string,\n\t\tposition_name as string,\n\t\tposition_code as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFFlightCrew\nSFFlightCrew derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FLIGHTCREWtoSQL"
+					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFFlightCrew\nSFFlightCrew derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FLIGHTCREWtoSQL"
 				}
 			},
 			"dependsOn": [

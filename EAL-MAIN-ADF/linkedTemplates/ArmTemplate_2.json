@@ -163,50 +163,7 @@
 						"container": "sf-source-user-category"
 					}
 				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"user_id": {
-							"type": "integer"
-						},
-						"category_type": {
-							"type": "string"
-						},
-						"effective_start": {
-							"type": "string"
-						},
-						"effective_end": {
-							"type": "null"
-						},
-						"base_icao_code": {
-							"type": "string"
-						},
-						"base_iata_code": {
-							"type": "string"
-						},
-						"base_faa_code": {
-							"type": "string"
-						},
-						"base_name": {
-							"type": "string"
-						},
-						"equipment_group_name": {
-							"type": "string"
-						},
-						"equipment_group_code": {
-							"type": "string"
-						},
-						"position_name": {
-							"type": "string"
-						},
-						"position_code": {
-							"type": "string"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
+				"schema": {}
 			},
 			"dependsOn": []
 		},
