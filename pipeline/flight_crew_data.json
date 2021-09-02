@@ -165,7 +165,7 @@
 				]
 			},
 			{
-				"name": "USERCATEGORYblobtoSQL",
+				"name": "FLIGHTCREWblobtoSQL",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
@@ -185,7 +185,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "USERCATEGORYblobtoSQL",
+						"referenceName": "FLIGHTCREWblobtoSQL",
 						"type": "DataFlowReference",
 						"parameters": {
 							"run_id": {
