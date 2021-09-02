@@ -1,0 +1,16 @@
+{
+	"name": "SQL_FLIGHT_CREW_TABLE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_edw_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "SF_FLIGHT_CREW_PROD"
+		}
+	}
+}
