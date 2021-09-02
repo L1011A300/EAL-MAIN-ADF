@@ -42,92 +42,11 @@
 							},
 							{
 								"source": {
-									"name": "category_type",
-									"type": "String"
+									"name": "position_id",
+									"type": "Int32"
 								},
 								"sink": {
-									"path": "$['category_type']"
-								}
-							},
-							{
-								"source": {
-									"name": "effective_start",
-									"type": "DateTime"
-								},
-								"sink": {
-									"path": "$['effective_start']"
-								}
-							},
-							{
-								"source": {
-									"name": "effective_end",
-									"type": "DateTime"
-								},
-								"sink": {
-									"path": "$['effective_end']"
-								}
-							},
-							{
-								"source": {
-									"name": "base_icao_code",
-									"type": "String"
-								},
-								"sink": {
-									"path": "$['base_icao_code']"
-								}
-							},
-							{
-								"source": {
-									"name": "base_iata_code",
-									"type": "String"
-								},
-								"sink": {
-									"path": "$['base_iata_code']"
-								}
-							},
-							{
-								"source": {
-									"name": "base_faa_code",
-									"type": "String"
-								},
-								"sink": {
-									"path": "$['base_faa_code']"
-								}
-							},
-							{
-								"source": {
-									"name": "base_name",
-									"type": "String"
-								},
-								"sink": {
-									"path": "$['base_name']"
-								}
-							},
-							{
-								"source": {
-									"name": "equipment_group_name",
-									"type": "String"
-								},
-								"sink": {
-									"path": "$['equipment_group_name']"
-								}
-							},
-							{
-								"source": {
-									"name": "equipment_group_code",
-									"type": "String"
-								},
-								"sink": {
-									"path": "$['equipment_group_code']"
-								}
-							},
-							{
-								"source": {
-									"name": "position_name",
-									"type": "String"
-								},
-								"sink": {
-									"path": "$['position_name']"
+									"path": "$['position_id']"
 								}
 							},
 							{
@@ -141,11 +60,29 @@
 							},
 							{
 								"source": {
-									"name": "updated_at",
-									"type": "String"
+									"name": "trip_id",
+									"type": "Int64"
 								},
 								"sink": {
-									"path": "$['updated_at']"
+									"path": "$['trip_id']"
+								}
+							},
+							{
+								"source": {
+									"name": "flight_id",
+									"type": "Int64"
+								},
+								"sink": {
+									"path": "$['flight_id']"
+								}
+							},
+							{
+								"source": {
+									"name": "is_deadhead",
+									"type": "Boolean"
+								},
+								"sink": {
+									"path": "$['is_deadhead']"
 								}
 							}
 						]
