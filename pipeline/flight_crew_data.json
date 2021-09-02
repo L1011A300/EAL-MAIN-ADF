@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "SF user category data to Azure blob",
+				"name": "SF flight crew data to Azure blob",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -106,7 +106,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "SF user category data to Azure blob",
+						"activity": "SF flight crew data to Azure blob",
 						"dependencyConditions": [
 							"Succeeded"
 						]
