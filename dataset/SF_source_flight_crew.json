@@ -1,0 +1,68 @@
+{
+	"name": "SF_source_flight_crew",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure blob"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat(concat('bi-flight-crew-',split(utcnow(),'T')[0]),'.json')",
+					"type": "Expression"
+				},
+				"container": "sf-source-user-category"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"user_id": {
+					"type": "integer"
+				},
+				"category_type": {
+					"type": "string"
+				},
+				"effective_start": {
+					"type": "string"
+				},
+				"effective_end": {
+					"type": "null"
+				},
+				"base_icao_code": {
+					"type": "string"
+				},
+				"base_iata_code": {
+					"type": "string"
+				},
+				"base_faa_code": {
+					"type": "string"
+				},
+				"base_name": {
+					"type": "string"
+				},
+				"equipment_group_name": {
+					"type": "string"
+				},
+				"equipment_group_code": {
+					"type": "string"
+				},
+				"position_name": {
+					"type": "string"
+				},
+				"position_code": {
+					"type": "string"
+				},
+				"updated_at": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
