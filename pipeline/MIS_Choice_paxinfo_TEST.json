@@ -36,166 +36,166 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['Passengers'][0]['ID']"
+									"path": "['ID']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['FlightID']"
+									"path": "['FlightID']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['FlightSegmentNo']"
+									"path": "['FlightSegmentNo']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['ExternalID']"
+									"path": "['ExternalID']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['UID']"
+									"path": "['UID']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['PNR']"
+									"path": "['PNR']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['TravelerNo']"
+									"path": "['TravelerNo']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['SeqNo']"
+									"path": "['SeqNo']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['SecurityNo']"
+									"path": "['SecurityNo']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['Origin']"
+									"path": "['Origin']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['Destination']"
+									"path": "['Destination']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['OntoFlight1']['CarrierCode']"
+									"path": "['OntoFlight1']['CarrierCode']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['OntoFlight1']['FlightNo']"
+									"path": "['OntoFlight1']['FlightNo']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['OntoFlight1']['OriginIATA']"
+									"path": "['OntoFlight1']['OriginIATA']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['OntoFlight1']['DestinationIATA']"
+									"path": "['OntoFlight1']['DestinationIATA']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['TravelDocument1']['ID']"
+									"path": "['TravelDocument1']['ID']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['TravelDocument1']['OwnerID']"
+									"path": "['TravelDocument1']['OwnerID']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['TravelDocument1']['DocCode']"
+									"path": "['TravelDocument1']['DocCode']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['TravelDocument1']['DocIssue']"
+									"path": "['TravelDocument1']['DocIssue']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['TravelDocument2']['ID']"
+									"path": "['TravelDocument2']['ID']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['TravelDocument2']['OwnerID']"
+									"path": "['TravelDocument2']['OwnerID']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['TravelDocument2']['DocCode']"
+									"path": "['TravelDocument2']['DocCode']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['TravelDocument2']['DocIssue']"
+									"path": "['TravelDocument2']['DocIssue']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['AdditionalTravelDocument1']['ID']"
+									"path": "['AdditionalTravelDocument1']['ID']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['AdditionalTravelDocument1']['OwnerID']"
+									"path": "['AdditionalTravelDocument1']['OwnerID']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['AdditionalTravelDocument1']['DocCode']"
+									"path": "['AdditionalTravelDocument1']['DocCode']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['AdditionalTravelDocument1']['DocIssue']"
+									"path": "['AdditionalTravelDocument1']['DocIssue']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['AdditionalTravelDocument2']['ID']"
+									"path": "['AdditionalTravelDocument2']['ID']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['AdditionalTravelDocument2']['OwnerID']"
+									"path": "['AdditionalTravelDocument2']['OwnerID']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['AdditionalTravelDocument2']['DocCode']"
+									"path": "['AdditionalTravelDocument2']['DocCode']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['AdditionalTravelDocument2']['DocIssue']"
+									"path": "['AdditionalTravelDocument2']['DocIssue']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Passengers'][0]['BoardStatus']"
+									"path": "['BoardStatus']"
 								}
 							}
 						],
-						"collectionReference": ""
+						"collectionReference": "$['Passengers']"
 					}
 				},
 				"inputs": [
