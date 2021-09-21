@@ -35,6 +35,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
+		"MIS_Choice_REST_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MIS_Choice_REST'"
+		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.airline-choice.com/rest/"
@@ -62,6 +66,14 @@
 		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime"
+		},
+		"MIS_Choice_REST_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.airline-choice.com/rest"
+		},
+		"MIS_Choice_REST_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "eastern-test"
 		}
 	},
 	"variables": {
@@ -159,6 +171,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"variables": {
 					"date": {
 						"type": "String"
@@ -267,6 +283,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"variables": {
 					"date": {
 						"type": "String"
@@ -375,6 +395,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"variables": {
 					"date": {
 						"type": "String"
@@ -858,6 +882,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"variables": {
 					"date": {
 						"type": "String"
@@ -918,6 +946,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"variables": {
 					"date": {
 						"type": "String"
@@ -1157,6 +1189,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"variables": {
 					"date": {
 						"type": "String"
@@ -1343,6 +1379,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"variables": {
 					"date": {
 						"type": "String"
@@ -1435,6 +1475,10 @@
 						]
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"parameters": {
 					"windowStart": {
 						"type": "String"
@@ -1451,6 +1495,176 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SourceDataset_qk2')]",
 				"[concat(variables('factoryId'), '/datasets/DestinationDataset_qk2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/flight_crew_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF flight crew data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "user_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['user_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "position_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['position_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "position_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['position_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "trip_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['trip_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "flight_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['flight_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_deadhead",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_deadhead']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_flight_crew",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_flight_crew",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "FLIGHTCREWblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF flight crew data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FLIGHTCREWblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFFlightCrew": {},
+									"FLIGHTCREWtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Inactive"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_bi_flight_crew')]",
+				"[concat(variables('factoryId'), '/datasets/SF_source_flight_crew')]",
+				"[concat(variables('factoryId'), '/dataflows/FLIGHTCREWblobtoSQL')]"
 			]
 		},
 		{
@@ -1659,6 +1873,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"variables": {
 					"date": {
 						"type": "String"
@@ -1888,6 +2106,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"variables": {
 					"date": {
 						"type": "String"
@@ -2191,6 +2413,10 @@
 						}
 					}
 				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
 				"variables": {
 					"date": {
 						"type": "String"
@@ -2465,6 +2691,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_bi_flight_crew')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SkedFlexConnection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "bi",
+					"table": "flight_crew"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_bi_flight_delay')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2716,6 +2966,36 @@
 						}
 					}
 				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_flight_crew')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-flight-crew-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-user-category"
+					}
+				},
+				"schema": {}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
@@ -3409,6 +3689,27 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "SF_EQUIP_SCHED_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_CREW_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_FLIGHT_CREW_PROD"
 				}
 			},
 			"dependsOn": [
@@ -4629,6 +4930,47 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/FLIGHTCREWblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Inactive"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_flight_crew",
+								"type": "DatasetReference"
+							},
+							"name": "SFFlightCrew"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_FLIGHT_CREW_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "FLIGHTCREWtoSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFFlightCrew\nSFFlightCrew derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FLIGHTCREWtoSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_flight_crew')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_FLIGHT_CREW_TABLE')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/FLIGHTS_OFLblobtoSQL')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -5004,37 +5346,53 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_bi_flight_crew')]",
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_REST')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('MIS_Choice_REST_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('MIS_Choice_REST_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('MIS_Choice_REST_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_paxinfo_test')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "MIS_Choice_REST",
 					"type": "LinkedServiceReference"
 				},
-				"folder": {
-					"name": "Source"
-				},
 				"annotations": [],
-				"type": "PostgreSqlTable",
-				"schema": [],
+				"type": "RestResource",
 				"typeProperties": {
-					"schema": "bi",
-					"table": "flight_crew"
-				}
+					"relativeUrl": "passengers/GetPassengersByFlightID?flightID=2b944650-b20e-ec11-aa0e-005056010094&flightSegmentNo=1&includeBags=false&includeAncillaries=false&includeBagTracking=false"
+				},
+				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+				"[concat(variables('factoryId'), '/linkedServices/MIS_Choice_REST')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/flight_crew_data')]",
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_paxinfo_TEST')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "SF flight crew data to Azure blob",
+						"name": "MIS_Choice_paxinfo_test_data_to_blob",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -5047,7 +5405,10 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "PostgreSqlSource"
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET"
 							},
 							"sink": {
 								"type": "JsonSink",
@@ -5058,143 +5419,40 @@
 									"type": "JsonWriteSettings"
 								}
 							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "user_id",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['user_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "position_id",
-											"type": "Int32"
-										},
-										"sink": {
-											"path": "$['position_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "position_code",
-											"type": "String"
-										},
-										"sink": {
-											"path": "$['position_code']"
-										}
-									},
-									{
-										"source": {
-											"name": "trip_id",
-											"type": "Int64"
-										},
-										"sink": {
-											"path": "$['trip_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "flight_id",
-											"type": "Int64"
-										},
-										"sink": {
-											"path": "$['flight_id']"
-										}
-									},
-									{
-										"source": {
-											"name": "is_deadhead",
-											"type": "Boolean"
-										},
-										"sink": {
-											"path": "$['is_deadhead']"
-										}
-									}
-								]
-							}
+							"enableStaging": false
 						},
 						"inputs": [
 							{
-								"referenceName": "SF_source_bi_flight_crew",
+								"referenceName": "MIS_Choice_paxinfo_test",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "SF_source_flight_crew",
+								"referenceName": "MIS_Choice_paxdata_test_file",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						]
-					},
-					{
-						"name": "FLIGHTCREWblobtoSQL",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "SF flight crew data to Azure blob",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "FLIGHTCREWblobtoSQL",
-								"type": "DataFlowReference",
-								"parameters": {
-									"run_id": {
-										"value": "'@{pipeline().RunId}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"SFFlightCrew": {},
-									"FLIGHTCREWtoSQL": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
 					}
 				],
-				"variables": {
-					"date": {
-						"type": "String"
-					}
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
 				},
 				"folder": {
-					"name": "Inactive"
+					"name": "Testing"
 				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_bi_flight_crew')]",
-				"[concat(variables('factoryId'), '/datasets/SF_source_flight_crew')]",
-				"[concat(variables('factoryId'), '/dataflows/FLIGHTCREWblobtoSQL')]"
+				"[concat(variables('factoryId'), '/datasets/MIS_Choice_paxinfo_test')]",
+				"[concat(variables('factoryId'), '/datasets/MIS_Choice_paxdata_test_file')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_flight_crew')]",
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_paxdata_test_file')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -5202,87 +5460,19 @@
 					"referenceName": "eal_main_blob_connection",
 					"type": "LinkedServiceReference"
 				},
-				"folder": {
-					"name": "Azure blob"
-				},
 				"annotations": [],
 				"type": "Json",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-flight-crew-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-user-category"
+						"folderPath": "test",
+						"container": "mis-choice"
 					}
 				},
 				"schema": {}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FLIGHTCREWblobtoSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"folder": {
-					"name": "Inactive"
-				},
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SF_source_flight_crew",
-								"type": "DatasetReference"
-							},
-							"name": "SFFlightCrew"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_FLIGHT_CREW_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "FLIGHTCREWtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFFlightCrew\nSFFlightCrew derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FLIGHTCREWtoSQL"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SF_source_flight_crew')]",
-				"[concat(variables('factoryId'), '/datasets/SQL_FLIGHT_CREW_TABLE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_CREW_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_FLIGHT_CREW_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
 			]
 		}
 	]

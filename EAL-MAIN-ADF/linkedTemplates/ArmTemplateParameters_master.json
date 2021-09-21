@@ -26,6 +26,9 @@
 		"eal_staging_connection_connectionString": {
 			"value": ""
 		},
+		"MIS_Choice_REST_password": {
+			"value": ""
+		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"value": "https://api.airline-choice.com/rest/"
 		},
@@ -46,6 +49,12 @@
 		},
 		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
 			"value": "@trigger().outputs.windowEndTime"
+		},
+		"MIS_Choice_REST_properties_typeProperties_url": {
+			"value": "https://api.airline-choice.com/rest"
+		},
+		"MIS_Choice_REST_properties_typeProperties_userName": {
+			"value": "eastern-test"
 		},
 		"containerUri": {
 			"value": ""

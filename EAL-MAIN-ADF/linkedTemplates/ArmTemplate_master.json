@@ -35,6 +35,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
+		"MIS_Choice_REST_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MIS_Choice_REST'"
+		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.airline-choice.com/rest/"
@@ -62,6 +66,14 @@
 		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime"
+		},
+		"MIS_Choice_REST_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.airline-choice.com/rest"
+		},
+		"MIS_Choice_REST_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "eastern-test"
 		},
 		"containerUri": {
 			"type": "string",
@@ -111,6 +123,9 @@
 					"eal_staging_connection_connectionString": {
 						"value": "[parameters('eal_staging_connection_connectionString')]"
 					},
+					"MIS_Choice_REST_password": {
+						"value": "[parameters('MIS_Choice_REST_password')]"
+					},
 					"MIS_Choice_properties_typeProperties_url": {
 						"value": "[parameters('MIS_Choice_properties_typeProperties_url')]"
 					},
@@ -125,6 +140,12 @@
 					},
 					"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('SharePointOnlineList1_properties_typeProperties_servicePrincipalId')]"
+					},
+					"MIS_Choice_REST_properties_typeProperties_url": {
+						"value": "[parameters('MIS_Choice_REST_properties_typeProperties_url')]"
+					},
+					"MIS_Choice_REST_properties_typeProperties_userName": {
+						"value": "[parameters('MIS_Choice_REST_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -194,6 +215,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'EAL-MAIN-ADF_ArmTemplate_2')]"
+			]
+		},
+		{
+			"name": "EAL-MAIN-ADF_ArmTemplate_4",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_4.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'EAL-MAIN-ADF_ArmTemplate_3')]"
 			]
 		}
 	]
