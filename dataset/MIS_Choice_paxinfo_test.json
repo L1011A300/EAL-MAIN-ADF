@@ -8,7 +8,7 @@
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
-			"relativeUrl": "passengers/GetPassengerByExternalID?flightID=2b944650-b20e-ec11-aa0e-005056010094&flightSegmentNo=1&externalID=19289"
+			"relativeUrl": "passengers/GetPassengersByFlightID?flightID=2b944650-b20e-ec11-aa0e-005056010094&flightSegmentNo=1&includeBags=false&includeAncillaries=false&includeBagTracking=false"
 		},
 		"schema": []
 	}
