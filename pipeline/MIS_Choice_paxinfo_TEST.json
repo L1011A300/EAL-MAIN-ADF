@@ -30,7 +30,173 @@
 							"type": "JsonWriteSettings"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['Passengers'][0]['ID']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['FlightID']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['FlightSegmentNo']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['ExternalID']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['UID']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['PNR']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['TravelerNo']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['SeqNo']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['SecurityNo']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['Origin']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['Destination']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['OntoFlight1']['CarrierCode']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['OntoFlight1']['FlightNo']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['OntoFlight1']['OriginIATA']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['OntoFlight1']['DestinationIATA']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['TravelDocument1']['ID']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['TravelDocument1']['OwnerID']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['TravelDocument1']['DocCode']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['TravelDocument1']['DocIssue']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['TravelDocument2']['ID']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['TravelDocument2']['OwnerID']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['TravelDocument2']['DocCode']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['TravelDocument2']['DocIssue']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['AdditionalTravelDocument1']['ID']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['AdditionalTravelDocument1']['OwnerID']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['AdditionalTravelDocument1']['DocCode']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['AdditionalTravelDocument1']['DocIssue']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['AdditionalTravelDocument2']['ID']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['AdditionalTravelDocument2']['OwnerID']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['AdditionalTravelDocument2']['DocCode']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['AdditionalTravelDocument2']['DocIssue']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Passengers'][0]['BoardStatus']"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
 				},
 				"inputs": [
 					{
