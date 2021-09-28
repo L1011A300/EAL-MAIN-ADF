@@ -39,7 +39,7 @@
 			},
 			{
 				"name": "ScheduledDepartureTimeUTC",
-				"type": "nvarchar"
+				"type": "datetime2"
 			},
 			{
 				"name": "Status",
