@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "SQL_MIS_CHOICE_PAX_BAGS_TABLE",
 						"type": "DatasetReference"
 					},
 					"name": "MISCHOICEPAXBAGSSQL"
