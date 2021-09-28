@@ -1,0 +1,20 @@
+{
+	"name": "MIS_Choice_Pax_Bags",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "MIS_Choice_Pax_Bags",
+				"folderPath": "test",
+				"container": "mis-choice"
+			}
+		},
+		"schema": {}
+	}
+}
