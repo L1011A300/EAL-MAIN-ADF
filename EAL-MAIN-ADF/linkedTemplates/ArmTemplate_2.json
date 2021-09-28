@@ -1208,68 +1208,7 @@
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "ID",
-						"type": "nvarchar"
-					},
-					{
-						"name": "SegmentNo",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "ExternalID",
-						"type": "nvarchar"
-					},
-					{
-						"name": "FlightNo",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "TailNo",
-						"type": "nvarchar"
-					},
-					{
-						"name": "OriginIATA",
-						"type": "nvarchar"
-					},
-					{
-						"name": "DestinationIATA",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ScheduledDepartureTimeUTC",
-						"type": "datetime"
-					},
-					{
-						"name": "Status",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CheckedInPassengersCount",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "CheckedBagsCount",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "ADF_TIMESTAMP",
-						"type": "datetime2",
-						"scale": 7
-					},
-					{
-						"name": "RUN_ID",
-						"type": "nvarchar"
-					}
-				],
+				"schema": [],
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "MIS_PAX_BAGS_TEST"
