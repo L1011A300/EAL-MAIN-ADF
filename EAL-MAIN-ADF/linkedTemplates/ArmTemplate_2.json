@@ -590,13 +590,16 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/MIS_Choice_Pax_n_Bag')]",
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_Pax_Bag_SRC')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
 					"referenceName": "MIS_Choice_REST",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
 				},
 				"annotations": [],
 				"type": "RestResource",
@@ -615,6 +618,9 @@
 				"linkedServiceName": {
 					"referenceName": "eal_main_blob_connection",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
 				},
 				"annotations": [],
 				"type": "Json",
