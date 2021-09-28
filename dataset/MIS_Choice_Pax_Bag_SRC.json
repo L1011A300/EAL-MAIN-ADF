@@ -5,6 +5,9 @@
 			"referenceName": "MIS_Choice_REST",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Source"
+		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
