@@ -1,5 +1,5 @@
 {
-	"name": "MIS_Choice_Pax_n_Bag",
+	"name": "MIS_Choice_Pax_Bag_SRC",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "MIS_Choice_REST",
