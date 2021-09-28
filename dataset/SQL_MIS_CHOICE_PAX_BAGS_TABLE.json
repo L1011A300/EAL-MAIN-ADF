@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTable1",
+	"name": "SQL_MIS_CHOICE_PAX_BAGS_TABLE",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "eal_edw_connection",
