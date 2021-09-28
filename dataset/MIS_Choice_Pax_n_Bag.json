@@ -1,0 +1,15 @@
+{
+	"name": "MIS_Choice_Pax_n_Bag",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MIS_Choice_REST",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "flights/GetFlightByExternalID?externalID=19292&originIATA=GYE"
+		},
+		"schema": []
+	}
+}
