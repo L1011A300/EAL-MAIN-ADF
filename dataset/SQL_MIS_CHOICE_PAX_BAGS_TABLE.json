@@ -43,7 +43,8 @@
 			},
 			{
 				"name": "ScheduledDepartureTimeUTC",
-				"type": "datetime"
+				"type": "datetime2",
+				"scale": 7
 			},
 			{
 				"name": "Status",
