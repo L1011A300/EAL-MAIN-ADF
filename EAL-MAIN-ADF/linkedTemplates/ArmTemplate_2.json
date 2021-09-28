@@ -1227,6 +1227,10 @@
 						"type": "nvarchar"
 					},
 					{
+						"name": "Type",
+						"type": "nvarchar"
+					},
+					{
 						"name": "TailNo",
 						"type": "nvarchar"
 					},
@@ -1240,7 +1244,7 @@
 					},
 					{
 						"name": "ScheduledDepartureTimeUTC",
-						"type": "datetime2"
+						"type": "datetime"
 					},
 					{
 						"name": "Status",
