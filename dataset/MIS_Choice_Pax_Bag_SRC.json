@@ -11,7 +11,7 @@
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
-			"relativeUrl": "flights/GetFlightByExternalID?externalID=19292&originIATA=GYE"
+			"relativeUrl": "/flights/GetFlightByExternalID?externalID=19292&originIATA=GYE"
 		},
 		"schema": []
 	}
