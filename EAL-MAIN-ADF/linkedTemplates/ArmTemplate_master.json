@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MIS_Choice'"
 		},
+		"MIS_Choice_REST_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MIS_Choice_REST'"
+		},
 		"Radixx_FTP_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Radixx_FTP'"
@@ -35,15 +39,19 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
-		"MIS_Choice_REST_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'MIS_Choice_REST'"
-		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.airline-choice.com/rest/"
 		},
 		"MIS_Choice_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "eastern-test"
+		},
+		"MIS_Choice_REST_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.airline-choice.com/rest"
+		},
+		"MIS_Choice_REST_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "eastern-test"
 		},
@@ -66,14 +74,6 @@
 		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime"
-		},
-		"MIS_Choice_REST_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://api.airline-choice.com/rest"
-		},
-		"MIS_Choice_REST_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "eastern-test"
 		},
 		"containerUri": {
 			"type": "string",
@@ -105,6 +105,9 @@
 					"MIS_Choice_password": {
 						"value": "[parameters('MIS_Choice_password')]"
 					},
+					"MIS_Choice_REST_password": {
+						"value": "[parameters('MIS_Choice_REST_password')]"
+					},
 					"Radixx_FTP_password": {
 						"value": "[parameters('Radixx_FTP_password')]"
 					},
@@ -123,14 +126,17 @@
 					"eal_staging_connection_connectionString": {
 						"value": "[parameters('eal_staging_connection_connectionString')]"
 					},
-					"MIS_Choice_REST_password": {
-						"value": "[parameters('MIS_Choice_REST_password')]"
-					},
 					"MIS_Choice_properties_typeProperties_url": {
 						"value": "[parameters('MIS_Choice_properties_typeProperties_url')]"
 					},
 					"MIS_Choice_properties_typeProperties_userName": {
 						"value": "[parameters('MIS_Choice_properties_typeProperties_userName')]"
+					},
+					"MIS_Choice_REST_properties_typeProperties_url": {
+						"value": "[parameters('MIS_Choice_REST_properties_typeProperties_url')]"
+					},
+					"MIS_Choice_REST_properties_typeProperties_userName": {
+						"value": "[parameters('MIS_Choice_REST_properties_typeProperties_userName')]"
 					},
 					"Radixx_FTP_properties_typeProperties_host": {
 						"value": "[parameters('Radixx_FTP_properties_typeProperties_host')]"
@@ -140,12 +146,6 @@
 					},
 					"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('SharePointOnlineList1_properties_typeProperties_servicePrincipalId')]"
-					},
-					"MIS_Choice_REST_properties_typeProperties_url": {
-						"value": "[parameters('MIS_Choice_REST_properties_typeProperties_url')]"
-					},
-					"MIS_Choice_REST_properties_typeProperties_userName": {
-						"value": "[parameters('MIS_Choice_REST_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -204,12 +204,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"Trigger_qk2_properties_pipeline_parameters_windowStart": {
-						"value": "[parameters('Trigger_qk2_properties_pipeline_parameters_windowStart')]"
-					},
-					"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
-						"value": "[parameters('Trigger_qk2_properties_pipeline_parameters_windowEnd')]"
 					}
 				}
 			},
@@ -230,6 +224,12 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"Trigger_qk2_properties_pipeline_parameters_windowStart": {
+						"value": "[parameters('Trigger_qk2_properties_pipeline_parameters_windowStart')]"
+					},
+					"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
+						"value": "[parameters('Trigger_qk2_properties_pipeline_parameters_windowEnd')]"
 					}
 				}
 			},

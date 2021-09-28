@@ -8,6 +8,9 @@
 		"MIS_Choice_password": {
 			"value": ""
 		},
+		"MIS_Choice_REST_password": {
+			"value": ""
+		},
 		"Radixx_FTP_password": {
 			"value": ""
 		},
@@ -26,13 +29,16 @@
 		"eal_staging_connection_connectionString": {
 			"value": ""
 		},
-		"MIS_Choice_REST_password": {
-			"value": ""
-		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"value": "https://api.airline-choice.com/rest/"
 		},
 		"MIS_Choice_properties_typeProperties_userName": {
+			"value": "eastern-test"
+		},
+		"MIS_Choice_REST_properties_typeProperties_url": {
+			"value": "https://api.airline-choice.com/rest"
+		},
+		"MIS_Choice_REST_properties_typeProperties_userName": {
 			"value": "eastern-test"
 		},
 		"Radixx_FTP_properties_typeProperties_host": {
@@ -49,12 +55,6 @@
 		},
 		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
 			"value": "@trigger().outputs.windowEndTime"
-		},
-		"MIS_Choice_REST_properties_typeProperties_url": {
-			"value": "https://api.airline-choice.com/rest"
-		},
-		"MIS_Choice_REST_properties_typeProperties_userName": {
-			"value": "eastern-test"
 		}
 	}
 }

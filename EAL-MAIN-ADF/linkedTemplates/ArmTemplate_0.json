@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MIS_Choice'"
 		},
+		"MIS_Choice_REST_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MIS_Choice_REST'"
+		},
 		"Radixx_FTP_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Radixx_FTP'"
@@ -35,15 +39,19 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
-		"MIS_Choice_REST_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'MIS_Choice_REST'"
-		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.airline-choice.com/rest/"
 		},
 		"MIS_Choice_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "eastern-test"
+		},
+		"MIS_Choice_REST_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.airline-choice.com/rest"
+		},
+		"MIS_Choice_REST_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "eastern-test"
 		},
@@ -58,14 +66,6 @@
 		"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
 			"type": "string",
 			"defaultValue": "9269a1f1-59ff-4866-97bc-78de45083f85"
-		},
-		"MIS_Choice_REST_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://api.airline-choice.com/rest"
-		},
-		"MIS_Choice_REST_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "eastern-test"
 		}
 	},
 	"variables": {
@@ -86,6 +86,26 @@
 					"password": {
 						"type": "SecureString",
 						"value": "[parameters('MIS_Choice_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_REST')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('MIS_Choice_REST_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('MIS_Choice_REST_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('MIS_Choice_REST_password')]"
 					}
 				}
 			},
@@ -233,26 +253,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/MIS_Choice_REST')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "RestService",
-				"typeProperties": {
-					"url": "[parameters('MIS_Choice_REST_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Basic",
-					"userName": "[parameters('MIS_Choice_REST_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('MIS_Choice_REST_password')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/DestinationDataset_qk2')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -292,6 +292,50 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/SharePointOnlineList1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_paxdata_test_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "test",
+						"container": "mis-choice"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_paxinfo_test')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MIS_Choice_REST",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": "passengers/GetPassengersByFlightID?flightID=2b944650-b20e-ec11-aa0e-005056010094&flightSegmentNo=1&includeBags=false&includeAncillaries=false&includeBagTracking=false"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MIS_Choice_REST')]"
 			]
 		},
 		{
@@ -503,54 +547,6 @@
 				"typeProperties": {
 					"schema": "bi",
 					"table": "flight"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_bi_flight_crew')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Source"
-				},
-				"annotations": [],
-				"type": "PostgreSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "bi",
-					"table": "flight_crew"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_bi_flight_delay')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Source"
-				},
-				"annotations": [],
-				"type": "PostgreSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "bi",
-					"table": "flight_delay"
 				}
 			},
 			"dependsOn": [
