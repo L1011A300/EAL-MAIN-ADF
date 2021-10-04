@@ -2,7 +2,7 @@
 	"name": "Flight_Crew trigger 1am",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "flight_crew_data",
