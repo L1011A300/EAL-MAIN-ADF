@@ -485,6 +485,36 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AIRPORT trigger 1200 UTC')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table at 00:00 UTC",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Airport_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-10-22T23:45:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DELAYS trigger 630 am')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -523,6 +553,46 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger 630 am')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DELAYS trigger midnight UTC')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 00:00 EDT",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Delay_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-10-22T23:45:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 240
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "AIRPORT trigger 1200 UTC",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger 1200 UTC')]"
 			]
 		},
 		{
@@ -567,6 +637,46 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHED trigger midnight UTC')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 00:00 UTC",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Equip_sched_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-10-22T23:45:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 240
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "DELAYS trigger midnight UTC",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/triggers/DELAYS trigger midnight UTC')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/FLIGHT trigger 630 am')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -605,6 +715,46 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/triggers/EQUIP_SCHD trigger 630 am')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FLIGHT trigger midnight UTC')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table at 00:00 UTC",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Flight_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-10-22T23:45:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 240
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "EQUIP_SCHED trigger midnight UTC",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/triggers/EQUIP_SCHED trigger midnight UTC')]"
 			]
 		}
 	]
