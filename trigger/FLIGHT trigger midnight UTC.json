@@ -1,0 +1,28 @@
+{
+	"name": "FLIGHT trigger midnight UTC",
+	"properties": {
+		"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table at 00:00 UTC",
+		"annotations": [],
+		"runtimeState": "Started",
+		"type": "TumblingWindowTrigger",
+		"typeProperties": {
+			"frequency": "Hour",
+			"interval": 24,
+			"startTime": "2021-10-22T23:45:00Z",
+			"delay": "00:00:00",
+			"maxConcurrency": 50,
+			"retryPolicy": {
+				"intervalInSeconds": 240
+			},
+			"dependsOn": [
+				{
+					"type": "TumblingWindowTriggerDependencyReference",
+					"referenceTrigger": {
+						"referenceName": "EQUIP_SCHED trigger midnight UTC",
+						"type": "TriggerReference"
+					}
+				}
+			]
+		}
+	}
+}
