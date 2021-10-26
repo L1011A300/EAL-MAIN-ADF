@@ -25,7 +25,7 @@
 				}
 			],
 			"transformations": [],
-			"script": "source(output(\n\t\tEFF_DATE as date 'yyyy-MM-dd',\n\t\tEND_DATE as date 'yyyy-MM-dd',\n\t\tBEGIN_FLT_NBR as integer '##0',\n\t\tEND_FLT_NBR as integer '##0',\n\t\tFLIGHT_TYPE as string,\n\t\tFLIGHT_SUBTYPE as string,\n\t\tFLT_TYPE_OPS_REPORT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> FltNbrMatrix\nFltNbrMatrix sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FltNbrMatrixToSQL"
+			"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tEFF_DATE as date 'yyyy-MM-dd',\n\t\tEND_DATE as date 'yyyy-MM-dd',\n\t\tBEGIN_FLT_NBR as integer '##0',\n\t\tEND_FLT_NBR as integer '##0',\n\t\tFLIGHT_TYPE as string,\n\t\tFLIGHT_SUBTYPE as string,\n\t\tFLT_TYPE_OPS_REPORT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> FltNbrMatrix\nFltNbrMatrix sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FltNbrMatrixToSQL"
 		}
 	}
 }
