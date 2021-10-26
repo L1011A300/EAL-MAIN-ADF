@@ -295,6 +295,85 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/FLT_NBR_RANGE_PROD')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "FLT_NBR_RANGE_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Flt_nbr_range_matrix')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "FLT_NBR_RANGE",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "FLT_NBR_RANGE.xlsx",
+						"container": "flight-number-range"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "EFF_DATE",
+						"type": "String"
+					},
+					{
+						"name": "END_DATE",
+						"type": "String"
+					},
+					{
+						"name": "BEGIN_FLT_NBR",
+						"type": "String"
+					},
+					{
+						"name": "END_FLT_NBR",
+						"type": "String"
+					},
+					{
+						"name": "FLIGHT_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "FLIGHT_SUBTYPE",
+						"type": "String"
+					},
+					{
+						"name": "FLT_TYPE_OPS_REPORT",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MIS_Choice_Pax_Bag_SRC')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1003,115 +1082,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_airport')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-airport"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"airport_id": {
-							"type": "integer"
-						},
-						"iata_code": {
-							"type": "string"
-						},
-						"icao_code": {
-							"type": "string"
-						},
-						"faa_code": {
-							"type": "string"
-						},
-						"airport_name": {
-							"type": "string"
-						},
-						"city_name": {
-							"type": "string"
-						},
-						"state_code": {
-							"type": "string"
-						},
-						"country_code": {
-							"type": "string"
-						},
-						"weather_zone": {
-							"type": "string"
-						},
-						"latitude": {
-							"type": "string"
-						},
-						"longitude": {
-							"type": "string"
-						},
-						"elevation_feet": {
-							"type": "integer"
-						},
-						"iana_timezone": {
-							"type": "string"
-						},
-						"is_base": {
-							"type": "boolean"
-						},
-						"base_initial": {
-							"type": "null"
-						},
-						"is_active": {
-							"type": "boolean"
-						},
-						"is_deleted": {
-							"type": "boolean"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_bi_airport')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Source"
-				},
-				"annotations": [],
-				"type": "PostgreSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "bi",
-					"table": "airport"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
 			]
 		}
 	]
