@@ -1,9 +1,6 @@
 {
 	"name": "FLIGHTSblobtoSQL_copy1",
 	"properties": {
-		"folder": {
-			"name": "PROD"
-		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
