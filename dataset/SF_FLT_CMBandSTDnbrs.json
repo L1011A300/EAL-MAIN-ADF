@@ -1,0 +1,16 @@
+{
+	"name": "SF_FLT_CMBandSTDnbrs",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_edw_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "SF_FLIGHT_TEST"
+		}
+	}
+}
