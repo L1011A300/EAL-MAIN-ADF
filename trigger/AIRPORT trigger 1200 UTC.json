@@ -19,7 +19,7 @@
 			"maxConcurrency": 50,
 			"retryPolicy": {
 				"count": 5,
-				"intervalInSeconds": 30
+				"intervalInSeconds": 240
 			},
 			"dependsOn": []
 		}
