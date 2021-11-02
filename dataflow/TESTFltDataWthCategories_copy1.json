@@ -1,6 +1,9 @@
 {
 	"name": "TESTFltDataWthCategories_copy1",
 	"properties": {
+		"folder": {
+			"name": "TEST"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

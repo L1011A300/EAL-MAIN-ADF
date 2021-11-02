@@ -1,6 +1,9 @@
 {
 	"name": "MIS_Choice_Pax_Bags_to_SQL",
 	"properties": {
+		"folder": {
+			"name": "TEST"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
