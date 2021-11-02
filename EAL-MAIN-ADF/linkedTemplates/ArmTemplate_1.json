@@ -13,6 +13,25 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SF_FLT_CMBandSTDnbrs')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_FLIGHT_TEST"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_airport')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -830,77 +849,6 @@
 					}
 				},
 				"schema": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_user_category')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-user-category-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-user-category"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"user_id": {
-							"type": "integer"
-						},
-						"category_type": {
-							"type": "string"
-						},
-						"effective_start": {
-							"type": "string"
-						},
-						"effective_end": {
-							"type": "null"
-						},
-						"base_icao_code": {
-							"type": "string"
-						},
-						"base_iata_code": {
-							"type": "string"
-						},
-						"base_faa_code": {
-							"type": "string"
-						},
-						"base_name": {
-							"type": "string"
-						},
-						"equipment_group_name": {
-							"type": "string"
-						},
-						"equipment_group_code": {
-							"type": "string"
-						},
-						"position_name": {
-							"type": "string"
-						},
-						"position_code": {
-							"type": "string"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
 			},
 			"dependsOn": []
 		}
