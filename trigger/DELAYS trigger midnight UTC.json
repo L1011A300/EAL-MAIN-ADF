@@ -25,7 +25,7 @@
 				{
 					"type": "TumblingWindowTriggerDependencyReference",
 					"referenceTrigger": {
-						"referenceName": "AIRPORT trigger 1200 UTC",
+						"referenceName": "FLIGHT trigger midnight UTC",
 						"type": "TriggerReference"
 					}
 				}
