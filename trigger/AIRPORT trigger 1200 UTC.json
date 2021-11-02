@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table at 00:00 UTC",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "Airport_data",
