@@ -13,6 +13,132 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/TCN_COPY_TEST')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_qk2",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "radixx-source-tcn//"
+							},
+							{
+								"name": "Destination",
+								"value": "radixx-destination-tcn//"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"modifiedDatetimeStart": {
+										"value": "@pipeline().parameters.windowStart",
+										"type": "Expression"
+									},
+									"modifiedDatetimeEnd": {
+										"value": "@pipeline().parameters.windowEnd",
+										"type": "Expression"
+									},
+									"wildcardFileName": "*"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"skipErrorFile": {
+								"fileMissing": true
+							},
+							"validateDataConsistency": false
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_qk2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_qk2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"windowStart": {
+						"type": "String"
+					},
+					"windowEnd": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHD trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-06-16T09:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "DELAYS trigger",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHED trigger 7am')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -970,226 +1096,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/AIRPORTblobtoSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Delay_data')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "SF_Delay_data_to_Azure_blob",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "PostgreSqlSource"
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "SF_source_bi_flight_delay",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SF_source_delays",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "DELAYStoblobSQL",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "SF_Delay_data_to_Azure_blob",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "DELAYSblobtoSQL",
-								"type": "DataFlowReference",
-								"parameters": {
-									"run_id": {
-										"value": "'@{pipeline().RunId}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"SFDelay": {},
-									"DelaysToSQL": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"variables": {
-					"date": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "PROD"
-				},
-				"annotations": [],
-				"lastPublishTime": "2021-06-14T17:18:56Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/DELAYSblobtoSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Equip_sched_data')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "SF_Equip_Sched_data_to_Azure_blob",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "PostgreSqlSource"
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "SF_source_bi_equip_sched",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SF_source_equip_sched",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "EQUIPSCHEDtoblobSQL",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "SF_Equip_Sched_data_to_Azure_blob",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "EQUIPSCHEDblobtoSQL",
-								"type": "DataFlowReference",
-								"parameters": {
-									"run_id": {
-										"value": "'@{pipeline().RunId}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"SFEquipSched": {},
-									"EQUIPSCHEDtoSQL": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"variables": {
-					"date": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "PROD"
-				},
-				"annotations": [],
-				"lastPublishTime": "2021-06-14T17:18:57Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/EQUIPSCHEDblobtoSQL')]"
 			]
 		}
 	]

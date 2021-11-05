@@ -253,6 +253,30 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/FLIGHT trigger midnight UTC')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table at 00:00 UTC",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-10-22T23:45:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"count": 5,
+						"intervalInSeconds": 240
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DestinationDataset_qk2')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1044,35 +1068,6 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"container": "radixx-destination-tcn"
-					},
-					"columnDelimiter": "",
-					"escapeChar": "\\",
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/RADIXX_SOURCE_TCN_FILE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": "radixx-source-tcn"
 					},
 					"columnDelimiter": "",
 					"escapeChar": "\\",

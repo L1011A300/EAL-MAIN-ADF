@@ -13,6 +13,33 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/RADIXX_SOURCE_TCN_FILE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "radixx-source-tcn"
+					},
+					"columnDelimiter": "",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SF_FLT_CMBandSTDnbrs')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -821,34 +848,6 @@
 						}
 					}
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_user')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-user-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-user"
-					}
-				},
-				"schema": {}
 			},
 			"dependsOn": []
 		}
