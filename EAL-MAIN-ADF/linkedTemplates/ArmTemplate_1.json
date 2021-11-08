@@ -13,6 +13,33 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/RADIXX_DESTINATION_TCN_FILE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "radixx-destination-tcn"
+					},
+					"columnDelimiter": "",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/RADIXX_SOURCE_TCN_FILE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -773,74 +800,6 @@
 							"type": "boolean"
 						},
 						"shift_is_vacation": {
-							"type": "boolean"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_shift')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-shift-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-shift"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"shift_id": {
-							"type": "integer"
-						},
-						"user_id": {
-							"type": "integer"
-						},
-						"name": {
-							"type": "string"
-						},
-						"start_time": {
-							"type": "string"
-						},
-						"end_time": {
-							"type": "string"
-						},
-						"type": {
-							"type": "string"
-						},
-						"is_work": {
-							"type": "boolean"
-						},
-						"is_reserve": {
-							"type": "boolean"
-						},
-						"is_sick": {
-							"type": "boolean"
-						},
-						"is_training": {
-							"type": "boolean"
-						},
-						"is_vacation": {
 							"type": "boolean"
 						},
 						"updated_at": {

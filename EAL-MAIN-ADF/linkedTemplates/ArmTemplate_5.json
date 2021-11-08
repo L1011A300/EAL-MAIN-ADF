@@ -13,15 +13,16 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/Flight_Crew trigger 1am')]",
+			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHED trigger midnight UTC')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 00:00 UTC",
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipeline": {
 					"pipelineReference": {
-						"referenceName": "flight_crew_data",
+						"referenceName": "Equip_sched_data",
 						"type": "PipelineReference"
 					},
 					"parameters": {}
@@ -30,13 +31,22 @@
 				"typeProperties": {
 					"frequency": "Hour",
 					"interval": 24,
-					"startTime": "2021-10-02T05:00:00Z",
+					"startTime": "2021-10-22T23:45:00Z",
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
-						"intervalInSeconds": 30
+						"count": 5,
+						"intervalInSeconds": 240
 					},
-					"dependsOn": []
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "DELAYS trigger midnight UTC",
+								"type": "TriggerReference"
+							}
+						}
+					]
 				}
 			},
 			"dependsOn": []
@@ -65,6 +75,43 @@
 					"retryPolicy": {
 						"count": 5,
 						"intervalInSeconds": 240
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "AIRPORT trigger after midnight UTC",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Flight_Crew trigger 1am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "flight_crew_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-10-02T05:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
 					},
 					"dependsOn": []
 				}
