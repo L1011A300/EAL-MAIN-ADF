@@ -20,7 +20,15 @@
 				"count": 5,
 				"intervalInSeconds": 240
 			},
-			"dependsOn": []
+			"dependsOn": [
+				{
+					"type": "TumblingWindowTriggerDependencyReference",
+					"referenceTrigger": {
+						"referenceName": "AIRPORT trigger after midnight UTC",
+						"type": "TriggerReference"
+					}
+				}
+			]
 		}
 	}
 }
