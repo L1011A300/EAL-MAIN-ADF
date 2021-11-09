@@ -1,7 +1,9 @@
 {
 	"name": "FLIGHT trigger after midnight UTC",
 	"properties": {
-		"annotations": [],
+		"annotations": [
+			"Midnight UTC"
+		],
 		"runtimeState": "Started",
 		"pipeline": {
 			"pipelineReference": {
