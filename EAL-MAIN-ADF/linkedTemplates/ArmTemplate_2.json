@@ -13,6 +13,136 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_pairing')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-pairing-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-pairing"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"pairing_id": {
+							"type": "integer"
+						},
+						"user_id": {
+							"type": "integer"
+						},
+						"position": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"date": {
+							"type": "date"
+						},
+						"start_date": {
+							"type": "date"
+						},
+						"end_date": {
+							"type": "date"
+						},
+						"updated_at": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_pairing_item')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-pairing-item-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-pairingitem"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"pairing_id": {
+							"type": "integer"
+						},
+						"pairing_item_id": {
+							"type": "integer"
+						},
+						"pairing_item_type": {
+							"type": "string"
+						},
+						"flight_id": {
+							"type": "null"
+						},
+						"shift_name": {
+							"type": "string"
+						},
+						"shift_start_time": {
+							"type": "string"
+						},
+						"shift_end_time": {
+							"type": "string"
+						},
+						"shift_type": {
+							"type": "string"
+						},
+						"shift_is_work": {
+							"type": "boolean"
+						},
+						"shift_is_reserve": {
+							"type": "boolean"
+						},
+						"shift_is_sick": {
+							"type": "boolean"
+						},
+						"shift_is_training": {
+							"type": "boolean"
+						},
+						"shift_is_vacation": {
+							"type": "boolean"
+						},
+						"updated_at": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_shift')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1004,69 +1134,6 @@
 							"type": "TumblingWindowTriggerDependencyReference",
 							"referenceTrigger": {
 								"referenceName": "AIRPORT trigger 7am",
-								"type": "TriggerReference"
-							}
-						}
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DELAYS trigger midnight UTC')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 00:00 EDT",
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"type": "TumblingWindowTrigger",
-				"typeProperties": {
-					"frequency": "Hour",
-					"interval": 24,
-					"startTime": "2021-10-22T23:45:00Z",
-					"delay": "00:00:00",
-					"maxConcurrency": 50,
-					"retryPolicy": {
-						"count": 5,
-						"intervalInSeconds": 240
-					},
-					"dependsOn": [
-						{
-							"type": "TumblingWindowTriggerDependencyReference",
-							"referenceTrigger": {
-								"referenceName": "FLIGHT trigger midnight UTC",
-								"type": "TriggerReference"
-							}
-						}
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DELAYS trigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table",
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"type": "TumblingWindowTrigger",
-				"typeProperties": {
-					"frequency": "Hour",
-					"interval": 24,
-					"startTime": "2021-06-16T09:00:00Z",
-					"delay": "00:00:00",
-					"maxConcurrency": 50,
-					"retryPolicy": {
-						"intervalInSeconds": 30
-					},
-					"dependsOn": [
-						{
-							"type": "TumblingWindowTriggerDependencyReference",
-							"referenceTrigger": {
-								"referenceName": "AIRPORT trigger",
 								"type": "TriggerReference"
 							}
 						}

@@ -13,6 +13,46 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_paxdata_test_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "test",
+						"container": "mis-choice"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_paxinfo_test')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MIS_Choice_REST",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": "passengers/GetPassengersByFlightID?flightID=2b944650-b20e-ec11-aa0e-005056010094&flightSegmentNo=1&includeBags=false&includeAncillaries=false&includeBagTracking=false"
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/RADIXX_DESTINATION_TCN_FILE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -671,136 +711,6 @@
 						},
 						"lndg_actual_braking": {
 							"type": "null"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_pairing')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-pairing-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-pairing"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"pairing_id": {
-							"type": "integer"
-						},
-						"user_id": {
-							"type": "integer"
-						},
-						"position": {
-							"type": "string"
-						},
-						"name": {
-							"type": "string"
-						},
-						"date": {
-							"type": "date"
-						},
-						"start_date": {
-							"type": "date"
-						},
-						"end_date": {
-							"type": "date"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_pairing_item')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-pairing-item-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-pairingitem"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"pairing_id": {
-							"type": "integer"
-						},
-						"pairing_item_id": {
-							"type": "integer"
-						},
-						"pairing_item_type": {
-							"type": "string"
-						},
-						"flight_id": {
-							"type": "null"
-						},
-						"shift_name": {
-							"type": "string"
-						},
-						"shift_start_time": {
-							"type": "string"
-						},
-						"shift_end_time": {
-							"type": "string"
-						},
-						"shift_type": {
-							"type": "string"
-						},
-						"shift_is_work": {
-							"type": "boolean"
-						},
-						"shift_is_reserve": {
-							"type": "boolean"
-						},
-						"shift_is_sick": {
-							"type": "boolean"
-						},
-						"shift_is_training": {
-							"type": "boolean"
-						},
-						"shift_is_vacation": {
-							"type": "boolean"
 						},
 						"updated_at": {
 							"type": "string"

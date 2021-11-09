@@ -13,6 +13,69 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DELAYS trigger midnight UTC')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 00:00 EDT",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-10-22T23:45:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"count": 5,
+						"intervalInSeconds": 240
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "FLIGHT trigger midnight UTC",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DELAYS trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-06-16T09:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "AIRPORT trigger",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MIS_Choice_paxinfo_TEST')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -199,7 +262,9 @@
 					]
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/triggers/DELAYS trigger')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHED trigger 7am')]",
@@ -971,82 +1036,6 @@
 						}
 					],
 					"script": "source(output(\n\t\tactual_arrival_airport as string,\n\t\tactual_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_departure_airport as string,\n\t\tactual_oooi_in as timestamp,\n\t\tactual_oooi_off as timestamp,\n\t\tactual_oooi_on as timestamp,\n\t\tactual_oooi_out as timestamp,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tbase_airport as string,\n\t\tbase_airport_id as string,\n\t\tcargo_off as integer,\n\t\tcargo_on as integer,\n\t\tcargo_weight as integer,\n\t\testimated_arrival as timestamp,\n\t\testimated_departure as timestamp,\n\t\tflight_date as date,\n\t\tflight_id as integer,\n\t\tflight_number as string,\n\t\tflight_type as string,\n\t\tfuel_in as double,\n\t\tfuel_out as double,\n\t\tfuel_uplift as integer,\n\t\tfuel_uplifts as string,\n\t\tis_canceled as string,\n\t\tis_verified as string,\n\t\tlndg_actual_braking as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_touchdown_zone as string,\n\t\tmaint_log_page as string,\n\t\tnotes as string,\n\t\tops_type as string,\n\t\tsched_arrive_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tscheduled_arrival as timestamp,\n\t\tscheduled_arrival_airport as string,\n\t\tscheduled_departure as timestamp,\n\t\tscheduled_departure_airport as string,\n\t\tupdated_at as timestamp,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> SQLFltData\nsource(output(\n\t\tEFF_DATE as timestamp 'yyyy.MM.dd HH:mm:ss',\n\t\tEND_DATE as timestamp 'yyyy.MM.dd HH:mm:ss',\n\t\tBEGIN_FLT_NBR as integer '##0',\n\t\tEND_FLT_NBR as integer '##0',\n\t\tFLIGHT_TYPE as string,\n\t\tFLIGHT_SUBTYPE as string,\n\t\tFLT_TYPE_OPS_REPORT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> FltNbrRangeMatrix\nSQLFltData split(startsWith(flight_number,'CMB'),\n\tdisjoint: false) ~> ConditionalSplit1@(CMBfltnbr, STDfltnbr)\nChgFltNumToString select(mapColumn(\n\t\tactual_arrival_airport,\n\t\tactual_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_departure_airport,\n\t\tactual_oooi_in,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_out,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tbase_airport,\n\t\tbase_airport_id,\n\t\tcargo_off,\n\t\tcargo_on,\n\t\tcargo_weight,\n\t\testimated_arrival,\n\t\testimated_departure,\n\t\tflight_date,\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_type = flt_type,\n\t\tfuel_in,\n\t\tfuel_out,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tis_canceled,\n\t\tis_verified,\n\t\tlndg_actual_braking,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_touchdown_zone,\n\t\tmaint_log_page,\n\t\tnotes,\n\t\tops_type,\n\t\tsched_arrive_airport_id,\n\t\tsched_depart_airport_id,\n\t\tscheduled_arrival,\n\t\tscheduled_arrival_airport,\n\t\tscheduled_departure,\n\t\tscheduled_departure_airport,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID,\n\t\tREVENUE_TYPE = FLIGHT_TYPE,\n\t\tREVENUE_SUBTYPE = FLIGHT_SUBTYPE,\n\t\tFLT_TYPE_OPS_REPORT\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> STDfltnbrRevCat\nConditionalSplit1@CMBfltnbr derive(REVENUE_TYPE = \"DOD Int'l\",\n\t\tREVENUE_SUBTYPE = \"International\",\n\t\tFLT_TYPE_OPS_REPORT = \"DOD\") ~> CMBfltnbrRevCat\nCMBfltnbrRevCat, STDfltnbrRevCat union(byName: true)~> UnionCMBandSTDfltnbrs\nConditionalSplit1@STDfltnbr derive(flight_number = toInteger(flight_number)) ~> ChangeFltNumToINT\nChangeFltNumToINT select(mapColumn(\n\t\tactual_arrival_airport,\n\t\tactual_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_departure_airport,\n\t\tactual_oooi_in,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_out,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tbase_airport,\n\t\tbase_airport_id,\n\t\tcargo_off,\n\t\tcargo_on,\n\t\tcargo_weight,\n\t\testimated_arrival,\n\t\testimated_departure,\n\t\tflight_date,\n\t\tflight_id,\n\t\tflight_number,\n\t\tflt_type = flight_type,\n\t\tfuel_in,\n\t\tfuel_out,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tis_canceled,\n\t\tis_verified,\n\t\tlndg_actual_braking,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_touchdown_zone,\n\t\tmaint_log_page,\n\t\tnotes,\n\t\tops_type,\n\t\tsched_arrive_airport_id,\n\t\tsched_depart_airport_id,\n\t\tscheduled_arrival,\n\t\tscheduled_arrival_airport,\n\t\tscheduled_departure,\n\t\tscheduled_departure_airport,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> TrunkFltType\nJoin1 derive(flight_number = toString(flight_number)) ~> ChgFltNumToString\nTrunkFltType, FltNbrRangeMatrix join(flight_number >= BEGIN_FLT_NBR\n\t&& flight_number <= END_FLT_NBR\n\t&& scheduled_departure >= EFF_DATE\n\t&& scheduled_departure <= END_DATE,\n\tjoinType:'left',\n\tbroadcast: 'right')~> Join1\nUnionCMBandSTDfltnbrs sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FltDataToSQL"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/USERCATEGORYblobtoSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"folder": {
-					"name": "Inactive"
-				},
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SF_source_user_category",
-								"type": "DatasetReference"
-							},
-							"name": "SFUserCategory"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_USER_CATEGORY_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "USERCATEGORYtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tuser_id as string,\n\t\tcategory_type as string,\n\t\teffective_start as string,\n\t\teffective_end as string,\n\t\tbase_icao_code as string,\n\t\tbase_iata_code as string,\n\t\tbase_faa_code as string,\n\t\tbase_name as string,\n\t\tequipment_group_name as string,\n\t\tequipment_group_code as string,\n\t\tposition_name as string,\n\t\tposition_code as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFUserCategory\nSFUserCategory derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> USERCATEGORYtoSQL"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/USERblobtoSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"folder": {
-					"name": "Inactive"
-				},
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SF_source_user",
-								"type": "DatasetReference"
-							},
-							"name": "SFUser"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_USER_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "USERtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFUser\nSFUser derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> USERtoSQL"
 				}
 			},
 			"dependsOn": []
