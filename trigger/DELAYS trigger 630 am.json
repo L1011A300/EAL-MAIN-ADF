@@ -24,8 +24,9 @@
 			"dependsOn": [
 				{
 					"type": "TumblingWindowTriggerDependencyReference",
+					"offset": "-0:10:30:00",
 					"referenceTrigger": {
-						"referenceName": "AIRPORT trigger 630 am",
+						"referenceName": "AIRPORT trigger after midnight UTC",
 						"type": "TriggerReference"
 					}
 				}
