@@ -2,7 +2,9 @@
 	"name": "EQUIP_SCHD trigger 630 am",
 	"properties": {
 		"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 6:30 a.m.",
-		"annotations": [],
+		"annotations": [
+			"10:30 a.m. UTC"
+		],
 		"runtimeState": "Started",
 		"pipeline": {
 			"pipelineReference": {
