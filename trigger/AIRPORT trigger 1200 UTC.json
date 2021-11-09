@@ -4,12 +4,6 @@
 		"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table at 00:00 UTC",
 		"annotations": [],
 		"runtimeState": "Stopped",
-		"pipeline": {
-			"pipelineReference": {
-				"referenceName": "Airport_data",
-				"type": "PipelineReference"
-			}
-		},
 		"type": "TumblingWindowTrigger",
 		"typeProperties": {
 			"frequency": "Hour",
