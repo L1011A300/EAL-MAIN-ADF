@@ -56,7 +56,9 @@
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
+				"annotations": [
+					"5:00 a.m. UTC"
+				],
 				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
@@ -86,7 +88,9 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 6:30 a.m. EDT",
-				"annotations": [],
+				"annotations": [
+					"10:30 a.m. UTC"
+				],
 				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
@@ -109,8 +113,9 @@
 					"dependsOn": [
 						{
 							"type": "TumblingWindowTriggerDependencyReference",
+							"offset": "-0:10:30:00",
 							"referenceTrigger": {
-								"referenceName": "AIRPORT trigger 630 am",
+								"referenceName": "AIRPORT trigger after midnight UTC",
 								"type": "TriggerReference"
 							}
 						}
@@ -124,7 +129,9 @@
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
+				"annotations": [
+					"Midnight UTC"
+				],
 				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
@@ -162,7 +169,9 @@
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
+				"annotations": [
+					"Midnight UTC"
+				],
 				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
@@ -203,7 +212,9 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"description": "ETL populates dbo.SF_EQUIP_SCHD_PROD SQL Server table at 6:30 a.m.",
-				"annotations": [],
+				"annotations": [
+					"10:30 a.m. UTC"
+				],
 				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
@@ -244,7 +255,9 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table at 6:30 a.m. EDT",
-				"annotations": [],
+				"annotations": [
+					"10:30 a.m. UTC"
+				],
 				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {

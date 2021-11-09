@@ -3240,7 +3240,7 @@
 			"properties": {
 				"description": "ETL populates dbo.SF_AIRPORT_PROD SQL Server table at 6:30 a.m. EDT",
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Airport_data",
@@ -3271,7 +3271,9 @@
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
+				"annotations": [
+					"Midnight UTC"
+				],
 				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
