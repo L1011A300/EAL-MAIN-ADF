@@ -2,7 +2,9 @@
 	"name": "FLIGHT trigger 630 am",
 	"properties": {
 		"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table at 6:30 a.m. EDT",
-		"annotations": [],
+		"annotations": [
+			"10:30 a.m. UTC"
+		],
 		"runtimeState": "Started",
 		"pipeline": {
 			"pipelineReference": {
