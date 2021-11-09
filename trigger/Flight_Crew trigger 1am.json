@@ -1,7 +1,9 @@
 {
 	"name": "Flight_Crew trigger 1am",
 	"properties": {
-		"annotations": [],
+		"annotations": [
+			"5:00 a.m. UTC"
+		],
 		"runtimeState": "Started",
 		"pipeline": {
 			"pipelineReference": {
