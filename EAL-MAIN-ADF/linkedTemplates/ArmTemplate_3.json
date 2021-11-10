@@ -786,7 +786,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "Flt_nbr_range_matrix",
+								"referenceName": "Flt_nbr_range_matrix_csv",
 								"type": "DatasetReference"
 							},
 							"name": "FltNbrMatrix"
@@ -806,10 +806,12 @@
 							"name": "AddWrkflwIDandTS"
 						}
 					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tEFF_DATE as date 'yyyy-MM-dd',\n\t\tEND_DATE as date 'yyyy-MM-dd',\n\t\tBEGIN_FLT_NBR as integer '##0',\n\t\tEND_FLT_NBR as integer '##0',\n\t\tFLIGHT_TYPE as string,\n\t\tFLIGHT_SUBTYPE as string,\n\t\tFLT_TYPE_OPS_REPORT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> FltNbrMatrix\nFltNbrMatrix derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FltNbrMatrixToSQL"
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tEFF_DATE as string,\n\t\tEND_DATE as string,\n\t\tBEGIN_FLT_NBR as string,\n\t\tEND_FLT_NBR as string,\n\t\tFLIGHT_TYPE as string,\n\t\tFLIGHT_SUBTYPE as string,\n\t\tFLT_TYPE_OPS_REPORT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> FltNbrMatrix\nFltNbrMatrix derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FltNbrMatrixToSQL"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Flt_nbr_range_matrix_csv')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/MIS_Choice_Pax_Bags_to_SQL')]",
