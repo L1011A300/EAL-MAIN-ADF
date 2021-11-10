@@ -1,6 +1,7 @@
 {
 	"name": "TESTfltdatawthCategories",
 	"properties": {
+		"description": "Adds Revenue Type and Subtype to flight data.",
 		"activities": [
 			{
 				"name": "FlightBlobToSQLTEST",
