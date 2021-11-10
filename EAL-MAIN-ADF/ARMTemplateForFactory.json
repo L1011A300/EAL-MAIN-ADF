@@ -7830,6 +7830,7 @@
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "MUST FORMAT DATES AS \"yyyy-MM-dd HH:mm:ss\"",
 				"linkedServiceName": {
 					"referenceName": "eal_main_blob_connection",
 					"type": "LinkedServiceReference"
@@ -7908,7 +7909,8 @@
 								"referenceName": "Flt_nbr_range_matrix_csv",
 								"type": "DatasetReference"
 							},
-							"name": "FltNbrRangeMatrixCSV"
+							"name": "FltNbrRangeMatrixCSV",
+							"description": "Import data from Flt_nbr_range_matrix_csv.\nMUST FORMAT DATES AS \"yyyy-MM-dd HH:mm:ss\""
 						}
 					],
 					"sinks": [
