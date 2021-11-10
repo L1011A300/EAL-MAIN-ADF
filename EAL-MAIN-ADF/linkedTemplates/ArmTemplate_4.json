@@ -6,20 +6,84 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "EAL-MAIN-ADF"
-		},
-		"Trigger_qk2_properties_pipeline_parameters_windowStart": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.windowStartTime"
-		},
-		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.windowEndTime"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/TESTFltDataWthCategories_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "TEST"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SQL_FLIGHT_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "SQLFltData"
+						},
+						{
+							"dataset": {
+								"referenceName": "Flt_nbr_range_matrix",
+								"type": "DatasetReference"
+							},
+							"name": "FltNbrRangeMatrix"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SF_FLT_CMBandSTDnbrs",
+								"type": "DatasetReference"
+							},
+							"name": "FltDataToSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "ConditionalSplit1",
+							"description": "Splits flight data into two sets: one with flight numbers beginning with \"CMB\" and another for purely numeric flight numbers."
+						},
+						{
+							"name": "STDfltnbrRevCat",
+							"description": "Changes flight data \"flt_type\" back to \"flight_type\" and changes flt number range data \"FLIGHT_TYPE\" to \"REVENUE_TYPE\""
+						},
+						{
+							"name": "CMBfltnbrRevCat",
+							"description": "Assigns \"DOD Int'l\" revenue type to all flight numbers beginning with \"CMB.\""
+						},
+						{
+							"name": "UnionCMBandSTDfltnbrs"
+						},
+						{
+							"name": "ChangeFltNumToINT",
+							"description": "Changes \"flight_number\" to integer."
+						},
+						{
+							"name": "TrunkFltType",
+							"description": "Renaming flight_type to flt_type to avoid duplicate column names with FLIGHT_TYPE column in FltNbrRangeMatrix."
+						},
+						{
+							"name": "ChgFltNumToString",
+							"description": "Changes \"flight_number\" back to string from integer."
+						},
+						{
+							"name": "JoinToFltNbrRangeMatrix"
+						}
+					],
+					"script": "source(output(\n\t\tactual_arrival_airport as string,\n\t\tactual_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_departure_airport as string,\n\t\tactual_oooi_in as timestamp,\n\t\tactual_oooi_off as timestamp,\n\t\tactual_oooi_on as timestamp,\n\t\tactual_oooi_out as timestamp,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tbase_airport as string,\n\t\tbase_airport_id as string,\n\t\tcargo_off as integer,\n\t\tcargo_on as integer,\n\t\tcargo_weight as integer,\n\t\testimated_arrival as timestamp,\n\t\testimated_departure as timestamp,\n\t\tflight_date as date,\n\t\tflight_id as integer,\n\t\tflight_number as string,\n\t\tflight_type as string,\n\t\tfuel_in as double,\n\t\tfuel_out as double,\n\t\tfuel_uplift as integer,\n\t\tfuel_uplifts as string,\n\t\tis_canceled as string,\n\t\tis_verified as string,\n\t\tlndg_actual_braking as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_touchdown_zone as string,\n\t\tmaint_log_page as string,\n\t\tnotes as string,\n\t\tops_type as string,\n\t\tsched_arrive_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tscheduled_arrival as timestamp,\n\t\tscheduled_arrival_airport as string,\n\t\tscheduled_departure as timestamp,\n\t\tscheduled_departure_airport as string,\n\t\tupdated_at as timestamp,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> SQLFltData\nsource(output(\n\t\tEFF_DATE as string,\n\t\tEND_DATE as string,\n\t\tBEGIN_FLT_NBR as integer '##0',\n\t\tEND_FLT_NBR as integer '##0',\n\t\tFLIGHT_TYPE as string,\n\t\tFLIGHT_SUBTYPE as string,\n\t\tFLT_TYPE_OPS_REPORT as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> FltNbrRangeMatrix\nSQLFltData split(startsWith(flight_number,'CMB'),\n\tdisjoint: false) ~> ConditionalSplit1@(CMBfltnbr, STDfltnbr)\nChgFltNumToString select(mapColumn(\n\t\tactual_arrival_airport,\n\t\tactual_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_departure_airport,\n\t\tactual_oooi_in,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_out,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tbase_airport,\n\t\tbase_airport_id,\n\t\tcargo_off,\n\t\tcargo_on,\n\t\tcargo_weight,\n\t\testimated_arrival,\n\t\testimated_departure,\n\t\tflight_date,\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_type = flt_type,\n\t\tfuel_in,\n\t\tfuel_out,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tis_canceled,\n\t\tis_verified,\n\t\tlndg_actual_braking,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_touchdown_zone,\n\t\tmaint_log_page,\n\t\tnotes,\n\t\tops_type,\n\t\tsched_arrive_airport_id,\n\t\tsched_depart_airport_id,\n\t\tscheduled_arrival,\n\t\tscheduled_arrival_airport,\n\t\tscheduled_departure,\n\t\tscheduled_departure_airport,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID,\n\t\tREVENUE_TYPE = FLIGHT_TYPE,\n\t\tREVENUE_SUBTYPE = FLIGHT_SUBTYPE,\n\t\tFLT_TYPE_OPS_REPORT\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> STDfltnbrRevCat\nConditionalSplit1@CMBfltnbr derive(REVENUE_TYPE = \"DOD Int'l\",\n\t\tREVENUE_SUBTYPE = \"International\",\n\t\tFLT_TYPE_OPS_REPORT = \"DOD\") ~> CMBfltnbrRevCat\nCMBfltnbrRevCat, STDfltnbrRevCat union(byName: true)~> UnionCMBandSTDfltnbrs\nConditionalSplit1@STDfltnbr derive(flight_number = toInteger(flight_number)) ~> ChangeFltNumToINT\nChangeFltNumToINT select(mapColumn(\n\t\tactual_arrival_airport,\n\t\tactual_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_departure_airport,\n\t\tactual_oooi_in,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_out,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tbase_airport,\n\t\tbase_airport_id,\n\t\tcargo_off,\n\t\tcargo_on,\n\t\tcargo_weight,\n\t\testimated_arrival,\n\t\testimated_departure,\n\t\tflight_date,\n\t\tflight_id,\n\t\tflight_number,\n\t\tflt_type = flight_type,\n\t\tfuel_in,\n\t\tfuel_out,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tis_canceled,\n\t\tis_verified,\n\t\tlndg_actual_braking,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_touchdown_zone,\n\t\tmaint_log_page,\n\t\tnotes,\n\t\tops_type,\n\t\tsched_arrive_airport_id,\n\t\tsched_depart_airport_id,\n\t\tscheduled_arrival,\n\t\tscheduled_arrival_airport,\n\t\tscheduled_departure,\n\t\tscheduled_departure_airport,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> TrunkFltType\nJoinToFltNbrRangeMatrix derive(flight_number = toString(flight_number)) ~> ChgFltNumToString\nTrunkFltType, FltNbrRangeMatrix join(between(flight_number,BEGIN_FLT_NBR,END_FLT_NBR) && between(scheduled_departure,EFF_DATE,END_DATE),\n\tjoinType:'cross',\n\tbroadcast: 'right')~> JoinToFltNbrRangeMatrix\nUnionCMBandSTDfltnbrs sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FltDataToSQL"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/USERCATEGORYblobtoSQL')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
@@ -97,10 +161,93 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TESTFltDataWthCategories_copy2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "TEST"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SQL_FLIGHT_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "SQLFltData"
+						},
+						{
+							"dataset": {
+								"referenceName": "Flt_nbr_range_matrix",
+								"type": "DatasetReference"
+							},
+							"name": "FltNbrRangeMatrix"
+						},
+						{
+							"dataset": {
+								"referenceName": "Flt_nbr_range_matrix_csv",
+								"type": "DatasetReference"
+							},
+							"name": "FltNbrRangeMatrixCSV"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SF_FLT_CMBandSTDnbrs",
+								"type": "DatasetReference"
+							},
+							"name": "FltDataToSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "ConditionalSplit1",
+							"description": "Splits flight data into two sets: one with flight numbers beginning with \"CMB\" and another for purely numeric flight numbers."
+						},
+						{
+							"name": "STDfltnbrRevCat",
+							"description": "Changes flight data \"flt_type\" back to \"flight_type\" and changes flt number range data \"FLIGHT_TYPE\" to \"REVENUE_TYPE\""
+						},
+						{
+							"name": "CMBfltnbrRevCat",
+							"description": "Assigns \"DOD Int'l\" revenue type to all flight numbers beginning with \"CMB.\""
+						},
+						{
+							"name": "UnionCMBandSTDfltnbrs"
+						},
+						{
+							"name": "ChangeFltNumToINT",
+							"description": "Changes \"flight_number\" to integer."
+						},
+						{
+							"name": "TrunkFltType",
+							"description": "Renaming flight_type to flt_type to avoid duplicate column names with FLIGHT_TYPE column in FltNbrRangeMatrix."
+						},
+						{
+							"name": "ChgFltNumToString",
+							"description": "Changes \"flight_number\" back to string from integer."
+						},
+						{
+							"name": "JoinToFltNbrRangeMatrix"
+						},
+						{
+							"name": "DerivedColumn1"
+						}
+					],
+					"script": "source(output(\n\t\tactual_arrival_airport as string,\n\t\tactual_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_departure_airport as string,\n\t\tactual_oooi_in as timestamp,\n\t\tactual_oooi_off as timestamp,\n\t\tactual_oooi_on as timestamp,\n\t\tactual_oooi_out as timestamp,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tbase_airport as string,\n\t\tbase_airport_id as string,\n\t\tcargo_off as integer,\n\t\tcargo_on as integer,\n\t\tcargo_weight as integer,\n\t\testimated_arrival as timestamp,\n\t\testimated_departure as timestamp,\n\t\tflight_date as date,\n\t\tflight_id as integer,\n\t\tflight_number as string,\n\t\tflight_type as string,\n\t\tfuel_in as double,\n\t\tfuel_out as double,\n\t\tfuel_uplift as integer,\n\t\tfuel_uplifts as string,\n\t\tis_canceled as string,\n\t\tis_verified as string,\n\t\tlndg_actual_braking as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_touchdown_zone as string,\n\t\tmaint_log_page as string,\n\t\tnotes as string,\n\t\tops_type as string,\n\t\tsched_arrive_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tscheduled_arrival as timestamp,\n\t\tscheduled_arrival_airport as string,\n\t\tscheduled_departure as timestamp,\n\t\tscheduled_departure_airport as string,\n\t\tupdated_at as timestamp,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> SQLFltData\nsource(output(\n\t\tEFF_DATE as string,\n\t\tEND_DATE as string,\n\t\tBEGIN_FLT_NBR as integer '##0',\n\t\tEND_FLT_NBR as integer '##0',\n\t\tFLIGHT_TYPE as string,\n\t\tFLIGHT_SUBTYPE as string,\n\t\tFLT_TYPE_OPS_REPORT as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> FltNbrRangeMatrix\nsource(output(\n\t\tEFF_DATE as string,\n\t\tEND_DATE as string,\n\t\tBEGIN_FLT_NBR as string,\n\t\tEND_FLT_NBR as string,\n\t\tFLIGHT_TYPE as string,\n\t\tFLIGHT_SUBTYPE as string,\n\t\tFLT_TYPE_OPS_REPORT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> FltNbrRangeMatrixCSV\nSQLFltData split(startsWith(flight_number,'CMB'),\n\tdisjoint: false) ~> ConditionalSplit1@(CMBfltnbr, STDfltnbr)\nChgFltNumToString select(mapColumn(\n\t\tactual_arrival_airport,\n\t\tactual_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_departure_airport,\n\t\tactual_oooi_in,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_out,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tbase_airport,\n\t\tbase_airport_id,\n\t\tcargo_off,\n\t\tcargo_on,\n\t\tcargo_weight,\n\t\testimated_arrival,\n\t\testimated_departure,\n\t\tflight_date,\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_type = flt_type,\n\t\tfuel_in,\n\t\tfuel_out,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tis_canceled,\n\t\tis_verified,\n\t\tlndg_actual_braking,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_touchdown_zone,\n\t\tmaint_log_page,\n\t\tnotes,\n\t\tops_type,\n\t\tsched_arrive_airport_id,\n\t\tsched_depart_airport_id,\n\t\tscheduled_arrival,\n\t\tscheduled_arrival_airport,\n\t\tscheduled_departure,\n\t\tscheduled_departure_airport,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID,\n\t\tREVENUE_TYPE = FLIGHT_TYPE,\n\t\tREVENUE_SUBTYPE = FLIGHT_SUBTYPE,\n\t\tFLT_TYPE_OPS_REPORT\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> STDfltnbrRevCat\nConditionalSplit1@CMBfltnbr derive(REVENUE_TYPE = \"DOD Int'l\",\n\t\tREVENUE_SUBTYPE = \"International\",\n\t\tFLT_TYPE_OPS_REPORT = \"DOD\") ~> CMBfltnbrRevCat\nCMBfltnbrRevCat, STDfltnbrRevCat union(byName: true)~> UnionCMBandSTDfltnbrs\nConditionalSplit1@STDfltnbr derive(flight_number = toInteger(flight_number),\n\t\tscheduled_departure = toString(scheduled_departure)) ~> ChangeFltNumToINT\nChangeFltNumToINT select(mapColumn(\n\t\tactual_arrival_airport,\n\t\tactual_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_departure_airport,\n\t\tactual_oooi_in,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_out,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tbase_airport,\n\t\tbase_airport_id,\n\t\tcargo_off,\n\t\tcargo_on,\n\t\tcargo_weight,\n\t\testimated_arrival,\n\t\testimated_departure,\n\t\tflight_date,\n\t\tflight_id,\n\t\tflight_number,\n\t\tflt_type = flight_type,\n\t\tfuel_in,\n\t\tfuel_out,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tis_canceled,\n\t\tis_verified,\n\t\tlndg_actual_braking,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_touchdown_zone,\n\t\tmaint_log_page,\n\t\tnotes,\n\t\tops_type,\n\t\tsched_arrive_airport_id,\n\t\tsched_depart_airport_id,\n\t\tscheduled_arrival,\n\t\tscheduled_arrival_airport,\n\t\tscheduled_departure,\n\t\tscheduled_departure_airport,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> TrunkFltType\nJoinToFltNbrRangeMatrix derive(flight_number = toString(flight_number),\n\t\tscheduled_departure = toTimestamp(scheduled_departure,'yyyy-MM-dd HH:mm:ss')) ~> ChgFltNumToString\nTrunkFltType, DerivedColumn1 join(flight_number >= BEGIN_FLT_NBR\n\t&& flight_number <= END_FLT_NBR\n\t&& scheduled_departure >= EFF_DATE\n\t&& scheduled_departure <= END_DATE,\n\tjoinType:'left',\n\tbroadcast: 'right')~> JoinToFltNbrRangeMatrix\nFltNbrRangeMatrixCSV derive(BEGIN_FLT_NBR = toInteger(BEGIN_FLT_NBR),\n\t\tEND_FLT_NBR = toInteger(END_FLT_NBR)) ~> DerivedColumn1\nUnionCMBandSTDfltnbrs sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FltDataToSQL"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Airport_data')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "Populates airport reference data in SQL Server DB from SkedFlex.",
 				"activities": [
 					{
 						"name": "SF_airport_data_to_Azure_blob",
@@ -209,6 +356,7 @@
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "Populates flight delay and cancelation data in SQL Server DB from SkedFlex.",
 				"activities": [
 					{
 						"name": "SF_Delay_data_to_Azure_blob",
@@ -317,6 +465,7 @@
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "Populates aircraft maintenance scheduling data in SQL Server DB from SkedFlex.",
 				"activities": [
 					{
 						"name": "SF_Equip_Sched_data_to_Azure_blob",
@@ -425,6 +574,7 @@
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "Populates flight data in SQL Server DB from SkedFlex.",
 				"activities": [
 					{
 						"name": "SF_Flight_data_to_Azure_blob",
@@ -965,6 +1115,7 @@
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "Trigger this pipeline manually any time there are changes to the flight number range matrix.",
 				"activities": [
 					{
 						"name": "Flt_nbr_data_to_SQL",
@@ -2257,12 +2408,13 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "TESTFltDataWthCategories",
+								"referenceName": "TESTFltDataWthCategories_copy2",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
 									"SQLFltData": {},
 									"FltNbrRangeMatrix": {},
+									"FltNbrRangeMatrixCSV": {},
 									"FltDataToSQL": {}
 								}
 							},
@@ -2286,13 +2438,16 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/TESTFltDataWthCategories_copy2')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/flight_crew_data')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "Populates flight crew data in SQL Server DB from SkedFlex.",
 				"activities": [
 					{
 						"name": "SF flight crew data to Azure blob",
@@ -3240,75 +3395,6 @@
 							}
 						}
 					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FLIGHT trigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table",
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"type": "TumblingWindowTrigger",
-				"typeProperties": {
-					"frequency": "Hour",
-					"interval": 24,
-					"startTime": "2021-06-16T09:00:00Z",
-					"delay": "00:00:00",
-					"maxConcurrency": 50,
-					"retryPolicy": {
-						"intervalInSeconds": 30
-					},
-					"dependsOn": [
-						{
-							"type": "TumblingWindowTriggerDependencyReference",
-							"referenceTrigger": {
-								"referenceName": "EQUIP_SCHD trigger",
-								"type": "TriggerReference"
-							}
-						}
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Trigger_qk2')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "TCN_COPY_TEST",
-						"type": "PipelineReference"
-					},
-					"parameters": {
-						"windowStart": {
-							"type": "Expression",
-							"value": "[parameters('Trigger_qk2_properties_pipeline_parameters_windowStart')]"
-						},
-						"windowEnd": {
-							"type": "Expression",
-							"value": "[parameters('Trigger_qk2_properties_pipeline_parameters_windowEnd')]"
-						}
-					}
-				},
-				"type": "TumblingWindowTrigger",
-				"typeProperties": {
-					"frequency": "Minute",
-					"interval": 15,
-					"startTime": "2021-08-23T20:15:00Z",
-					"delay": "00:00:00",
-					"maxConcurrency": 50,
-					"retryPolicy": {
-						"intervalInSeconds": 30
-					},
-					"dependsOn": []
 				}
 			},
 			"dependsOn": []

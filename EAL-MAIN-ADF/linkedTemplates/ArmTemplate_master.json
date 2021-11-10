@@ -224,12 +224,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"Trigger_qk2_properties_pipeline_parameters_windowStart": {
-						"value": "[parameters('Trigger_qk2_properties_pipeline_parameters_windowStart')]"
-					},
-					"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
-						"value": "[parameters('Trigger_qk2_properties_pipeline_parameters_windowEnd')]"
 					}
 				}
 			},
@@ -250,6 +244,12 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"Trigger_qk2_properties_pipeline_parameters_windowStart": {
+						"value": "[parameters('Trigger_qk2_properties_pipeline_parameters_windowStart')]"
+					},
+					"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
+						"value": "[parameters('Trigger_qk2_properties_pipeline_parameters_windowEnd')]"
 					}
 				}
 			},
