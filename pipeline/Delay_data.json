@@ -1,6 +1,7 @@
 {
 	"name": "Delay_data",
 	"properties": {
+		"description": "Populates flight delay and cancelation data in SQL Server DB from SkedFlex.",
 		"activities": [
 			{
 				"name": "SF_Delay_data_to_Azure_blob",

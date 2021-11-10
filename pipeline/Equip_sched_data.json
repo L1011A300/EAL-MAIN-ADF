@@ -1,6 +1,7 @@
 {
 	"name": "Equip_sched_data",
 	"properties": {
+		"description": "Populates aircraft maintenance scheduling data in SQL Server DB from SkedFlex.",
 		"activities": [
 			{
 				"name": "SF_Equip_Sched_data_to_Azure_blob",

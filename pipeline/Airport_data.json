@@ -1,6 +1,7 @@
 {
 	"name": "Airport_data",
 	"properties": {
+		"description": "Populates airport reference data in SQL Server DB from SkedFlex.",
 		"activities": [
 			{
 				"name": "SF_airport_data_to_Azure_blob",

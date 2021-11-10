@@ -1,6 +1,7 @@
 {
 	"name": "Flight_data",
 	"properties": {
+		"description": "Populates flight data in SQL Server DB from SkedFlex.",
 		"activities": [
 			{
 				"name": "SF_Flight_data_to_Azure_blob",

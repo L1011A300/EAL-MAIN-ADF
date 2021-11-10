@@ -1,6 +1,7 @@
 {
 	"name": "flight_crew_data",
 	"properties": {
+		"description": "Populates flight crew data in SQL Server DB from SkedFlex.",
 		"activities": [
 			{
 				"name": "SF flight crew data to Azure blob",

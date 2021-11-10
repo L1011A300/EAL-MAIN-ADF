@@ -1,6 +1,7 @@
 {
 	"name": "Flight_number_range_data",
 	"properties": {
+		"description": "Trigger this pipeline manually any time there are changes to the flight number range matrix.",
 		"activities": [
 			{
 				"name": "Flt_nbr_data_to_SQL",
