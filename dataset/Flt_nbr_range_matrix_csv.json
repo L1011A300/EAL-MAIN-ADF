@@ -1,0 +1,55 @@
+{
+	"name": "Flt_nbr_range_matrix_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure blob"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "FLT_NBR_RANGE_CSV.csv",
+				"container": "flight-number-range"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "EFF_DATE",
+				"type": "String"
+			},
+			{
+				"name": "END_DATE",
+				"type": "String"
+			},
+			{
+				"name": "BEGIN_FLT_NBR",
+				"type": "String"
+			},
+			{
+				"name": "END_FLT_NBR",
+				"type": "String"
+			},
+			{
+				"name": "FLIGHT_TYPE",
+				"type": "String"
+			},
+			{
+				"name": "FLIGHT_SUBTYPE",
+				"type": "String"
+			},
+			{
+				"name": "FLT_TYPE_OPS_REPORT",
+				"type": "String"
+			}
+		]
+	}
+}
