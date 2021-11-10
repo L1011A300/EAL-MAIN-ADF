@@ -33,25 +33,31 @@
 			],
 			"transformations": [
 				{
-					"name": "ConditionalSplit1"
+					"name": "ConditionalSplit1",
+					"description": "Splits flight data into two sets: one with flight numbers beginning with \"CMB\" and another for purely numeric flight numbers."
 				},
 				{
-					"name": "STDfltnbrRevCat"
+					"name": "STDfltnbrRevCat",
+					"description": "Changes flight data \"flt_type\" back to \"flight_type\" and changes flt number range data \"FLIGHT_TYPE\" to \"REVENUE_TYPE\""
 				},
 				{
-					"name": "CMBfltnbrRevCat"
+					"name": "CMBfltnbrRevCat",
+					"description": "Assigns \"DOD Int'l\" revenue type to all flight numbers beginning with \"CMB.\""
 				},
 				{
 					"name": "UnionCMBandSTDfltnbrs"
 				},
 				{
-					"name": "ChangeFltNumToINT"
+					"name": "ChangeFltNumToINT",
+					"description": "Changes \"flight_number\" to integer."
 				},
 				{
-					"name": "TrunkFltType"
+					"name": "TrunkFltType",
+					"description": "Renaming flight_type to flt_type to avoid duplicate column names with FLIGHT_TYPE column in FltNbrRangeMatrix."
 				},
 				{
-					"name": "ChgFltNumToString"
+					"name": "ChgFltNumToString",
+					"description": "Changes \"flight_number\" back to string from integer."
 				},
 				{
 					"name": "Join1"
