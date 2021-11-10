@@ -1,6 +1,7 @@
 {
 	"name": "Flt_nbr_range_matrix_csv",
 	"properties": {
+		"description": "MUST FORMAT DATES AS \"yyyy-MM-dd HH:mm:ss\"",
 		"linkedServiceName": {
 			"referenceName": "eal_main_blob_connection",
 			"type": "LinkedServiceReference"
