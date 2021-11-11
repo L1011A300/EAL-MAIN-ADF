@@ -13,6 +13,590 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_Pax_Bags')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "MIS_Choice_Pax_Bags",
+						"folderPath": "test",
+						"container": "mis-choice"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"Flight": {
+							"type": "object",
+							"properties": {
+								"ID": {
+									"type": "string"
+								},
+								"SegmentNo": {
+									"type": "integer"
+								},
+								"ExternalID": {
+									"type": "string"
+								},
+								"CarrierCode": {
+									"type": "string"
+								},
+								"FlightNo": {
+									"type": "string"
+								},
+								"MarketingCarrierCode": {
+									"type": "string"
+								},
+								"MarketingFlightNo": {
+									"type": "string"
+								},
+								"Type": {
+									"type": "string"
+								},
+								"TailNo": {
+									"type": "string"
+								},
+								"OriginIATA": {
+									"type": "string"
+								},
+								"OriginICAO": {
+									"type": "string"
+								},
+								"OriginAirportName": {
+									"type": "string"
+								},
+								"OriginAirportCity": {
+									"type": "string"
+								},
+								"OriginAirportCountryCode": {
+									"type": "string"
+								},
+								"DepartureTerminal": {
+									"type": "string"
+								},
+								"DepartureGate": {
+									"type": "string"
+								},
+								"DestinationIATA": {
+									"type": "string"
+								},
+								"DestinationICAO": {
+									"type": "string"
+								},
+								"DestinationAirportName": {
+									"type": "string"
+								},
+								"DestinationAirportCity": {
+									"type": "string"
+								},
+								"DestinationAirportCountryCode": {
+									"type": "string"
+								},
+								"ArrivalTerminal": {
+									"type": "string"
+								},
+								"ArrivalGate": {
+									"type": "string"
+								},
+								"ScheduledDepartureTime": {
+									"type": "string"
+								},
+								"ScheduledDepartureTimeUTC": {
+									"type": "string"
+								},
+								"EstimatedDepartureTime": {
+									"type": "string"
+								},
+								"ScheduledArrivalTime": {
+									"type": "string"
+								},
+								"EstimatedArrivalTime": {
+									"type": "string"
+								},
+								"BoardingTime": {
+									"type": "string"
+								},
+								"Message": {
+									"type": "string"
+								},
+								"Status": {
+									"type": "string"
+								},
+								"EnablePassengerAPIS": {
+									"type": "boolean"
+								},
+								"EnableCrewAPIS": {
+									"type": "boolean"
+								},
+								"EnableDCS": {
+									"type": "boolean"
+								},
+								"WeightUnitsKgs": {
+									"type": "boolean"
+								},
+								"IsOpenSeating": {
+									"type": "boolean"
+								},
+								"IsProgressiveFlight": {
+									"type": "boolean"
+								},
+								"EnableThroughCheckIn": {
+									"type": "boolean"
+								},
+								"EnableIatciCheckIn": {
+									"type": "boolean"
+								},
+								"EnableBoarding": {
+									"type": "boolean"
+								},
+								"UseAveragePaxWeight": {
+									"type": "boolean"
+								},
+								"UseAverageBagWeight": {
+									"type": "boolean"
+								},
+								"PnlImported": {
+									"type": "boolean"
+								},
+								"IsCancelled": {
+									"type": "boolean"
+								},
+								"CancelledBy": {
+									"type": "string"
+								},
+								"CancelledReason": {
+									"type": "string"
+								},
+								"IsLocked": {
+									"type": "boolean"
+								},
+								"LockedBy": {
+									"type": "string"
+								},
+								"LockedReason": {
+									"type": "string"
+								},
+								"AircraftCapacity": {
+									"type": "integer"
+								},
+								"BookedPassengersCount": {
+									"type": "integer"
+								},
+								"TotalCargoLoad": {
+									"type": "integer"
+								},
+								"UpliftFuelLoad": {
+									"type": "integer"
+								},
+								"TotalFuelLoad": {
+									"type": "integer"
+								},
+								"RemainingFuelLoad": {
+									"type": "integer"
+								},
+								"Carrier": {
+									"type": "object",
+									"properties": {
+										"CarrierName": {
+											"type": "string"
+										},
+										"Code": {
+											"type": "string"
+										},
+										"IATA": {
+											"type": "string"
+										},
+										"ICAO": {
+											"type": "string"
+										},
+										"ApisCarrierCode": {
+											"type": "string"
+										},
+										"IataMessagingCode": {
+											"type": "string"
+										},
+										"Prefix": {
+											"type": "string"
+										},
+										"Address": {
+											"type": "object",
+											"properties": {
+												"ID": {
+													"type": "string"
+												},
+												"Location": {
+													"type": "string"
+												},
+												"Street1": {
+													"type": "string"
+												},
+												"Street2": {
+													"type": "string"
+												},
+												"City": {
+													"type": "string"
+												},
+												"StateCode": {
+													"type": "string"
+												},
+												"PostalCode": {
+													"type": "string"
+												},
+												"CountryCode": {
+													"type": "string"
+												},
+												"CustomData": {
+													"type": "object",
+													"properties": {
+														"Properties": {
+															"type": "object"
+														}
+													}
+												}
+											}
+										},
+										"Email": {
+											"type": "string"
+										},
+										"Website": {
+											"type": "string"
+										},
+										"Logo": {
+											"type": "string"
+										},
+										"Icon": {
+											"type": "string"
+										},
+										"DefaultFlightType": {
+											"type": "integer"
+										},
+										"DefaultIsTestEnvironment": {
+											"type": "boolean"
+										},
+										"DefaultIsOpenSeating": {
+											"type": "boolean"
+										},
+										"DefaultIsEnableBSMs": {
+											"type": "boolean"
+										},
+										"DefaultIsProgressiveFlight": {
+											"type": "boolean"
+										},
+										"DefaultEnableThroughCheckIn": {
+											"type": "boolean"
+										},
+										"DefaultEnableIatciCheckIn": {
+											"type": "boolean"
+										},
+										"DefaultDomesticBoardingTime": {
+											"type": "integer"
+										},
+										"DefaultInternationalBoardingTime": {
+											"type": "integer"
+										},
+										"DefaultWeightUnitsKgs": {
+											"type": "boolean"
+										},
+										"DefaultUseAveragePaxWeight": {
+											"type": "boolean"
+										},
+										"DefaultUseAverageBagWeight": {
+											"type": "boolean"
+										},
+										"DefaultAdultAge": {
+											"type": "integer"
+										},
+										"DefaultAverageAdultMaleWeight": {
+											"type": "integer"
+										},
+										"DefaultAverageAdultFemaleWeight": {
+											"type": "integer"
+										},
+										"DefaultChildAge": {
+											"type": "integer"
+										},
+										"SeatMapChildAge": {
+											"type": "integer"
+										},
+										"DefaultAverageChildWeight": {
+											"type": "integer"
+										},
+										"DefaultPassengerPaddedWeight": {
+											"type": "integer"
+										},
+										"HeavyBagAverageWeight": {
+											"type": "integer"
+										},
+										"HeavyBagThresholdWeight": {
+											"type": "integer"
+										},
+										"LifBagWeightCoefficientType": {
+											"type": "integer"
+										},
+										"LifBagAverageWeight": {
+											"type": "number"
+										},
+										"DefaultCurrencyCode": {
+											"type": "string"
+										},
+										"CurrencyConversionRounding": {
+											"type": "integer"
+										},
+										"ApisSenderID": {
+											"type": "string"
+										},
+										"ApisContactName": {
+											"type": "string"
+										},
+										"ApisTelephone": {
+											"type": "string"
+										},
+										"ApisFax": {
+											"type": "string"
+										},
+										"ApisEmail": {
+											"type": "string"
+										},
+										"TsaPreCheck": {
+											"type": "boolean"
+										},
+										"PnlImportCloseTime": {
+											"type": "integer"
+										},
+										"AdlImportCloseTime": {
+											"type": "integer"
+										},
+										"PermanentlyDeleteCancelledReservationsOnManifestImport": {
+											"type": "boolean"
+										},
+										"DefaultResidenceToNationalityOnManifestImport": {
+											"type": "boolean"
+										},
+										"IncludePassengerIdElementOnIataMessages": {
+											"type": "boolean"
+										},
+										"PrintFlightMessageOnBP": {
+											"type": "boolean"
+										},
+										"PrintOperatedByOnBP": {
+											"type": "boolean"
+										},
+										"PrintSSRsOnBP": {
+											"type": "boolean"
+										},
+										"PrintDocsOkForVerifiedPassengersOnBP": {
+											"type": "boolean"
+										},
+										"PrintReturnConnectingFlightBP": {
+											"type": "boolean"
+										},
+										"PrintBagWeightOnBT": {
+											"type": "boolean"
+										},
+										"IsPrintingBagTagWithoutCheckInAllowed": {
+											"type": "boolean"
+										},
+										"AllowBagsWithNoWeight": {
+											"type": "boolean"
+										},
+										"AllowPermanentDeleteNonPrintedBags": {
+											"type": "boolean"
+										},
+										"MaximumPassengerBags": {
+											"type": "integer"
+										},
+										"EmergencySeatInstructions": {
+											"type": "string"
+										},
+										"PremiumSeatInstructions": {
+											"type": "string"
+										},
+										"EmergencySeatGateStopInstructions": {
+											"type": "string"
+										},
+										"SelecteeGateStopInstructions": {
+											"type": "string"
+										},
+										"UnverifiedDocumentsGateStopInstructions": {
+											"type": "string"
+										},
+										"WatchlistNoFlyMatchInstructions": {
+											"type": "string"
+										},
+										"WatchlistPreventMatchInstructions": {
+											"type": "string"
+										},
+										"WatchlistSelecteeMatchInstructions": {
+											"type": "string"
+										},
+										"EmailSenderAddress": {
+											"type": "string"
+										},
+										"IsBoardingPassPrintWithUnpaidAncillariesAllowed": {
+											"type": "boolean"
+										},
+										"CustomData": {
+											"type": "object",
+											"properties": {
+												"Properties": {
+													"type": "object"
+												}
+											}
+										}
+									}
+								},
+								"AncillaryTemplateID": {
+									"type": "string"
+								},
+								"CustomerID": {
+									"type": "string"
+								},
+								"ApiInterfaceIDs": {
+									"type": "string"
+								},
+								"BatchPassengerMask": {
+									"type": "string"
+								},
+								"BatchCrewMemberMask": {
+									"type": "string"
+								},
+								"PreDepartureCloseOutPassengerMask": {
+									"type": "string"
+								},
+								"PostDepartureCloseOutPassengerMask": {
+									"type": "string"
+								},
+								"PreDepartureCloseOutCrewMemberMask": {
+									"type": "string"
+								},
+								"PostDepartureCloseOutCrewMemberMask": {
+									"type": "string"
+								},
+								"PaxFlightPreDepartureCloseOutStatus": {
+									"type": "string"
+								},
+								"PaxFlightPostDepartureCloseOutStatus": {
+									"type": "string"
+								},
+								"CrewFlightPreDepartureCloseOutStatus": {
+									"type": "string"
+								},
+								"CrewFlightPostDepartureCloseOutStatus": {
+									"type": "string"
+								},
+								"PaxBatchPreVetStatus": {
+									"type": "string"
+								},
+								"HasPassengerSecurityTransactions": {
+									"type": "boolean"
+								},
+								"HealthCheckRule": {
+									"type": "object",
+									"properties": {
+										"ID": {
+											"type": "string"
+										},
+										"CarrierCode": {
+											"type": "string"
+										},
+										"OriginCountryEntity": {
+											"type": "string"
+										},
+										"DestinationCountryEntity": {
+											"type": "string"
+										},
+										"OriginAirport": {
+											"type": "string"
+										},
+										"DestinationAirport": {
+											"type": "string"
+										},
+										"Instructions": {
+											"type": "string"
+										},
+										"IsClearToBoard": {
+											"type": "boolean"
+										},
+										"IsRequirePassengerAttestation": {
+											"type": "boolean"
+										},
+										"AttestationMinorStartAge": {
+											"type": "integer"
+										},
+										"AttestationMinorEndAge": {
+											"type": "integer"
+										},
+										"IsRequireProofForRemoteCheckIn": {
+											"type": "boolean"
+										},
+										"IsRequireRemarksForFailStatus": {
+											"type": "boolean"
+										},
+										"IsActive": {
+											"type": "boolean"
+										},
+										"CreatedBy": {
+											"type": "string"
+										},
+										"CreatedTimestampUTC": {
+											"type": "string"
+										},
+										"UpdatedBy": {
+											"type": "string"
+										}
+									}
+								},
+								"IsNotificationAlertsOptional": {
+									"type": "boolean"
+								},
+								"IsContactTracingOptional": {
+									"type": "boolean"
+								},
+								"IsHealthCheckVerificationOptional": {
+									"type": "boolean"
+								},
+								"IsHealthCheckAttestationOptional": {
+									"type": "boolean"
+								},
+								"IsTestEnvironment": {
+									"type": "boolean"
+								},
+								"CheckedInPassengersCount": {
+									"type": "integer"
+								},
+								"CheckedBagsCount": {
+									"type": "integer"
+								},
+								"CustomData": {
+									"type": "object",
+									"properties": {
+										"Properties": {
+											"type": "object"
+										}
+									}
+								}
+							}
+						},
+						"Success": {
+							"type": "boolean"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MIS_Choice_paxdata_test_file')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -562,161 +1146,6 @@
 					}
 				},
 				"schema": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_flights')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-flights"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"flight_id": {
-							"type": "integer"
-						},
-						"flight_number": {
-							"type": "string"
-						},
-						"flight_date": {
-							"type": "string"
-						},
-						"aircraft_registration_number": {
-							"type": "string"
-						},
-						"aircraft_type": {
-							"type": "string"
-						},
-						"ops_type": {
-							"type": "string"
-						},
-						"scheduled_departure": {
-							"type": "string"
-						},
-						"scheduled_arrival": {
-							"type": "string"
-						},
-						"estimated_departure": {
-							"type": "null"
-						},
-						"estimated_arrival": {
-							"type": "null"
-						},
-						"actual_oooi_out": {
-							"type": "null"
-						},
-						"actual_oooi_off": {
-							"type": "null"
-						},
-						"actual_oooi_on": {
-							"type": "null"
-						},
-						"actual_oooi_in": {
-							"type": "null"
-						},
-						"base_airport_id": {
-							"type": "integer"
-						},
-						"sched_depart_airport_id": {
-							"type": "integer"
-						},
-						"sched_arrive_airport_id": {
-							"type": "integer"
-						},
-						"actual_depart_airport_id": {
-							"type": "null"
-						},
-						"actual_arrive_airport_id": {
-							"type": "null"
-						},
-						"base_airport": {
-							"type": "string"
-						},
-						"scheduled_departure_airport": {
-							"type": "string"
-						},
-						"scheduled_arrival_airport": {
-							"type": "string"
-						},
-						"actual_departure_airport": {
-							"type": "null"
-						},
-						"actual_arrival_airport": {
-							"type": "null"
-						},
-						"is_verified": {
-							"type": "boolean"
-						},
-						"notes": {
-							"type": "null"
-						},
-						"is_canceled": {
-							"type": "boolean"
-						},
-						"flight_type": {
-							"type": "string"
-						},
-						"cargo_weight": {
-							"type": "null"
-						},
-						"cargo_on": {
-							"type": "null"
-						},
-						"cargo_off": {
-							"type": "null"
-						},
-						"fuel_out": {
-							"type": "null"
-						},
-						"fuel_in": {
-							"type": "null"
-						},
-						"fuel_uplift": {
-							"type": "null"
-						},
-						"fuel_uplifts": {
-							"type": "string"
-						},
-						"maint_log_page": {
-							"type": "null"
-						},
-						"lndg_touchdown_zone": {
-							"type": "null"
-						},
-						"lndg_midfield": {
-							"type": "null"
-						},
-						"lndg_rollout": {
-							"type": "null"
-						},
-						"lndg_actual_braking": {
-							"type": "null"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
 			},
 			"dependsOn": []
 		}

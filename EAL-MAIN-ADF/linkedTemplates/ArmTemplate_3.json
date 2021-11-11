@@ -13,6 +13,38 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DELAYS trigger 7am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 7 a.m. EDT",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-06-28T11:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"count": 5,
+						"intervalInSeconds": 240
+					},
+					"dependsOn": [
+						{
+							"type": "TumblingWindowTriggerDependencyReference",
+							"referenceTrigger": {
+								"referenceName": "AIRPORT trigger 7am",
+								"type": "TriggerReference"
+							}
+						}
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DELAYS trigger midnight UTC')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -72,65 +104,6 @@
 						}
 					]
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Flt_nbr_range_matrix_csv')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "MUST FORMAT DATES AS \"yyyy-MM-dd HH:mm:ss\"",
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "FLT_NBR_RANGE_CSV.csv",
-						"container": "flight-number-range"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "EFF_DATE",
-						"type": "String"
-					},
-					{
-						"name": "END_DATE",
-						"type": "String"
-					},
-					{
-						"name": "BEGIN_FLT_NBR",
-						"type": "String"
-					},
-					{
-						"name": "END_FLT_NBR",
-						"type": "String"
-					},
-					{
-						"name": "FLIGHT_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "FLIGHT_SUBTYPE",
-						"type": "String"
-					},
-					{
-						"name": "FLT_TYPE_OPS_REPORT",
-						"type": "String"
-					}
-				]
 			},
 			"dependsOn": []
 		},
@@ -355,7 +328,9 @@
 					]
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/triggers/DELAYS trigger 7am')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AIRPORTblobtoSQL')]",
@@ -810,9 +785,7 @@
 					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tEFF_DATE as string,\n\t\tEND_DATE as string,\n\t\tBEGIN_FLT_NBR as string,\n\t\tEND_FLT_NBR as string,\n\t\tFLIGHT_TYPE as string,\n\t\tFLIGHT_SUBTYPE as string,\n\t\tFLT_TYPE_OPS_REPORT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> FltNbrMatrix\nFltNbrMatrix derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FltNbrMatrixToSQL"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Flt_nbr_range_matrix_csv')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/MIS_Choice_Pax_Bags_to_SQL')]",

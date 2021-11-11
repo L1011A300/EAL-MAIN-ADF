@@ -13,6 +13,161 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_flights')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-flights"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"flight_id": {
+							"type": "integer"
+						},
+						"flight_number": {
+							"type": "string"
+						},
+						"flight_date": {
+							"type": "string"
+						},
+						"aircraft_registration_number": {
+							"type": "string"
+						},
+						"aircraft_type": {
+							"type": "string"
+						},
+						"ops_type": {
+							"type": "string"
+						},
+						"scheduled_departure": {
+							"type": "string"
+						},
+						"scheduled_arrival": {
+							"type": "string"
+						},
+						"estimated_departure": {
+							"type": "null"
+						},
+						"estimated_arrival": {
+							"type": "null"
+						},
+						"actual_oooi_out": {
+							"type": "null"
+						},
+						"actual_oooi_off": {
+							"type": "null"
+						},
+						"actual_oooi_on": {
+							"type": "null"
+						},
+						"actual_oooi_in": {
+							"type": "null"
+						},
+						"base_airport_id": {
+							"type": "integer"
+						},
+						"sched_depart_airport_id": {
+							"type": "integer"
+						},
+						"sched_arrive_airport_id": {
+							"type": "integer"
+						},
+						"actual_depart_airport_id": {
+							"type": "null"
+						},
+						"actual_arrive_airport_id": {
+							"type": "null"
+						},
+						"base_airport": {
+							"type": "string"
+						},
+						"scheduled_departure_airport": {
+							"type": "string"
+						},
+						"scheduled_arrival_airport": {
+							"type": "string"
+						},
+						"actual_departure_airport": {
+							"type": "null"
+						},
+						"actual_arrival_airport": {
+							"type": "null"
+						},
+						"is_verified": {
+							"type": "boolean"
+						},
+						"notes": {
+							"type": "null"
+						},
+						"is_canceled": {
+							"type": "boolean"
+						},
+						"flight_type": {
+							"type": "string"
+						},
+						"cargo_weight": {
+							"type": "null"
+						},
+						"cargo_on": {
+							"type": "null"
+						},
+						"cargo_off": {
+							"type": "null"
+						},
+						"fuel_out": {
+							"type": "null"
+						},
+						"fuel_in": {
+							"type": "null"
+						},
+						"fuel_uplift": {
+							"type": "null"
+						},
+						"fuel_uplifts": {
+							"type": "string"
+						},
+						"maint_log_page": {
+							"type": "null"
+						},
+						"lndg_touchdown_zone": {
+							"type": "null"
+						},
+						"lndg_midfield": {
+							"type": "null"
+						},
+						"lndg_rollout": {
+							"type": "null"
+						},
+						"lndg_actual_braking": {
+							"type": "null"
+						},
+						"updated_at": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_pairing')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1106,38 +1261,6 @@
 						"type": "AzureBlobStorageLocation",
 						"container": "radixx-source-tcn"
 					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DELAYS trigger 7am')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 7 a.m. EDT",
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"type": "TumblingWindowTrigger",
-				"typeProperties": {
-					"frequency": "Hour",
-					"interval": 24,
-					"startTime": "2021-06-28T11:00:00Z",
-					"delay": "00:00:00",
-					"maxConcurrency": 50,
-					"retryPolicy": {
-						"count": 5,
-						"intervalInSeconds": 240
-					},
-					"dependsOn": [
-						{
-							"type": "TumblingWindowTriggerDependencyReference",
-							"referenceTrigger": {
-								"referenceName": "AIRPORT trigger 7am",
-								"type": "TriggerReference"
-							}
-						}
-					]
 				}
 			},
 			"dependsOn": []
