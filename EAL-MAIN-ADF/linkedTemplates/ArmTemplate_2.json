@@ -64,37 +64,192 @@
 							"type": "string"
 						},
 						"estimated_departure": {
-							"type": "null"
+							"type": "string"
 						},
 						"estimated_arrival": {
-							"type": "null"
+							"type": "string"
 						},
 						"actual_oooi_out": {
-							"type": "null"
+							"type": "string"
 						},
 						"actual_oooi_off": {
-							"type": "null"
+							"type": "string"
 						},
 						"actual_oooi_on": {
-							"type": "null"
+							"type": "string"
 						},
 						"actual_oooi_in": {
-							"type": "null"
+							"type": "string"
 						},
 						"base_airport_id": {
-							"type": "integer"
+							"type": "string"
 						},
 						"sched_depart_airport_id": {
-							"type": "integer"
+							"type": "string"
 						},
 						"sched_arrive_airport_id": {
-							"type": "integer"
+							"type": "string"
 						},
 						"actual_depart_airport_id": {
-							"type": "null"
+							"type": "string"
 						},
 						"actual_arrive_airport_id": {
+							"type": "string"
+						},
+						"base_airport": {
+							"type": "string"
+						},
+						"scheduled_departure_airport": {
+							"type": "string"
+						},
+						"scheduled_arrival_airport": {
+							"type": "string"
+						},
+						"actual_departure_airport": {
+							"type": "string"
+						},
+						"actual_arrival_airport": {
+							"type": "string"
+						},
+						"is_verified": {
+							"type": "boolean"
+						},
+						"notes": {
+							"type": "string"
+						},
+						"is_canceled": {
+							"type": "boolean"
+						},
+						"flight_type": {
+							"type": "string"
+						},
+						"cargo_weight": {
+							"type": "integer"
+						},
+						"cargo_on": {
+							"type": "integer"
+						},
+						"cargo_off": {
+							"type": "integer"
+						},
+						"fuel_out": {
+							"type": "number"
+						},
+						"fuel_in": {
+							"type": "number"
+						},
+						"fuel_uplift": {
+							"type": "integer"
+						},
+						"fuel_uplifts": {
+							"type": "string"
+						},
+						"maint_log_page": {
+							"type": "string"
+						},
+						"lndg_touchdown_zone": {
 							"type": "null"
+						},
+						"lndg_midfield": {
+							"type": "null"
+						},
+						"lndg_rollout": {
+							"type": "null"
+						},
+						"lndg_actual_braking": {
+							"type": "null"
+						},
+						"updated_at": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_flights_PAX')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "ealmain-flight"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"flight_id": {
+							"type": "integer"
+						},
+						"flight_number": {
+							"type": "string"
+						},
+						"flight_date": {
+							"type": "string"
+						},
+						"aircraft_registration_number": {
+							"type": "string"
+						},
+						"aircraft_type": {
+							"type": "string"
+						},
+						"ops_type": {
+							"type": "string"
+						},
+						"scheduled_departure": {
+							"type": "string"
+						},
+						"scheduled_arrival": {
+							"type": "string"
+						},
+						"estimated_departure": {
+							"type": "string"
+						},
+						"estimated_arrival": {
+							"type": "string"
+						},
+						"actual_oooi_out": {
+							"type": "string"
+						},
+						"actual_oooi_off": {
+							"type": "string"
+						},
+						"actual_oooi_on": {
+							"type": "string"
+						},
+						"actual_oooi_in": {
+							"type": "string"
+						},
+						"base_airport_id": {
+							"type": "string"
+						},
+						"sched_depart_airport_id": {
+							"type": "string"
+						},
+						"sched_arrive_airport_id": {
+							"type": "string"
+						},
+						"actual_depart_airport_id": {
+							"type": "string"
+						},
+						"actual_arrive_airport_id": {
+							"type": "string"
 						},
 						"base_airport": {
 							"type": "string"
@@ -115,7 +270,7 @@
 							"type": "boolean"
 						},
 						"notes": {
-							"type": "null"
+							"type": "string"
 						},
 						"is_canceled": {
 							"type": "boolean"
@@ -124,28 +279,28 @@
 							"type": "string"
 						},
 						"cargo_weight": {
-							"type": "null"
+							"type": "integer"
 						},
 						"cargo_on": {
-							"type": "null"
+							"type": "integer"
 						},
 						"cargo_off": {
-							"type": "null"
+							"type": "integer"
 						},
 						"fuel_out": {
-							"type": "null"
+							"type": "number"
 						},
 						"fuel_in": {
-							"type": "null"
+							"type": "number"
 						},
 						"fuel_uplift": {
-							"type": "null"
+							"type": "integer"
 						},
 						"fuel_uplifts": {
 							"type": "string"
 						},
 						"maint_log_page": {
-							"type": "null"
+							"type": "string"
 						},
 						"lndg_touchdown_zone": {
 							"type": "null"
@@ -158,6 +313,12 @@
 						},
 						"lndg_actual_braking": {
 							"type": "null"
+						},
+						"pax": {
+							"type": "integer"
+						},
+						"mission_id": {
+							"type": "string"
 						},
 						"updated_at": {
 							"type": "string"
@@ -939,7 +1100,197 @@
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
-				"schema": [],
+				"schema": [
+					{
+						"name": "flight_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "flight_number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "flight_date",
+						"type": "date"
+					},
+					{
+						"name": "aircraft_registration_number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "aircraft_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ops_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "scheduled_departure_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "scheduled_arrival_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "scheduled_departure",
+						"type": "datetime"
+					},
+					{
+						"name": "scheduled_arrival",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_out",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_off",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_on",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_in",
+						"type": "datetime"
+					},
+					{
+						"name": "estimated_arrival",
+						"type": "datetime"
+					},
+					{
+						"name": "estimated_departure",
+						"type": "datetime"
+					},
+					{
+						"name": "base_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sched_depart_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sched_arrive_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_depart_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_arrive_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "base_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_departure_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_arrival_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_verified",
+						"type": "nvarchar"
+					},
+					{
+						"name": "notes",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_canceled",
+						"type": "nvarchar"
+					},
+					{
+						"name": "flight_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cargo_weight",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cargo_on",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cargo_off",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fuel_out",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "fuel_in",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "fuel_uplift",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fuel_uplifts",
+						"type": "nvarchar"
+					},
+					{
+						"name": "maint_log_page",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_touchdown_zone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_midfield",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_rollout",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_actual_braking",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pax",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "mission_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "updated_at",
+						"type": "datetime"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "SQL_FLIGHT_TABLE_TEST"
@@ -1241,26 +1592,6 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "SF_USER_PROD"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SourceDataset_qk2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": "radixx-source-tcn"
-					}
 				}
 			},
 			"dependsOn": []
