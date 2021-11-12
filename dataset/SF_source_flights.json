@@ -48,22 +48,22 @@
 					"type": "string"
 				},
 				"estimated_departure": {
-					"type": "null"
+					"type": "string"
 				},
 				"estimated_arrival": {
-					"type": "null"
+					"type": "string"
 				},
 				"actual_oooi_out": {
-					"type": "null"
+					"type": "string"
 				},
 				"actual_oooi_off": {
-					"type": "null"
+					"type": "string"
 				},
 				"actual_oooi_on": {
-					"type": "null"
+					"type": "string"
 				},
 				"actual_oooi_in": {
-					"type": "null"
+					"type": "string"
 				},
 				"base_airport_id": {
 					"type": "integer"
@@ -99,7 +99,7 @@
 					"type": "boolean"
 				},
 				"notes": {
-					"type": "null"
+					"type": "string"
 				},
 				"is_canceled": {
 					"type": "boolean"
@@ -108,28 +108,28 @@
 					"type": "string"
 				},
 				"cargo_weight": {
-					"type": "null"
+					"type": "integer"
 				},
 				"cargo_on": {
-					"type": "null"
+					"type": "integer"
 				},
 				"cargo_off": {
-					"type": "null"
+					"type": "integer"
 				},
 				"fuel_out": {
-					"type": "null"
+					"type": "number"
 				},
 				"fuel_in": {
-					"type": "null"
+					"type": "number"
 				},
 				"fuel_uplift": {
-					"type": "null"
+					"type": "integer"
 				},
 				"fuel_uplifts": {
 					"type": "string"
 				},
 				"maint_log_page": {
-					"type": "null"
+					"type": "string"
 				},
 				"lndg_touchdown_zone": {
 					"type": "null"

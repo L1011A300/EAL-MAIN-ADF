@@ -400,6 +400,24 @@
 								"sink": {
 									"path": "$['updated_at']"
 								}
+							},
+							{
+								"source": {
+									"name": "mission_id",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['mission_id']"
+								}
+							},
+							{
+								"source": {
+									"name": "pax",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['pax']"
+								}
 							}
 						]
 					}
