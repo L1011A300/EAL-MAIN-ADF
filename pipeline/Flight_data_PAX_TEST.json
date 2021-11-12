@@ -434,6 +434,43 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "FLIGHTSblobtoSQL_PAX_TEST",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "SF_Flight_data_to_Azure_blob",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FLIGHTSblobtoSQL_PAX_TEST",
+						"type": "DataFlowReference",
+						"parameters": {
+							"run_id": {
+								"value": "'@{pipeline().RunId}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
 			}
 		],
 		"variables": {
