@@ -16,14 +16,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "FLIGHTSblobtoSQL_PAX_TEST",
-						"type": "DataFlowReference",
-						"parameters": {
-							"run_id": {
-								"value": "'@{pipeline().RunId}'",
-								"type": "Expression"
-							}
-						}
+						"referenceName": "TESTFltDataWthCategories_copy2",
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
