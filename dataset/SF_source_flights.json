@@ -66,19 +66,19 @@
 					"type": "string"
 				},
 				"base_airport_id": {
-					"type": "string"
+					"type": "integer"
 				},
 				"sched_depart_airport_id": {
-					"type": "string"
+					"type": "integer"
 				},
 				"sched_arrive_airport_id": {
-					"type": "string"
+					"type": "integer"
 				},
 				"actual_depart_airport_id": {
-					"type": "string"
+					"type": "null"
 				},
 				"actual_arrive_airport_id": {
-					"type": "string"
+					"type": "null"
 				},
 				"base_airport": {
 					"type": "string"
