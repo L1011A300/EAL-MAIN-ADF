@@ -1,5 +1,5 @@
 {
-	"name": "Flight_data_copy1",
+	"name": "Flight_data_PAX_TEST",
 	"properties": {
 		"description": "Populates flight data in SQL Server DB from SkedFlex.",
 		"activities": [
@@ -430,7 +430,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "SF_source_flights",
+						"referenceName": "SF_source_flights_PAX",
 						"type": "DatasetReference"
 					}
 				]
@@ -456,7 +456,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "FLIGHTSblobtoSQL",
+						"referenceName": "FLIGHTSblobtoSQL_PAX_TEST",
 						"type": "DataFlowReference",
 						"parameters": {
 							"run_id": {

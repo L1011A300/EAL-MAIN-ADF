@@ -1,0 +1,22 @@
+{
+	"name": "SF_source_flights_PAX",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+					"type": "Expression"
+				},
+				"container": "ealmain-flight"
+			}
+		},
+		"schema": {}
+	}
+}

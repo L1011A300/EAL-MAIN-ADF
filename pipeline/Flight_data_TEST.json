@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "FLIGHTSblobtoSQL_copy1",
+						"referenceName": "FLIGHTSblobtoSQL_PAX_TEST",
 						"type": "DataFlowReference",
 						"parameters": {
 							"run_id": {
