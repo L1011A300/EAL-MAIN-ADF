@@ -1,6 +1,7 @@
 {
 	"name": "SF_source_flights",
 	"properties": {
+		"description": "SF flight data copied from bi.flight",
 		"linkedServiceName": {
 			"referenceName": "eal_main_blob_connection",
 			"type": "LinkedServiceReference"

@@ -1,6 +1,7 @@
 {
 	"name": "FLIGHTSblobtoSQL",
 	"properties": {
+		"description": "Populates SF_FLIGHT_PROD SQL table with data from blob storage.",
 		"folder": {
 			"name": "PROD"
 		},
