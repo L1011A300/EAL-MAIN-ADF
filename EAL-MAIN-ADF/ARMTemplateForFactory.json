@@ -1347,6 +1347,49 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "FLIGHTSblobtoSQL_PAX_TEST",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF_Flight_data_to_Azure_blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FLIGHTSblobtoSQL_PAX_TEST",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFFlight": {},
+									"AirportReferenceJSON": {},
+									"FlightToSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -1363,7 +1406,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_bi_flight')]",
-				"[concat(variables('factoryId'), '/datasets/SF_source_flights_PAX')]"
+				"[concat(variables('factoryId'), '/datasets/SF_source_flights_PAX')]",
+				"[concat(variables('factoryId'), '/dataflows/FLIGHTSblobtoSQL_PAX_TEST')]"
 			]
 		},
 		{
@@ -5462,36 +5506,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_flights_PAX')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "ealmain-flight"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_pairing')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -8345,6 +8359,263 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FLIGHTSblobtoSQL_PAX_TEST')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "TEST"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_flights_PAX",
+								"type": "DatasetReference"
+							},
+							"name": "SFFlight"
+						},
+						{
+							"dataset": {
+								"referenceName": "SF_source_airport",
+								"type": "DatasetReference"
+							},
+							"name": "AirportReferenceJSON"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_FLT_TABLE_TEST",
+								"type": "DatasetReference"
+							},
+							"name": "FlightToSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS"
+						},
+						{
+							"name": "FLTTYPEfilter"
+						},
+						{
+							"name": "ActualAirportIDifNULL"
+						},
+						{
+							"name": "PareAirportReference"
+						},
+						{
+							"name": "SchdDepAirportLookup"
+						},
+						{
+							"name": "UpdateSchdDepAirportCode"
+						},
+						{
+							"name": "RemoveSchdDepAirportCols"
+						},
+						{
+							"name": "SchdArrAirportLookup"
+						},
+						{
+							"name": "UpdateSchdArrAirportCode"
+						},
+						{
+							"name": "RemoveSchArrAirportCols"
+						},
+						{
+							"name": "ActDepAirportLookup"
+						},
+						{
+							"name": "UpdateActDepAirportCode"
+						},
+						{
+							"name": "RemoveActDepAirportCols"
+						},
+						{
+							"name": "ActArrAirportLookup"
+						},
+						{
+							"name": "UpdateActArrAirportCode"
+						},
+						{
+							"name": "RemoveActArrAirportCols"
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tflight_id as integer,\n\t\tflight_number as string,\n\t\tflight_date as string,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tops_type as string,\n\t\tscheduled_departure as string,\n\t\tscheduled_arrival as string,\n\t\testimated_departure as string,\n\t\testimated_arrival as string,\n\t\tactual_oooi_out as string,\n\t\tactual_oooi_off as string,\n\t\tactual_oooi_on as string,\n\t\tactual_oooi_in as string,\n\t\tbase_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tsched_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_arrive_airport_id as string,\n\t\tbase_airport as string,\n\t\tscheduled_departure_airport as string,\n\t\tscheduled_arrival_airport as string,\n\t\tactual_departure_airport as string,\n\t\tactual_arrival_airport as string,\n\t\tis_verified as boolean,\n\t\tnotes as string,\n\t\tis_canceled as boolean,\n\t\tflight_type as string,\n\t\tcargo_weight as integer,\n\t\tcargo_on as integer,\n\t\tcargo_off as integer,\n\t\tfuel_out as double,\n\t\tfuel_in as double,\n\t\tfuel_uplift as integer,\n\t\tfuel_uplifts as string,\n\t\tmaint_log_page as string,\n\t\tlndg_touchdown_zone as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_actual_braking as string,\n\t\tpax as integer,\n\t\tmission_id as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine',\n\tdateFormats: ['yyyy-MM-dd'],\n\ttimestampFormats: ['yyyy-MM-dd\\'T\\'HH:mm:ss'],\n\tpreferredIntegralType: 'integer',\n\tpreferredFractionalType: 'decimal') ~> SFFlight\nsource(output(\n\t\tairport_id as string,\n\t\tiata_code as string,\n\t\ticao_code as string,\n\t\tfaa_code as string,\n\t\tairport_name as string,\n\t\tcity_name as string,\n\t\tstate_code as string,\n\t\tcountry_code as string,\n\t\tweather_zone as string,\n\t\tlatitude as string,\n\t\tlongitude as string,\n\t\televation_feet as string,\n\t\tiana_timezone as string,\n\t\tis_base as boolean,\n\t\tbase_initial as string,\n\t\tis_active as boolean,\n\t\tis_deleted as boolean\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> AirportReferenceJSON\nSFFlight derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS filter(flight_type <=> 'flight' || flight_type <=> 'continuation' || flight_type <=> 'divert' || flight_type <=> 'return' || flight_type <=> 'taxi-back') ~> FLTTYPEfilter\nFLTTYPEfilter derive(actual_arrive_airport_id = iif(isNull(actual_arrive_airport_id), sched_arrive_airport_id, actual_arrive_airport_id),\n\t\tactual_depart_airport_id = iif(isNull(actual_depart_airport_id) , sched_depart_airport_id, actual_depart_airport_id)) ~> ActualAirportIDifNULL\nAirportReferenceJSON select(mapColumn(\n\t\tairport_id,\n\t\tiata_code,\n\t\ticao_code,\n\t\tfaa_code\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> PareAirportReference\nActualAirportIDifNULL, PareAirportReference lookup(sched_depart_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> SchdDepAirportLookup\nSchdDepAirportLookup derive(scheduled_departure_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateSchdDepAirportCode\nUpdateSchdDepAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\testimated_departure,\n\t\testimated_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tpax,\n\t\tmission_id,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveSchdDepAirportCols\nRemoveSchdDepAirportCols, PareAirportReference lookup(sched_arrive_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> SchdArrAirportLookup\nSchdArrAirportLookup derive(scheduled_arrival_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateSchdArrAirportCode\nUpdateSchdArrAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\testimated_departure,\n\t\testimated_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tpax,\n\t\tmission_id,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveSchArrAirportCols\nRemoveSchArrAirportCols, PareAirportReference lookup(actual_depart_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> ActDepAirportLookup\nActDepAirportLookup derive(actual_departure_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateActDepAirportCode\nUpdateActDepAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\testimated_departure,\n\t\testimated_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tpax,\n\t\tmission_id,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveActDepAirportCols\nRemoveActDepAirportCols, PareAirportReference lookup(actual_arrive_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> ActArrAirportLookup\nActArrAirportLookup derive(actual_arrival_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateActArrAirportCode\nUpdateActArrAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\testimated_arrival,\n\t\testimated_departure,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tpax,\n\t\tmission_id,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveActArrAirportCols\nRemoveActArrAirportCols sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FlightToSQL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SF_source_flights_PAX')]",
+				"[concat(variables('factoryId'), '/datasets/SF_source_airport')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_FLT_TABLE_TEST')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_flights_PAX')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "ealmain-flight"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"flight_id": {
+							"type": "integer"
+						},
+						"flight_number": {
+							"type": "string"
+						},
+						"flight_date": {
+							"type": "string"
+						},
+						"aircraft_registration_number": {
+							"type": "string"
+						},
+						"aircraft_type": {
+							"type": "string"
+						},
+						"ops_type": {
+							"type": "string"
+						},
+						"scheduled_departure": {
+							"type": "string"
+						},
+						"scheduled_arrival": {
+							"type": "string"
+						},
+						"estimated_departure": {
+							"type": "string"
+						},
+						"estimated_arrival": {
+							"type": "string"
+						},
+						"actual_oooi_out": {
+							"type": "string"
+						},
+						"actual_oooi_off": {
+							"type": "string"
+						},
+						"actual_oooi_on": {
+							"type": "string"
+						},
+						"actual_oooi_in": {
+							"type": "string"
+						},
+						"base_airport_id": {
+							"type": "string"
+						},
+						"sched_depart_airport_id": {
+							"type": "string"
+						},
+						"sched_arrive_airport_id": {
+							"type": "string"
+						},
+						"actual_depart_airport_id": {
+							"type": "string"
+						},
+						"actual_arrive_airport_id": {
+							"type": "string"
+						},
+						"base_airport": {
+							"type": "string"
+						},
+						"scheduled_departure_airport": {
+							"type": "string"
+						},
+						"scheduled_arrival_airport": {
+							"type": "string"
+						},
+						"actual_departure_airport": {
+							"type": "null"
+						},
+						"actual_arrival_airport": {
+							"type": "null"
+						},
+						"is_verified": {
+							"type": "boolean"
+						},
+						"notes": {
+							"type": "string"
+						},
+						"is_canceled": {
+							"type": "boolean"
+						},
+						"flight_type": {
+							"type": "string"
+						},
+						"cargo_weight": {
+							"type": "integer"
+						},
+						"cargo_on": {
+							"type": "integer"
+						},
+						"cargo_off": {
+							"type": "integer"
+						},
+						"fuel_out": {
+							"type": "number"
+						},
+						"fuel_in": {
+							"type": "number"
+						},
+						"fuel_uplift": {
+							"type": "integer"
+						},
+						"fuel_uplifts": {
+							"type": "string"
+						},
+						"maint_log_page": {
+							"type": "string"
+						},
+						"lndg_touchdown_zone": {
+							"type": "null"
+						},
+						"lndg_midfield": {
+							"type": "null"
+						},
+						"lndg_rollout": {
+							"type": "null"
+						},
+						"lndg_actual_braking": {
+							"type": "null"
+						},
+						"pax": {
+							"type": "integer"
+						},
+						"mission_id": {
+							"type": "string"
+						},
+						"updated_at": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
 			]
 		}
 	]
