@@ -1631,6 +1631,9 @@
 						"type": "String"
 					}
 				},
+				"folder": {
+					"name": "Testing"
+				},
 				"annotations": [],
 				"lastPublishTime": "2021-06-14T16:02:16Z"
 			},
@@ -1682,6 +1685,9 @@
 					"date": {
 						"type": "string"
 					}
+				},
+				"folder": {
+					"name": "Testing"
 				},
 				"annotations": []
 			},
@@ -3014,6 +3020,9 @@
 					"date": {
 						"type": "string"
 					}
+				},
+				"folder": {
+					"name": "Testing"
 				},
 				"annotations": []
 			},

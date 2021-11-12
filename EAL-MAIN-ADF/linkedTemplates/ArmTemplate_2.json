@@ -17,6 +17,7 @@
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "SF flight data copied from bi.flight",
 				"linkedServiceName": {
 					"referenceName": "eal_main_blob_connection",
 					"type": "LinkedServiceReference"
