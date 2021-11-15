@@ -68,10 +68,12 @@
 					"description": "Populates sched departure airport code with IATA, ICAO or FAA code (whichever is available first)."
 				},
 				{
-					"name": "RemoveSchArrAirportCols"
+					"name": "RemoveSchArrAirportCols",
+					"description": "Removes unneeded lookup columns inserted from airport reference table."
 				},
 				{
-					"name": "ActDepAirportLookup"
+					"name": "ActDepAirportLookup",
+					"description": "Looks up IATA, ICAO and FAA airport codes for scheduled arrival airport."
 				},
 				{
 					"name": "UpdateActDepAirportCode"
