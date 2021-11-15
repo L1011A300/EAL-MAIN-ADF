@@ -456,7 +456,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "FLIGHTSblobtoSQL_PAX_TEST",
+						"referenceName": "FLIGHTSblobtoSQL_PAXMissionIDfltCAT_TEST",
 						"type": "DataFlowReference",
 						"parameters": {
 							"run_id": {
