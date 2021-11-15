@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "TESTFltDataWthCategories_copy2",
+						"referenceName": "TESTFltDataWthCategories_JOIN",
 						"type": "DataFlowReference"
 					},
 					"compute": {

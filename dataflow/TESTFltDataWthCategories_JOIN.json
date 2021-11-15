@@ -1,5 +1,5 @@
 {
-	"name": "TESTFltDataWthCategories_copy2",
+	"name": "TESTFltDataWthCategories_JOIN",
 	"properties": {
 		"description": "Adds \"FLIGHT_TYPE,\" \"FLIGHT_SUBTYPE\" and \"FLT_TYPE_OPS_REPORT\" columns to Flight table in SQL Server.",
 		"folder": {
