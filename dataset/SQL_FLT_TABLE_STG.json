@@ -1,5 +1,5 @@
 {
-	"name": "SQL_FLT_TABLE_TEST",
+	"name": "SQL_FLT_TABLE_STG",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "eal_edw_connection",
