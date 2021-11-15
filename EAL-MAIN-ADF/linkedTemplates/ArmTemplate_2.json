@@ -1095,6 +1095,7 @@
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "TEST Staging SQL Server table",
 				"linkedServiceName": {
 					"referenceName": "eal_edw_connection",
 					"type": "LinkedServiceReference"

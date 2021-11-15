@@ -21,6 +21,235 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/user_category_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF user category data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "user_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['user_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "category_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['category_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "effective_start",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['effective_start']"
+										}
+									},
+									{
+										"source": {
+											"name": "effective_end",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['effective_end']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_icao_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_icao_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_iata_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_iata_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_faa_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_faa_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "base_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['base_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "equipment_group_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['equipment_group_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "equipment_group_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['equipment_group_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "position_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['position_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "position_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['position_code']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_user_category",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_user_category",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "USERCATEGORYblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF user category data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "USERCATEGORYblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFUserCategory": {},
+									"USERCATEGORYtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Inactive"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/user_data')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
