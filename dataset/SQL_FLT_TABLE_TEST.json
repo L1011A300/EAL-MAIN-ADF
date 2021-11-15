@@ -1,7 +1,7 @@
 {
-	"name": "SQL_FLT_TABLE_STG",
+	"name": "SQL_FLT_TABLE_TEST",
 	"properties": {
-		"description": "Staging SQL Server table",
+		"description": "TEST Staging SQL Server table",
 		"linkedServiceName": {
 			"referenceName": "eal_edw_connection",
 			"type": "LinkedServiceReference"
