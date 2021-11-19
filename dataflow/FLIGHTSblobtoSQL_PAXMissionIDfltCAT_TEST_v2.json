@@ -108,7 +108,7 @@
 				},
 				{
 					"name": "ChangeFltNumToINT",
-					"description": "Adds temp \"flight_number_INT\" field to convert flight_number value to integer for join to flt number range matrix."
+					"description": "Adds temp \"flight_number_INT\" field to convert flight_number value to integer for join to flt number range matrix (keeping \"flight_number\" as string)."
 				},
 				{
 					"name": "RenameFlightType",
