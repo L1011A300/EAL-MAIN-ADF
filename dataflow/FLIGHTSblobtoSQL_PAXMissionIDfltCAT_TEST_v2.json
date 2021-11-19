@@ -1,0 +1,149 @@
+{
+	"name": "FLIGHTSblobtoSQL_PAXMissionIDfltCAT_TEST_v2",
+	"properties": {
+		"description": "Uses SF flight blob file with Pax and Mission ID as source. Adds flight category. Creates temp flight number as integer for join to flt nbr range.",
+		"folder": {
+			"name": "TEST"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SF_source_flights_PAX",
+						"type": "DatasetReference"
+					},
+					"name": "SFFlight"
+				},
+				{
+					"dataset": {
+						"referenceName": "SF_source_airport",
+						"type": "DatasetReference"
+					},
+					"name": "AirportReferenceJSON"
+				},
+				{
+					"dataset": {
+						"referenceName": "Flt_nbr_range_matrix_csv",
+						"type": "DatasetReference"
+					},
+					"name": "FltNbrRangeMatrixCSV"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SQL_FLT_TABLE_TEST",
+						"type": "DatasetReference"
+					},
+					"name": "FlightToSQL"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AddWrkflwIDandTS",
+					"description": "Adds ADF run ID and timestamp"
+				},
+				{
+					"name": "FLTTYPEfilter",
+					"description": "Filters out offline flights"
+				},
+				{
+					"name": "ActualAirportIDifNULL",
+					"description": "If actual depart/arrive airport ID is null, populates with sched depart/arrive airport ID."
+				},
+				{
+					"name": "PareAirportReference"
+				},
+				{
+					"name": "SchdDepAirportLookup",
+					"description": "Looks up IATA, ICAO and FAA airport codes for scheduled departure airport."
+				},
+				{
+					"name": "UpdateSchdDepAirportCode",
+					"description": "Populates sched departure airport code with IATA, ICAO or FAA code (whichever is available first)."
+				},
+				{
+					"name": "RemoveSchdDepAirportCols"
+				},
+				{
+					"name": "SchdArrAirportLookup",
+					"description": "Looks up IATA, ICAO and FAA airport codes for scheduled arrival airport."
+				},
+				{
+					"name": "UpdateSchdArrAirportCode",
+					"description": "Populates sched arrival airport code with IATA, ICAO or FAA code (whichever is available first)."
+				},
+				{
+					"name": "RemoveSchArrAirportCols",
+					"description": "Removes unneeded lookup columns inserted from airport reference table."
+				},
+				{
+					"name": "ActDepAirportLookup",
+					"description": "Looks up IATA, ICAO and FAA airport codes for actual departure airport."
+				},
+				{
+					"name": "UpdateActDepAirportCode",
+					"description": "Populates actual departure airport code with IATA, ICAO or FAA code (whichever is available first)."
+				},
+				{
+					"name": "RemoveActDepAirportCols",
+					"description": "Removes unneeded lookup columns inserted from airport reference table."
+				},
+				{
+					"name": "ActArrAirportLookup",
+					"description": "Looks up IATA, ICAO and FAA airport codes for actual arrival airport."
+				},
+				{
+					"name": "UpdateActArrAirportCode",
+					"description": "Populates actual arrival airport code with IATA, ICAO or FAA code (whichever is available first)."
+				},
+				{
+					"name": "RemoveActArrAirportCols",
+					"description": "Removes unneeded lookup columns inserted from airport reference table. Changes \"pax\" column to \"SF_Pax\""
+				},
+				{
+					"name": "ConditionalSplit1",
+					"description": "Splits flight data into two sets: one with flight numbers beginning with \"CMB\" and another for purely numeric flight numbers."
+				},
+				{
+					"name": "ChangeFltNumToINT",
+					"description": "Changes \"flight_number\" to integer to all for use in join to flight number range matrix."
+				},
+				{
+					"name": "RenameFlightType",
+					"description": "Renames \"flight_type\" to \"flt_type\" to avoid duplicate column names with \"FLIGHT_TYPE\" in FltNbrRangeMatrix."
+				},
+				{
+					"name": "ChangeBegEndFltNbrToInt",
+					"description": "Converts \"BEGIN_FLT_NBR,\" \"END_FLT_NBR\" to integer for use in join."
+				},
+				{
+					"name": "JoinToFltNbrRangeMatrix",
+					"description": "Joins flight data to flight number matrix on flt number and sked dep date to get flight type and subtype."
+				},
+				{
+					"name": "ChgFltNumToString",
+					"description": "Changes \"flight_number\" back to string."
+				},
+				{
+					"name": "CMBfltnbrRevCat",
+					"description": "Assigns \"DOD Int'l\" revenue type to all flight numbers beginning with \"CMB.\""
+				},
+				{
+					"name": "STDfltnbrRevCat",
+					"description": "Changes flight data \"flt_type\" to \"flight_type\" and flt number range data \"FLIGHT_TYPE\" to \"REVENUE_TYPE\". Drops EFF and END dates, BEGIN and END flt number fields from Flight Number Matrix."
+				},
+				{
+					"name": "UnionCMBandSTDfltnmbrs",
+					"description": "Combining rows from transformation 'CMBfltnbrRevCat, and STDfltnbrRevCat'"
+				},
+				{
+					"name": "ChangeDateTimefieldstoTimestamp",
+					"description": "Change date/time fields for OOOI, scheduled, estimated arr and dep times from string to timestamp to aid in SQL datatype determination."
+				}
+			],
+			"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tflight_id as integer,\n\t\tflight_number as string,\n\t\tflight_date as string,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tops_type as string,\n\t\tscheduled_departure as string,\n\t\tscheduled_arrival as string,\n\t\testimated_departure as string,\n\t\testimated_arrival as string,\n\t\tactual_oooi_out as string,\n\t\tactual_oooi_off as string,\n\t\tactual_oooi_on as string,\n\t\tactual_oooi_in as string,\n\t\tbase_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tsched_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_arrive_airport_id as string,\n\t\tbase_airport as string,\n\t\tscheduled_departure_airport as string,\n\t\tscheduled_arrival_airport as string,\n\t\tactual_departure_airport as string,\n\t\tactual_arrival_airport as string,\n\t\tis_verified as boolean,\n\t\tnotes as string,\n\t\tis_canceled as boolean,\n\t\tflight_type as string,\n\t\tcargo_weight as integer,\n\t\tcargo_on as integer,\n\t\tcargo_off as integer,\n\t\tfuel_out as double,\n\t\tfuel_in as double,\n\t\tfuel_uplift as integer,\n\t\tfuel_uplifts as string,\n\t\tmaint_log_page as string,\n\t\tlndg_touchdown_zone as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_actual_braking as string,\n\t\tpax as integer,\n\t\tmission_id as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine',\n\tdateFormats: ['yyyy-MM-dd'],\n\ttimestampFormats: ['yyyy-MM-dd\\'T\\'HH:mm:ss'],\n\tpreferredIntegralType: 'integer',\n\tpreferredFractionalType: 'decimal') ~> SFFlight\nsource(output(\n\t\tairport_id as string,\n\t\tiata_code as string,\n\t\ticao_code as string,\n\t\tfaa_code as string,\n\t\tairport_name as string,\n\t\tcity_name as string,\n\t\tstate_code as string,\n\t\tcountry_code as string,\n\t\tweather_zone as string,\n\t\tlatitude as string,\n\t\tlongitude as string,\n\t\televation_feet as string,\n\t\tiana_timezone as string,\n\t\tis_base as boolean,\n\t\tbase_initial as string,\n\t\tis_active as boolean,\n\t\tis_deleted as boolean\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> AirportReferenceJSON\nsource(output(\n\t\tEFF_DATE as string,\n\t\tEND_DATE as string,\n\t\tBEGIN_FLT_NBR as string,\n\t\tEND_FLT_NBR as string,\n\t\tFLIGHT_TYPE as string,\n\t\tFLIGHT_SUBTYPE as string,\n\t\tFLT_TYPE_OPS_REPORT as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> FltNbrRangeMatrixCSV\nSFFlight derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS filter(flight_type <=> 'flight' || flight_type <=> 'continuation' || flight_type <=> 'divert' || flight_type <=> 'return' || flight_type <=> 'taxi-back') ~> FLTTYPEfilter\nFLTTYPEfilter derive(actual_arrive_airport_id = iif(isNull(actual_arrive_airport_id), sched_arrive_airport_id, actual_arrive_airport_id),\n\t\tactual_depart_airport_id = iif(isNull(actual_depart_airport_id) , sched_depart_airport_id, actual_depart_airport_id)) ~> ActualAirportIDifNULL\nAirportReferenceJSON select(mapColumn(\n\t\tairport_id,\n\t\tiata_code,\n\t\ticao_code,\n\t\tfaa_code\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> PareAirportReference\nActualAirportIDifNULL, PareAirportReference lookup(sched_depart_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> SchdDepAirportLookup\nSchdDepAirportLookup derive(scheduled_departure_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateSchdDepAirportCode\nUpdateSchdDepAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\testimated_departure,\n\t\testimated_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tpax,\n\t\tmission_id,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveSchdDepAirportCols\nRemoveSchdDepAirportCols, PareAirportReference lookup(sched_arrive_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> SchdArrAirportLookup\nSchdArrAirportLookup derive(scheduled_arrival_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateSchdArrAirportCode\nUpdateSchdArrAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\testimated_departure,\n\t\testimated_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tpax,\n\t\tmission_id,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveSchArrAirportCols\nRemoveSchArrAirportCols, PareAirportReference lookup(actual_depart_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> ActDepAirportLookup\nActDepAirportLookup derive(actual_departure_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateActDepAirportCode\nUpdateActDepAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\testimated_departure,\n\t\testimated_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tpax,\n\t\tmission_id,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveActDepAirportCols\nRemoveActDepAirportCols, PareAirportReference lookup(actual_arrive_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> ActArrAirportLookup\nActArrAirportLookup derive(actual_arrival_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateActArrAirportCode\nUpdateActArrAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\testimated_arrival,\n\t\testimated_departure,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tSF_pax = pax,\n\t\tmission_id,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveActArrAirportCols\nRemoveActArrAirportCols split(startsWith(flight_number,'CMB'),\n\tdisjoint: false) ~> ConditionalSplit1@(CMBfltnbr, STDfltnbr)\nConditionalSplit1@STDfltnbr derive(flight_number = toInteger(flight_number),\n\t\tflight_number_INT = toInteger(flight_number)) ~> ChangeFltNumToINT\nChangeFltNumToINT select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\testimated_arrival,\n\t\testimated_departure,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflt_type = flight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tSF_pax,\n\t\tmission_id,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RenameFlightType\nFltNbrRangeMatrixCSV derive(BEGIN_FLT_NBR = toInteger(BEGIN_FLT_NBR),\n\t\tEND_FLT_NBR = toInteger(END_FLT_NBR)) ~> ChangeBegEndFltNbrToInt\nRenameFlightType, ChangeBegEndFltNbrToInt join(flight_number >= BEGIN_FLT_NBR\n\t&& flight_number <= END_FLT_NBR\n\t&& scheduled_departure >= EFF_DATE\n\t&& scheduled_departure <= END_DATE,\n\tjoinType:'left',\n\tbroadcast: 'right')~> JoinToFltNbrRangeMatrix\nJoinToFltNbrRangeMatrix derive(flight_number = toString(flight_number)) ~> ChgFltNumToString\nConditionalSplit1@CMBfltnbr derive(REVENUE_TYPE = \"DOD Int'l\",\n\t\tREVENUE_SUBTYPE = \"International\",\n\t\tFLT_TYPE_OPS_REPORT = \"DOD\") ~> CMBfltnbrRevCat\nChgFltNumToString select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\testimated_arrival,\n\t\testimated_departure,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type = flt_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tSF_pax,\n\t\tmission_id,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID,\n\t\tREVENUE_TYPE = FLIGHT_TYPE,\n\t\tREVENUE_SUBTYPE = FLIGHT_SUBTYPE,\n\t\tFLT_TYPE_OPS_REPORT\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> STDfltnbrRevCat\nCMBfltnbrRevCat, STDfltnbrRevCat union(byName: true)~> UnionCMBandSTDfltnmbrs\nUnionCMBandSTDfltnmbrs derive(scheduled_departure = toTimestamp(scheduled_departure,'yyyy-MM-dd HH:mm:ss'),\n\t\tscheduled_arrival = toTimestamp(scheduled_arrival,'yyyy-MM-dd HH:mm:ss'),\n\t\tactual_oooi_out = toTimestamp(actual_oooi_out,'yyyy-MM-dd HH:mm:ss'),\n\t\tactual_oooi_off = toTimestamp(actual_oooi_off,'yyyy-MM-dd HH:mm:ss'),\n\t\tactual_oooi_on = toTimestamp(actual_oooi_on,'yyyy-MM-dd HH:mm:ss'),\n\t\tactual_oooi_in = toTimestamp(actual_oooi_in,'yyyy-MM-dd HH:mm:ss'),\n\t\testimated_arrival = toTimestamp(estimated_arrival,'yyyy-MM-dd HH:mm:ss'),\n\t\testimated_departure = toTimestamp(estimated_departure,'yyyy-MM-dd HH:mm:ss'),\n\t\tupdated_at = toTimestamp(updated_at,'yyyy-MM-dd HH:mm:ss')) ~> ChangeDateTimefieldstoTimestamp\nChangeDateTimefieldstoTimestamp sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tflight_id as integer,\n\t\tflight_number as string,\n\t\tflight_date as date,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tops_type as string,\n\t\tscheduled_departure_airport as string,\n\t\tscheduled_arrival_airport as string,\n\t\tscheduled_departure as timestamp,\n\t\tscheduled_arrival as timestamp,\n\t\tactual_oooi_out as timestamp,\n\t\tactual_oooi_off as timestamp,\n\t\tactual_oooi_on as timestamp,\n\t\tactual_oooi_in as timestamp,\n\t\testimated_arrival as timestamp,\n\t\testimated_departure as timestamp,\n\t\tbase_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tsched_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_arrive_airport_id as string,\n\t\tbase_airport as string,\n\t\tactual_departure_airport as string,\n\t\tactual_arrival_airport as string,\n\t\tis_verified as string,\n\t\tnotes as string,\n\t\tis_canceled as string,\n\t\tflight_type as string,\n\t\tcargo_weight as integer,\n\t\tcargo_on as integer,\n\t\tcargo_off as integer,\n\t\tfuel_out as double,\n\t\tfuel_in as double,\n\t\tfuel_uplift as integer,\n\t\tfuel_uplifts as string,\n\t\tmaint_log_page as string,\n\t\tlndg_touchdown_zone as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_actual_braking as string,\n\t\tpax as integer,\n\t\tmission_id as string,\n\t\tupdated_at as timestamp,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FlightToSQL"
+		}
+	}
+}
