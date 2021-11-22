@@ -1,5 +1,5 @@
 {
-	"name": "FLIGHTSblobtoSQL_PAXMissionIDfltCAT_TEST_v2",
+	"name": "FLIGHTSblobtoSQL",
 	"properties": {
 		"description": "Uses SF flight blob file with Pax and Mission ID as source. Adds flight category. Creates temp flight number as integer for join to flt nbr range.",
 		"folder": {
