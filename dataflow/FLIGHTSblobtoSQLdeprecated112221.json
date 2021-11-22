@@ -1,5 +1,5 @@
 {
-	"name": "FLIGHTSblobtoSQL",
+	"name": "FLIGHTSblobtoSQLdeprecated112221",
 	"properties": {
 		"description": "Populates SF_FLIGHT_PROD SQL table with data from blob storage.",
 		"folder": {
