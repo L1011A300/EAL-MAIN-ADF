@@ -712,7 +712,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Flight_data')]",
+			"name": "[concat(parameters('factoryName'), '/Flight_data_deprecated_112221')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1173,7 +1173,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "FLIGHTSblobtoSQL",
+								"referenceName": "FLIGHTSblobtoSQLdeprecated112221",
 								"type": "DataFlowReference",
 								"parameters": {
 									"run_id": {
@@ -1214,7 +1214,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Flight_data_PAX_TEST')]",
+			"name": "[concat(parameters('factoryName'), '/Flight_data')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1655,7 +1655,7 @@
 						]
 					},
 					{
-						"name": "FLIGHTSblobtoSQL_PAX_TEST",
+						"name": "FLIGHTSblobtoSQL",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
@@ -1675,7 +1675,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "FLIGHTSblobtoSQL_PAXMissionIDfltCAT_TEST_v2",
+								"referenceName": "FLIGHTSblobtoSQL",
 								"type": "DataFlowReference",
 								"parameters": {
 									"run_id": {

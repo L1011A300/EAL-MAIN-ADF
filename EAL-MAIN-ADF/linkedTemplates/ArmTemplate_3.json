@@ -585,7 +585,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/FLIGHTSblobtoSQL')]",
+			"name": "[concat(parameters('factoryName'), '/FLIGHTSblobtoSQLdeprecated112221')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -844,7 +844,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/FLIGHTSblobtoSQL_PAXMissionIDfltCAT_TEST_v2')]",
+			"name": "[concat(parameters('factoryName'), '/FLIGHTSblobtoSQL')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
