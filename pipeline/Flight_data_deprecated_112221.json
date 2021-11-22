@@ -456,7 +456,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "FLIGHTSblobtoSQL",
+						"referenceName": "FLIGHTSblobtoSQLdeprecated112221",
 						"type": "DataFlowReference",
 						"parameters": {
 							"run_id": {
