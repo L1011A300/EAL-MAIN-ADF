@@ -1,5 +1,5 @@
 {
-	"name": "Flight_data",
+	"name": "Flight_data_deprecated_112221",
 	"properties": {
 		"description": "Populates flight data in SQL Server DB from SkedFlex.",
 		"activities": [
