@@ -914,7 +914,7 @@
 					}
 				},
 				"folder": {
-					"name": "PROD"
+					"name": "Inactive"
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-06-14T16:02:16Z"
@@ -1421,7 +1421,7 @@
 					}
 				},
 				"folder": {
-					"name": "Testing"
+					"name": "PROD"
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-06-14T16:02:16Z"
@@ -8141,7 +8141,7 @@
 			"properties": {
 				"description": "Populates SF_FLIGHT_PROD SQL table with data from blob storage.",
 				"folder": {
-					"name": "PROD"
+					"name": "Inactive"
 				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
@@ -8409,7 +8409,7 @@
 			"properties": {
 				"description": "Uses SF flight blob file with Pax and Mission ID as source. Adds flight category. Creates temp flight number as integer for join to flt nbr range.",
 				"folder": {
-					"name": "TEST"
+					"name": "PROD"
 				},
 				"type": "MappingDataFlow",
 				"typeProperties": {

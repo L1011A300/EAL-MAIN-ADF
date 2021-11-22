@@ -1206,7 +1206,7 @@
 					}
 				},
 				"folder": {
-					"name": "PROD"
+					"name": "Inactive"
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-06-14T16:02:16Z"
@@ -1709,7 +1709,7 @@
 					}
 				},
 				"folder": {
-					"name": "Testing"
+					"name": "PROD"
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-06-14T16:02:16Z"
