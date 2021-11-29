@@ -27,7 +27,7 @@
 				{
 					"type": "TumblingWindowTriggerDependencyReference",
 					"referenceTrigger": {
-						"referenceName": "EQUIP_SCHD trigger 630 am",
+						"referenceName": "DELAYS trigger 630 am",
 						"type": "TriggerReference"
 					}
 				}
