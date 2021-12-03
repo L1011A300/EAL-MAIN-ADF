@@ -7588,6 +7588,37 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHED trigger every 2 hrs')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Runs Equip_Sched_data pipeline every two hours.",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Equip_sched_data",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 2,
+						"startTime": "2021-11-29T14:00:00Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Equip_sched_data')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHED trigger midnight UTC')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -8186,7 +8217,8 @@
 							"description": "Populates sched departure airport code with IATA, ICAO or FAA code (whichever is available first)."
 						},
 						{
-							"name": "RemoveSchdDepAirportCols"
+							"name": "RemoveSchdDepAirportCols",
+							"description": "Removes unneeded lookup columns inserted from airport reference table."
 						},
 						{
 							"name": "SchdArrAirportLookup",
@@ -8250,7 +8282,7 @@
 						},
 						{
 							"name": "STDfltnbrRevCat",
-							"description": "Changes flight data \"flt_type\" to \"flight_type\" and flt number range data \"FLIGHT_TYPE\" to \"REVENUE_TYPE\". Drops EFF and END dates, BEGIN and END flt number fields from Flight Number Matrix, , flight_number_INT."
+							"description": "Changes flight data \"flt_type\" to \"flight_type\" and flt number range data \"FLIGHT_TYPE\" to \"REVENUE_TYPE\" and \"FLIGHT_SUBTYPE\" to \"REVENUE_SUBTYPE\". Drops EFF and END dates, BEGIN and END flt number fields from Flight Number Matrix. \"flight_number_INT\" field dropped."
 						},
 						{
 							"name": "UnionCMBandSTDfltnmbrs",
@@ -9168,37 +9200,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHED trigger every 2 hrs')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Runs Equip_Sched_data pipeline every two hours.",
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Equip_sched_data",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Hour",
-						"interval": 2,
-						"startTime": "2021-11-29T14:00:00Z",
-						"timeZone": "UTC"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Equip_sched_data')]"
 			]
 		}
 	]
