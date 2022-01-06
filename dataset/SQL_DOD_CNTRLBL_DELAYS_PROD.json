@@ -1,19 +1,16 @@
 {
-	"name": "FLT_NBR_RANGE_PROD",
+	"name": "SQL_DOD_CNTRLBL_DELAYS_PROD",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "eal_edw_connection",
 			"type": "LinkedServiceReference"
-		},
-		"folder": {
-			"name": "SQL tables"
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "FLT_NBR_RANGE_PROD"
+			"table": "DOD_CNTRLBL_DELAYS_PROD"
 		}
 	}
 }

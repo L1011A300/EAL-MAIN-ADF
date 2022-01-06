@@ -1,0 +1,44 @@
+{
+	"name": "DOD_CNTRL_DELAY_CSV",
+	"properties": {
+		"description": "MUST FORMAT DATES AS \"yyyy-MM-dd HH:mm:ss\"",
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Azure blob"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "DOD_CNTRL_DELAY.csv",
+				"container": "flight-number-range"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "EFF_DATE",
+				"type": "String"
+			},
+			{
+				"name": "END_DATE",
+				"type": "String"
+			},
+			{
+				"name": "delay_code",
+				"type": "String"
+			},
+			{
+				"name": "delay_code_name",
+				"type": "String"
+			}
+		]
+	}
+}
