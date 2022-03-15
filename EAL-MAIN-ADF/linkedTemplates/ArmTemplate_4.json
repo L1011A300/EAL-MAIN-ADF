@@ -13,6 +13,113 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/FLIGHTSblobtoSQLdeprecated112221')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Populates SF_FLIGHT_PROD SQL table with data from blob storage.",
+				"folder": {
+					"name": "Inactive"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_flights",
+								"type": "DatasetReference"
+							},
+							"name": "SFFlight"
+						},
+						{
+							"dataset": {
+								"referenceName": "SF_source_airport",
+								"type": "DatasetReference"
+							},
+							"name": "AirportReferenceJSON"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_FLIGHT_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "FlightToSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS",
+							"description": "Add columns for ADF workflow ID and timestamp."
+						},
+						{
+							"name": "FLTTYPEfilter",
+							"description": "Filters out offline flights."
+						},
+						{
+							"name": "ActualAirportIDifNULL",
+							"description": "If actual depart/arrive airport ID is null, populates with sched depart/arrive airport ID."
+						},
+						{
+							"name": "PareAirportReference",
+							"description": "Removes unnecessary columns from airport reference data."
+						},
+						{
+							"name": "SchdDepAirportLookup",
+							"description": "Looks up IATA, ICAO and FAA airport codes for scheduled departure airport."
+						},
+						{
+							"name": "UpdateSchdDepAirportCode",
+							"description": "Populates sched departure airport code with IATA, ICAO or FAA code (whichever is available first)."
+						},
+						{
+							"name": "RemoveSchdDepAirportCols",
+							"description": "Removes unneeded lookup columns inserted from airport reference table."
+						},
+						{
+							"name": "SchdArrAirportLookup",
+							"description": "Looks up IATA, ICAO and FAA airport codes for scheduled arrival airport."
+						},
+						{
+							"name": "UpdateSchdArrAirportCode",
+							"description": "Populates sched arrival airport code with IATA, ICAO or FAA code (whichever is available first)."
+						},
+						{
+							"name": "RemoveSchArrAirportCols",
+							"description": "Removes unneeded lookup columns inserted from airport reference table."
+						},
+						{
+							"name": "ActDepAirportLookup",
+							"description": "Looks up IATA, ICAO and FAA airport codes for actual departure airport."
+						},
+						{
+							"name": "UpdateActDepAirportCode",
+							"description": "Populates actual departure airport code with IATA, ICAO or FAA code (whichever is available first)."
+						},
+						{
+							"name": "RemoveActDepAirportCols",
+							"description": "Removes unneeded lookup columns inserted from airport reference table."
+						},
+						{
+							"name": "ActArrAirportLookup",
+							"description": "Looks up IATA, ICAO and FAA airport codes for actual arrival airport."
+						},
+						{
+							"name": "UpdateActArrAirportCode",
+							"description": "Populates actual arrival airport code with IATA, ICAO or FAA code (whichever is available first)."
+						},
+						{
+							"name": "RemoveActArrAirportCols",
+							"description": "Removes unneeded lookup columns inserted from airport reference table."
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tflight_id as integer,\n\t\tflight_number as string,\n\t\tflight_date as string,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tops_type as string,\n\t\tscheduled_departure as string,\n\t\tscheduled_arrival as string,\n\t\testimated_departure as string,\n\t\testimated_arrival as string,\n\t\tactual_oooi_out as string,\n\t\tactual_oooi_off as string,\n\t\tactual_oooi_on as string,\n\t\tactual_oooi_in as string,\n\t\tbase_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tsched_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_arrive_airport_id as string,\n\t\tbase_airport as string,\n\t\tscheduled_departure_airport as string,\n\t\tscheduled_arrival_airport as string,\n\t\tactual_departure_airport as string,\n\t\tactual_arrival_airport as string,\n\t\tis_verified as boolean,\n\t\tnotes as string,\n\t\tis_canceled as boolean,\n\t\tflight_type as string,\n\t\tcargo_weight as integer,\n\t\tcargo_on as integer,\n\t\tcargo_off as integer,\n\t\tfuel_out as double,\n\t\tfuel_in as double,\n\t\tfuel_uplift as integer,\n\t\tfuel_uplifts as string,\n\t\tmaint_log_page as string,\n\t\tlndg_touchdown_zone as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_actual_braking as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine',\n\tdateFormats: ['yyyy-MM-dd'],\n\ttimestampFormats: ['yyyy-MM-dd\\'T\\'HH:mm:ss'],\n\tpreferredIntegralType: 'integer',\n\tpreferredFractionalType: 'decimal') ~> SFFlight\nsource(output(\n\t\tairport_id as string,\n\t\tiata_code as string,\n\t\ticao_code as string,\n\t\tfaa_code as string,\n\t\tairport_name as string,\n\t\tcity_name as string,\n\t\tstate_code as string,\n\t\tcountry_code as string,\n\t\tweather_zone as string,\n\t\tlatitude as string,\n\t\tlongitude as string,\n\t\televation_feet as string,\n\t\tiana_timezone as string,\n\t\tis_base as boolean,\n\t\tbase_initial as string,\n\t\tis_active as boolean,\n\t\tis_deleted as boolean\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> AirportReferenceJSON\nSFFlight derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS filter(flight_type <=> 'flight' || flight_type <=> 'continuation' || flight_type <=> 'divert' || flight_type <=> 'return' || flight_type <=> 'taxi-back') ~> FLTTYPEfilter\nFLTTYPEfilter derive(actual_arrive_airport_id = iif(isNull(actual_arrive_airport_id), sched_arrive_airport_id, actual_arrive_airport_id),\n\t\tactual_depart_airport_id = iif(isNull(actual_depart_airport_id) , sched_depart_airport_id, actual_depart_airport_id)) ~> ActualAirportIDifNULL\nAirportReferenceJSON select(mapColumn(\n\t\tairport_id,\n\t\tiata_code,\n\t\ticao_code,\n\t\tfaa_code\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> PareAirportReference\nActualAirportIDifNULL, PareAirportReference lookup(sched_depart_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> SchdDepAirportLookup\nSchdDepAirportLookup derive(scheduled_departure_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateSchdDepAirportCode\nUpdateSchdDepAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\testimated_departure,\n\t\testimated_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveSchdDepAirportCols\nRemoveSchdDepAirportCols, PareAirportReference lookup(sched_arrive_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> SchdArrAirportLookup\nSchdArrAirportLookup derive(scheduled_arrival_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateSchdArrAirportCode\nUpdateSchdArrAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\testimated_departure,\n\t\testimated_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveSchArrAirportCols\nRemoveSchArrAirportCols, PareAirportReference lookup(actual_depart_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> ActDepAirportLookup\nActDepAirportLookup derive(actual_departure_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateActDepAirportCode\nUpdateActDepAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\testimated_departure,\n\t\testimated_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveActDepAirportCols\nRemoveActDepAirportCols, PareAirportReference lookup(actual_arrive_airport_id == airport_id,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> ActArrAirportLookup\nActArrAirportLookup derive(actual_arrival_airport = coalesce(iata_code,icao_code,faa_code)) ~> UpdateActArrAirportCode\nUpdateActArrAirportCode select(mapColumn(\n\t\tflight_id,\n\t\tflight_number,\n\t\tflight_date,\n\t\taircraft_registration_number,\n\t\taircraft_type,\n\t\tops_type,\n\t\tscheduled_departure_airport,\n\t\tscheduled_arrival_airport,\n\t\tscheduled_departure,\n\t\tscheduled_arrival,\n\t\tactual_oooi_out,\n\t\tactual_oooi_off,\n\t\tactual_oooi_on,\n\t\tactual_oooi_in,\n\t\testimated_arrival,\n\t\testimated_departure,\n\t\tbase_airport_id,\n\t\tsched_depart_airport_id,\n\t\tsched_arrive_airport_id,\n\t\tactual_depart_airport_id,\n\t\tactual_arrive_airport_id,\n\t\tbase_airport,\n\t\tactual_departure_airport,\n\t\tactual_arrival_airport,\n\t\tis_verified,\n\t\tnotes,\n\t\tis_canceled,\n\t\tflight_type,\n\t\tcargo_weight,\n\t\tcargo_on,\n\t\tcargo_off,\n\t\tfuel_out,\n\t\tfuel_in,\n\t\tfuel_uplift,\n\t\tfuel_uplifts,\n\t\tmaint_log_page,\n\t\tlndg_touchdown_zone,\n\t\tlndg_midfield,\n\t\tlndg_rollout,\n\t\tlndg_actual_braking,\n\t\tupdated_at,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemoveActArrAirportCols\nRemoveActArrAirportCols sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tactual_arrival_airport as string,\n\t\tactual_arrive_airport_id as string,\n\t\tactual_depart_airport_id as string,\n\t\tactual_departure_airport as string,\n\t\tactual_oooi_in as timestamp,\n\t\tactual_oooi_off as timestamp,\n\t\tactual_oooi_on as timestamp,\n\t\tactual_oooi_out as timestamp,\n\t\taircraft_registration_number as string,\n\t\taircraft_type as string,\n\t\tbase_airport as string,\n\t\tbase_airport_id as string,\n\t\tcargo_off as integer,\n\t\tcargo_on as integer,\n\t\tcargo_weight as integer,\n\t\testimated_arrival as timestamp,\n\t\testimated_departure as timestamp,\n\t\tflight_date as date,\n\t\tflight_id as integer,\n\t\tflight_number as string,\n\t\tflight_type as string,\n\t\tfuel_in as double,\n\t\tfuel_out as double,\n\t\tfuel_uplift as integer,\n\t\tfuel_uplifts as string,\n\t\tis_canceled as string,\n\t\tis_verified as string,\n\t\tlndg_actual_braking as string,\n\t\tlndg_midfield as string,\n\t\tlndg_rollout as string,\n\t\tlndg_touchdown_zone as string,\n\t\tmaint_log_page as string,\n\t\tnotes as string,\n\t\tops_type as string,\n\t\tsched_arrive_airport_id as string,\n\t\tsched_depart_airport_id as string,\n\t\tscheduled_arrival as timestamp,\n\t\tscheduled_arrival_airport as string,\n\t\tscheduled_departure as timestamp,\n\t\tscheduled_departure_airport as string,\n\t\tupdated_at as timestamp,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> FlightToSQL"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/FltNbrRangeMatrixBlobToSQL')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -502,44 +609,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DODCntrlblDelayCodes')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"folder": {
-					"name": "PROD"
-				},
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "DOD_CNTRL_DELAY_CSV",
-								"type": "DatasetReference"
-							},
-							"name": "DodCntrlDelay"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_DOD_CNTRLBL_DELAYS_PROD",
-								"type": "DatasetReference"
-							},
-							"name": "DODCntrlDelayToSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tEFF_DATE as string,\n\t\tEND_DATE as string,\n\t\tdelay_code as string,\n\t\tdelay_code_name as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DodCntrlDelay\nDodCntrlDelay derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DODCntrlDelayToSQL"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/Airport_data')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -645,6 +714,65 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-06-14T17:18:57Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DOD_Cntrlbl_delay_codes')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Trigger this pipeline manually any time there are changes to the set of DOD controllable delay codes.",
+				"activities": [
+					{
+						"name": "DOD_CNTRLBL_DELAY_CODES",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DODCntrlblDelayCodes",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"DodCntrlDelay": {},
+									"DODCntrlDelayToSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "PROD"
+				},
+				"annotations": []
 			},
 			"dependsOn": []
 		},
@@ -1925,7 +2053,9 @@
 				"annotations": [],
 				"lastPublishTime": "2021-06-14T16:02:16Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/FLIGHTSblobtoSQLdeprecated112221')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Flight_number_range_data')]",
@@ -2047,741 +2177,6 @@
 				"lastPublishTime": "2021-06-14T16:02:16Z"
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MIS_Choice_Pax_Bags')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "MIS_PAX_BAGS_to_Blob",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "RestSource",
-								"httpRequestTimeout": "00:01:40",
-								"requestInterval": "00.00:00:00.010",
-								"requestMethod": "GET"
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings",
-									"copyBehavior": "FlattenHierarchy"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"path": "$['Flight']['ID']"
-										},
-										"sink": {
-											"path": "$['Flight']['ID']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['SegmentNo']"
-										},
-										"sink": {
-											"path": "$['Flight']['SegmentNo']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['ExternalID']"
-										},
-										"sink": {
-											"path": "$['Flight']['ExternalID']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['CarrierCode']"
-										},
-										"sink": {
-											"path": "$['Flight']['CarrierCode']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['FlightNo']"
-										},
-										"sink": {
-											"path": "$['Flight']['FlightNo']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['MarketingCarrierCode']"
-										},
-										"sink": {
-											"path": "$['Flight']['MarketingCarrierCode']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['MarketingFlightNo']"
-										},
-										"sink": {
-											"path": "$['Flight']['MarketingFlightNo']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['Type']"
-										},
-										"sink": {
-											"path": "$['Flight']['Type']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['TailNo']"
-										},
-										"sink": {
-											"path": "$['Flight']['TailNo']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['OriginIATA']"
-										},
-										"sink": {
-											"path": "$['Flight']['OriginIATA']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['OriginICAO']"
-										},
-										"sink": {
-											"path": "$['Flight']['OriginICAO']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['OriginAirportName']"
-										},
-										"sink": {
-											"path": "$['Flight']['OriginAirportName']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['OriginAirportCity']"
-										},
-										"sink": {
-											"path": "$['Flight']['OriginAirportCity']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['OriginAirportCountryCode']"
-										},
-										"sink": {
-											"path": "$['Flight']['OriginAirportCountryCode']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['DepartureTerminal']"
-										},
-										"sink": {
-											"path": "$['Flight']['DepartureTerminal']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['DepartureGate']"
-										},
-										"sink": {
-											"path": "$['Flight']['DepartureGate']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['DestinationIATA']"
-										},
-										"sink": {
-											"path": "$['Flight']['DestinationIATA']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['DestinationICAO']"
-										},
-										"sink": {
-											"path": "$['Flight']['DestinationICAO']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['DestinationAirportName']"
-										},
-										"sink": {
-											"path": "$['Flight']['DestinationAirportName']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['DestinationAirportCity']"
-										},
-										"sink": {
-											"path": "$['Flight']['DestinationAirportCity']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['DestinationAirportCountryCode']"
-										},
-										"sink": {
-											"path": "$['Flight']['DestinationAirportCountryCode']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['ArrivalTerminal']"
-										},
-										"sink": {
-											"path": "$['Flight']['ArrivalTerminal']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['ArrivalGate']"
-										},
-										"sink": {
-											"path": "$['Flight']['ArrivalGate']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['ScheduledDepartureTime']"
-										},
-										"sink": {
-											"path": "$['Flight']['ScheduledDepartureTime']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['ScheduledDepartureTimeUTC']"
-										},
-										"sink": {
-											"path": "$['Flight']['ScheduledDepartureTimeUTC']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['EstimatedDepartureTime']"
-										},
-										"sink": {
-											"path": "$['Flight']['EstimatedDepartureTime']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['ScheduledArrivalTime']"
-										},
-										"sink": {
-											"path": "$['Flight']['ScheduledArrivalTime']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['EstimatedArrivalTime']"
-										},
-										"sink": {
-											"path": "$['Flight']['EstimatedArrivalTime']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['BoardingTime']"
-										},
-										"sink": {
-											"path": "$['Flight']['BoardingTime']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['Message']"
-										},
-										"sink": {
-											"path": "$['Flight']['Message']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['Status']"
-										},
-										"sink": {
-											"path": "$['Flight']['Status']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['EnablePassengerAPIS']"
-										},
-										"sink": {
-											"path": "$['Flight']['EnablePassengerAPIS']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['EnableCrewAPIS']"
-										},
-										"sink": {
-											"path": "$['Flight']['EnableCrewAPIS']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['EnableDCS']"
-										},
-										"sink": {
-											"path": "$['Flight']['EnableDCS']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['WeightUnitsKgs']"
-										},
-										"sink": {
-											"path": "$['Flight']['WeightUnitsKgs']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['IsOpenSeating']"
-										},
-										"sink": {
-											"path": "$['Flight']['IsOpenSeating']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['IsProgressiveFlight']"
-										},
-										"sink": {
-											"path": "$['Flight']['IsProgressiveFlight']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['EnableThroughCheckIn']"
-										},
-										"sink": {
-											"path": "$['Flight']['EnableThroughCheckIn']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['EnableIatciCheckIn']"
-										},
-										"sink": {
-											"path": "$['Flight']['EnableIatciCheckIn']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['EnableBoarding']"
-										},
-										"sink": {
-											"path": "$['Flight']['EnableBoarding']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['UseAveragePaxWeight']"
-										},
-										"sink": {
-											"path": "$['Flight']['UseAveragePaxWeight']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['UseAverageBagWeight']"
-										},
-										"sink": {
-											"path": "$['Flight']['UseAverageBagWeight']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['PnlImported']"
-										},
-										"sink": {
-											"path": "$['Flight']['PnlImported']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['IsCancelled']"
-										},
-										"sink": {
-											"path": "$['Flight']['IsCancelled']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['CancelledBy']"
-										},
-										"sink": {
-											"path": "$['Flight']['CancelledBy']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['CancelledReason']"
-										},
-										"sink": {
-											"path": "$['Flight']['CancelledReason']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['IsLocked']"
-										},
-										"sink": {
-											"path": "$['Flight']['IsLocked']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['LockedBy']"
-										},
-										"sink": {
-											"path": "$['Flight']['LockedBy']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['LockedReason']"
-										},
-										"sink": {
-											"path": "$['Flight']['LockedReason']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['AircraftCapacity']"
-										},
-										"sink": {
-											"path": "$['Flight']['AircraftCapacity']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['BookedPassengersCount']"
-										},
-										"sink": {
-											"path": "$['Flight']['BookedPassengersCount']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['TotalCargoLoad']"
-										},
-										"sink": {
-											"path": "$['Flight']['TotalCargoLoad']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['UpliftFuelLoad']"
-										},
-										"sink": {
-											"path": "$['Flight']['UpliftFuelLoad']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['TotalFuelLoad']"
-										},
-										"sink": {
-											"path": "$['Flight']['TotalFuelLoad']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['RemainingFuelLoad']"
-										},
-										"sink": {
-											"path": "$['Flight']['RemainingFuelLoad']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['AncillaryTemplateID']"
-										},
-										"sink": {
-											"path": "$['Flight']['AncillaryTemplateID']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['CustomerID']"
-										},
-										"sink": {
-											"path": "$['Flight']['CustomerID']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['ApiInterfaceIDs']"
-										},
-										"sink": {
-											"path": "$['Flight']['ApiInterfaceIDs']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['BatchPassengerMask']"
-										},
-										"sink": {
-											"path": "$['Flight']['BatchPassengerMask']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['BatchCrewMemberMask']"
-										},
-										"sink": {
-											"path": "$['Flight']['BatchCrewMemberMask']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['PreDepartureCloseOutPassengerMask']"
-										},
-										"sink": {
-											"path": "$['Flight']['PreDepartureCloseOutPassengerMask']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['PostDepartureCloseOutPassengerMask']"
-										},
-										"sink": {
-											"path": "$['Flight']['PostDepartureCloseOutPassengerMask']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['PreDepartureCloseOutCrewMemberMask']"
-										},
-										"sink": {
-											"path": "$['Flight']['PreDepartureCloseOutCrewMemberMask']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['PostDepartureCloseOutCrewMemberMask']"
-										},
-										"sink": {
-											"path": "$['Flight']['PostDepartureCloseOutCrewMemberMask']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['PaxFlightPreDepartureCloseOutStatus']"
-										},
-										"sink": {
-											"path": "$['Flight']['PaxFlightPreDepartureCloseOutStatus']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['PaxFlightPostDepartureCloseOutStatus']"
-										},
-										"sink": {
-											"path": "$['Flight']['PaxFlightPostDepartureCloseOutStatus']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['CrewFlightPreDepartureCloseOutStatus']"
-										},
-										"sink": {
-											"path": "$['Flight']['CrewFlightPreDepartureCloseOutStatus']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['CrewFlightPostDepartureCloseOutStatus']"
-										},
-										"sink": {
-											"path": "$['Flight']['CrewFlightPostDepartureCloseOutStatus']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['PaxBatchPreVetStatus']"
-										},
-										"sink": {
-											"path": "$['Flight']['PaxBatchPreVetStatus']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['HasPassengerSecurityTransactions']"
-										},
-										"sink": {
-											"path": "$['Flight']['HasPassengerSecurityTransactions']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['IsNotificationAlertsOptional']"
-										},
-										"sink": {
-											"path": "$['Flight']['IsNotificationAlertsOptional']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['IsContactTracingOptional']"
-										},
-										"sink": {
-											"path": "$['Flight']['IsContactTracingOptional']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['IsHealthCheckVerificationOptional']"
-										},
-										"sink": {
-											"path": "$['Flight']['IsHealthCheckVerificationOptional']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['IsHealthCheckAttestationOptional']"
-										},
-										"sink": {
-											"path": "$['Flight']['IsHealthCheckAttestationOptional']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['IsTestEnvironment']"
-										},
-										"sink": {
-											"path": "$['Flight']['IsTestEnvironment']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['CheckedInPassengersCount']"
-										},
-										"sink": {
-											"path": "$['Flight']['CheckedInPassengersCount']"
-										}
-									},
-									{
-										"source": {
-											"path": "$['Flight']['CheckedBagsCount']"
-										},
-										"sink": {
-											"path": "$['Flight']['CheckedBagsCount']"
-										}
-									}
-								],
-								"collectionReference": ""
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "MIS_Choice_Pax_Bag_SRC",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "MIS_Choice_Pax_Bags",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "MISChoicePaxBagsBlobToSQL",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "MIS_PAX_BAGS_to_Blob",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "MIS_Choice_Pax_Bags_to_SQL",
-								"type": "DataFlowReference",
-								"parameters": {
-									"RunId": {
-										"value": "'@{pipeline().RunId}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"MISChoicePaxBagsBlob": {},
-									"MISCHOICEPAXBAGSSQL": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"variables": {
-					"date": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "Testing"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/MIS_Choice_Pax_Bags_to_SQL')]"
-			]
 		}
 	]
 }
