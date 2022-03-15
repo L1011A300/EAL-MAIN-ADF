@@ -1,0 +1,20 @@
+{
+	"name": "Flight_Crew_data trigger 1-2am",
+	"properties": {
+		"description": "Extracts all data for FLIGHT_CREW_PROD table at 1 or 2 a.m. lcl., depending on DST.",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"type": "TumblingWindowTrigger",
+		"typeProperties": {
+			"frequency": "Hour",
+			"interval": 24,
+			"startTime": "2022-03-15T06:10:00Z",
+			"delay": "00:00:00",
+			"maxConcurrency": 50,
+			"retryPolicy": {
+				"intervalInSeconds": 30
+			},
+			"dependsOn": []
+		}
+	}
+}
