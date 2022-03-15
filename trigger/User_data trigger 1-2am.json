@@ -1,7 +1,7 @@
 {
-	"name": "Flight_Crew_data trigger 1-2am",
+	"name": "User_data trigger 1-2am",
 	"properties": {
-		"description": "Extracts all data for FLIGHT_CREW_PROD table at 1 or 2 a.m. lcl., depending on DST.",
+		"description": "Extracts all data for USER_PROD table at 1:10 or 2:10 a.m. lcl., depending on DST.",
 		"annotations": [],
 		"runtimeState": "Stopped",
 		"type": "TumblingWindowTrigger",
