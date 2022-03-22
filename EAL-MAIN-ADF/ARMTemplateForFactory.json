@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Radixx_FTP'"
 		},
+		"SFtest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SFtest'"
+		},
 		"SharePointOnlineList1_servicePrincipalKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalKey' of 'SharePointOnlineList1'"
@@ -38,10 +42,6 @@
 		"eal_staging_connection_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
-		},
-		"SFtest_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SFtest'"
 		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
@@ -5188,7 +5188,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SFtest",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5203,7 +5203,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+				"[concat(variables('factoryId'), '/linkedServices/SFtest')]"
 			]
 		},
 		{
@@ -5236,7 +5236,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SFtest",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5251,7 +5251,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+				"[concat(variables('factoryId'), '/linkedServices/SFtest')]"
 			]
 		},
 		{
@@ -5260,7 +5260,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SFtest",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5275,7 +5275,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+				"[concat(variables('factoryId'), '/linkedServices/SFtest')]"
 			]
 		},
 		{
@@ -5284,7 +5284,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SFtest",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5299,7 +5299,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+				"[concat(variables('factoryId'), '/linkedServices/SFtest')]"
 			]
 		},
 		{
@@ -5332,7 +5332,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SFtest",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5347,7 +5347,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+				"[concat(variables('factoryId'), '/linkedServices/SFtest')]"
 			]
 		},
 		{
@@ -7220,6 +7220,20 @@
 						"type": "SecureString",
 						"value": "[parameters('Radixx_FTP_password')]"
 					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SFtest')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "SF connection with SSL encryption",
+				"annotations": [],
+				"type": "PostgreSql",
+				"typeProperties": {
+					"connectionString": "[parameters('SFtest_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -9444,20 +9458,6 @@
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SFtest')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "SF connection with SSL encryption",
-				"annotations": [],
-				"type": "PostgreSql",
-				"typeProperties": {
-					"connectionString": "[parameters('SFtest_connectionString')]"
-				}
-			},
-			"dependsOn": []
 		}
 	]
 }

@@ -944,7 +944,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SFtest",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -988,7 +988,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SFtest",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -1010,7 +1010,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SFtest",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -1032,7 +1032,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SFtest",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -1076,7 +1076,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SFtest",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {

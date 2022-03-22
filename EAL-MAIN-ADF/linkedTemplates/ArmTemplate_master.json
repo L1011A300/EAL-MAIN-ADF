@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Radixx_FTP'"
 		},
+		"SFtest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SFtest'"
+		},
 		"SharePointOnlineList1_servicePrincipalKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalKey' of 'SharePointOnlineList1'"
@@ -38,10 +42,6 @@
 		"eal_staging_connection_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
-		},
-		"SFtest_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SFtest'"
 		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
@@ -115,6 +115,9 @@
 					"Radixx_FTP_password": {
 						"value": "[parameters('Radixx_FTP_password')]"
 					},
+					"SFtest_connectionString": {
+						"value": "[parameters('SFtest_connectionString')]"
+					},
 					"SharePointOnlineList1_servicePrincipalKey": {
 						"value": "[parameters('SharePointOnlineList1_servicePrincipalKey')]"
 					},
@@ -129,9 +132,6 @@
 					},
 					"eal_staging_connection_connectionString": {
 						"value": "[parameters('eal_staging_connection_connectionString')]"
-					},
-					"SFtest_connectionString": {
-						"value": "[parameters('SFtest_connectionString')]"
 					},
 					"MIS_Choice_properties_typeProperties_url": {
 						"value": "[parameters('MIS_Choice_properties_typeProperties_url')]"
