@@ -29,6 +29,9 @@
 		"eal_staging_connection_connectionString": {
 			"value": ""
 		},
+		"SFtest_connectionString": {
+			"value": ""
+		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"value": "https://api.airline-choice.com/rest/"
 		},

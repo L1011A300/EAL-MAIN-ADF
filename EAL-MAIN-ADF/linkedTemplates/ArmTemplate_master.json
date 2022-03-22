@@ -39,6 +39,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
+		"SFtest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SFtest'"
+		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.airline-choice.com/rest/"
@@ -125,6 +129,9 @@
 					},
 					"eal_staging_connection_connectionString": {
 						"value": "[parameters('eal_staging_connection_connectionString')]"
+					},
+					"SFtest_connectionString": {
+						"value": "[parameters('SFtest_connectionString')]"
 					},
 					"MIS_Choice_properties_typeProperties_url": {
 						"value": "[parameters('MIS_Choice_properties_typeProperties_url')]"

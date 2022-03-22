@@ -13,6 +13,65 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Flt_nbr_range_matrix_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "MUST FORMAT DATES AS \"yyyy-MM-dd HH:mm:ss\"",
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "FLT_NBR_RANGE_CSV.csv",
+						"container": "flight-number-range"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "EFF_DATE",
+						"type": "String"
+					},
+					{
+						"name": "END_DATE",
+						"type": "String"
+					},
+					{
+						"name": "BEGIN_FLT_NBR",
+						"type": "String"
+					},
+					{
+						"name": "END_FLT_NBR",
+						"type": "String"
+					},
+					{
+						"name": "FLIGHT_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "FLIGHT_SUBTYPE",
+						"type": "String"
+					},
+					{
+						"name": "FLT_TYPE_OPS_REPORT",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MIS_Choice_Pax_Bag_SRC')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -995,7 +1054,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SFtest",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -1073,68 +1132,6 @@
 							"type": "string"
 						},
 						"delay_code_name": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_equip_sched')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-equip-sched"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"eqp_sched_id": {
-							"type": "integer"
-						},
-						"ac_registration": {
-							"type": "string"
-						},
-						"status_code": {
-							"type": "string"
-						},
-						"status_name": {
-							"type": "string"
-						},
-						"status_description": {
-							"type": "string"
-						},
-						"start_time": {
-							"type": "string"
-						},
-						"end_time": {
-							"type": "string"
-						},
-						"notes": {
-							"type": "string"
-						},
-						"is_deleted": {
-							"type": "boolean"
-						},
-						"updated_at": {
 							"type": "string"
 						}
 					}
