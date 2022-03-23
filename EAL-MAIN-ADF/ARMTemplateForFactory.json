@@ -43,6 +43,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
+		"SkedFlexConnection_SSL_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection_SSL'"
+		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.airline-choice.com/rest/"
@@ -5140,7 +5144,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SkedFlexConnection_SSL",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5155,7 +5159,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection_SSL')]"
 			]
 		},
 		{
@@ -5164,7 +5168,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SkedFlexConnection_SSL",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5179,7 +5183,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection_SSL')]"
 			]
 		},
 		{
@@ -5188,7 +5192,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SFtest",
+					"referenceName": "SkedFlexConnection_SSL",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5203,7 +5207,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SFtest')]"
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection_SSL')]"
 			]
 		},
 		{
@@ -5212,7 +5216,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection",
+					"referenceName": "SkedFlexConnection_SSL",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5227,7 +5231,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection')]"
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection_SSL')]"
 			]
 		},
 		{
@@ -5236,7 +5240,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SFtest",
+					"referenceName": "SkedFlexConnection_SSL",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5251,7 +5255,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SFtest')]"
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection_SSL')]"
 			]
 		},
 		{
@@ -5260,7 +5264,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SFtest",
+					"referenceName": "SkedFlexConnection_SSL",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5275,7 +5279,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SFtest')]"
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection_SSL')]"
 			]
 		},
 		{
@@ -5284,7 +5288,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SFtest",
+					"referenceName": "SkedFlexConnection_SSL",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5299,7 +5303,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SFtest')]"
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection_SSL')]"
 			]
 		},
 		{
@@ -5308,7 +5312,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SFtest",
+					"referenceName": "SkedFlexConnection_SSL",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5323,7 +5327,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SFtest')]"
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection_SSL')]"
 			]
 		},
 		{
@@ -5332,7 +5336,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SFtest",
+					"referenceName": "SkedFlexConnection_SSL",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -5347,7 +5351,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SFtest')]"
+				"[concat(variables('factoryId'), '/linkedServices/SkedFlexConnection_SSL')]"
 			]
 		},
 		{
@@ -9458,6 +9462,20 @@
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SkedFlexConnection_SSL')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to SkedFlex's \"skedflexbi\" PostgreSQL database with SSL encryption.",
+				"annotations": [],
+				"type": "PostgreSql",
+				"typeProperties": {
+					"connectionString": "[parameters('SkedFlexConnection_SSL_connectionString')]"
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }

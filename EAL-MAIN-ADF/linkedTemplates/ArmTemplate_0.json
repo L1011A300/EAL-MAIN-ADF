@@ -43,6 +43,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
+		"SkedFlexConnection_SSL_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection_SSL'"
+		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.airline-choice.com/rest/"
@@ -373,6 +377,20 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SkedFlexConnection_SSL')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to SkedFlex's \"skedflexbi\" PostgreSQL database with SSL encryption.",
+				"annotations": [],
+				"type": "PostgreSql",
+				"typeProperties": {
+					"connectionString": "[parameters('SkedFlexConnection_SSL_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DOD_CNTRL_DELAY_CSV')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -485,64 +503,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Flt_nbr_range_matrix')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"sheetName": "FLT_NBR_RANGE",
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "FLT_NBR_RANGE.xlsx",
-						"container": "flight-number-range"
-					},
-					"firstRowAsHeader": true
-				},
-				"schema": [
-					{
-						"name": "EFF_DATE",
-						"type": "String"
-					},
-					{
-						"name": "END_DATE",
-						"type": "String"
-					},
-					{
-						"name": "BEGIN_FLT_NBR",
-						"type": "String"
-					},
-					{
-						"name": "END_FLT_NBR",
-						"type": "String"
-					},
-					{
-						"name": "FLIGHT_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "FLIGHT_SUBTYPE",
-						"type": "String"
-					},
-					{
-						"name": "FLT_TYPE_OPS_REPORT",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
 			]
 		}
 	]
