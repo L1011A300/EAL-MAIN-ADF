@@ -2,7 +2,7 @@
 	"name": "SF_source_bi_pairing_item",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "SFtest",
+			"referenceName": "SkedFlexConnection_SSL",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {

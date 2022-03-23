@@ -2,7 +2,7 @@
 	"name": "SF_source_bi_flight",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "SkedFlexConnection",
+			"referenceName": "SkedFlexConnection_SSL",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
