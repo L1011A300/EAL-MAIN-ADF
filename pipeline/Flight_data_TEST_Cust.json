@@ -448,7 +448,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "SF_source_flights_PAX",
+						"referenceName": "SF_source_flights_TEST",
 						"type": "DatasetReference"
 					}
 				]
