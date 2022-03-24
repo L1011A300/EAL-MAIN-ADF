@@ -13,6 +13,94 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_ITEM_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "pairing_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pairing_item_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pairing_item_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "flight_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "shift_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "shift_start_time",
+						"type": "datetime"
+					},
+					{
+						"name": "shift_end_time",
+						"type": "datetime"
+					},
+					{
+						"name": "shift_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "shift_is_work",
+						"type": "bit"
+					},
+					{
+						"name": "shift_is_reserve",
+						"type": "bit"
+					},
+					{
+						"name": "shift_is_sick",
+						"type": "bit"
+					},
+					{
+						"name": "shift_is_training",
+						"type": "bit"
+					},
+					{
+						"name": "shift_is_vacation",
+						"type": "bit"
+					},
+					{
+						"name": "updated_at",
+						"type": "datetime"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_PAIRING_ITEM_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQL_PAIRING_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -312,28 +400,6 @@
 						}
 					]
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_flights_TEST')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "bi-flights-TEST",
-						"container": "sf-source-flights"
-					}
-				},
-				"schema": {}
 			},
 			"dependsOn": []
 		},

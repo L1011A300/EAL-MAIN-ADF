@@ -31,6 +31,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection'"
 		},
+		"SkedFlexConnection_SSL_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection_SSL'"
+		},
 		"eal_edw_connection_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_edw_connection'"
@@ -42,10 +46,6 @@
 		"eal_staging_connection_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
-		},
-		"SkedFlexConnection_SSL_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection_SSL'"
 		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
@@ -243,6 +243,20 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SkedFlexConnection_SSL')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to SkedFlex's \"skedflexbi\" PostgreSQL database with SSL encryption.",
+				"annotations": [],
+				"type": "PostgreSql",
+				"typeProperties": {
+					"connectionString": "[parameters('SkedFlexConnection_SSL_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/eal_edw_connection')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -372,20 +386,6 @@
 						"intervalInSeconds": 240
 					},
 					"dependsOn": []
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SkedFlexConnection_SSL')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Connection to SkedFlex's \"skedflexbi\" PostgreSQL database with SSL encryption.",
-				"annotations": [],
-				"type": "PostgreSql",
-				"typeProperties": {
-					"connectionString": "[parameters('SkedFlexConnection_SSL_connectionString')]"
 				}
 			},
 			"dependsOn": []

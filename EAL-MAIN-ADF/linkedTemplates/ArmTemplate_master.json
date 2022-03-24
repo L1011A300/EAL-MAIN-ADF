@@ -31,6 +31,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection'"
 		},
+		"SkedFlexConnection_SSL_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection_SSL'"
+		},
 		"eal_edw_connection_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_edw_connection'"
@@ -42,10 +46,6 @@
 		"eal_staging_connection_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
-		},
-		"SkedFlexConnection_SSL_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection_SSL'"
 		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
@@ -128,6 +128,9 @@
 					"SkedFlexConnection_connectionString": {
 						"value": "[parameters('SkedFlexConnection_connectionString')]"
 					},
+					"SkedFlexConnection_SSL_connectionString": {
+						"value": "[parameters('SkedFlexConnection_SSL_connectionString')]"
+					},
 					"eal_edw_connection_connectionString": {
 						"value": "[parameters('eal_edw_connection_connectionString')]"
 					},
@@ -136,9 +139,6 @@
 					},
 					"eal_staging_connection_connectionString": {
 						"value": "[parameters('eal_staging_connection_connectionString')]"
-					},
-					"SkedFlexConnection_SSL_connectionString": {
-						"value": "[parameters('SkedFlexConnection_SSL_connectionString')]"
 					},
 					"MIS_Choice_properties_typeProperties_url": {
 						"value": "[parameters('MIS_Choice_properties_typeProperties_url')]"

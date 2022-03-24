@@ -21,7 +21,61 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/Flight_data')]",
+			"name": "[concat(parameters('factoryName'), '/Flight_data_TEST')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FlightBlobToSQLTEST",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "TESTFltDataWthCategories_JOIN",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SQLFltData": {},
+									"FltNbrRangeMatrixCSV": {},
+									"FltDataToSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"date": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Flight_data_TEST_Cust')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -442,6 +496,24 @@
 										"sink": {
 											"path": "$['updated_at']"
 										}
+									},
+									{
+										"source": {
+											"name": "customer_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['customer_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "customer_code",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['customer_code']"
+										}
 									}
 								]
 							}
@@ -455,14 +527,14 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "SF_source_flights_PAX",
+								"referenceName": "SF_source_flights_TEST",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						]
 					},
 					{
-						"name": "FLIGHTSblobtoSQL",
+						"name": "FLIGHTSblobtoSQL_TEST_Cust",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
@@ -482,7 +554,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "FLIGHTSblobtoSQL",
+								"referenceName": "FLIGHTSblobtoSQL_TEST_Cust",
 								"type": "DataFlowReference",
 								"parameters": {
 									"run_id": {
@@ -495,7 +567,8 @@
 									"AirportReferenceJSON": {},
 									"FltNbrRangeMatrixCSV": {},
 									"FlightToSQL": {}
-								}
+								},
+								"linkedServiceParameters": {}
 							},
 							"staging": {},
 							"compute": {
@@ -516,64 +589,10 @@
 					}
 				},
 				"folder": {
-					"name": "PROD"
+					"name": "Testing"
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-06-14T16:02:16Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Flight_data_TEST')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "FlightBlobToSQLTEST",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "TESTFltDataWthCategories_JOIN",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"SQLFltData": {},
-									"FltNbrRangeMatrixCSV": {},
-									"FltDataToSQL": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"date": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "Testing"
-				},
-				"annotations": []
 			},
 			"dependsOn": []
 		},

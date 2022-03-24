@@ -23,6 +23,9 @@
 		"SkedFlexConnection_connectionString": {
 			"value": ""
 		},
+		"SkedFlexConnection_SSL_connectionString": {
+			"value": ""
+		},
 		"eal_edw_connection_connectionString": {
 			"value": ""
 		},
@@ -30,9 +33,6 @@
 			"value": ""
 		},
 		"eal_staging_connection_connectionString": {
-			"value": ""
-		},
-		"SkedFlexConnection_SSL_connectionString": {
 			"value": ""
 		},
 		"MIS_Choice_properties_typeProperties_url": {
