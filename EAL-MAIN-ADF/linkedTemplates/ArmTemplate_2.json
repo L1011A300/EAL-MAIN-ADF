@@ -375,19 +375,19 @@
 							"type": "string"
 						},
 						"base_airport_id": {
-							"type": "string"
+							"type": "integer"
 						},
 						"sched_depart_airport_id": {
-							"type": "string"
+							"type": "integer"
 						},
 						"sched_arrive_airport_id": {
-							"type": "string"
+							"type": "integer"
 						},
 						"actual_depart_airport_id": {
-							"type": "string"
+							"type": "null"
 						},
 						"actual_arrive_airport_id": {
-							"type": "string"
+							"type": "null"
 						},
 						"base_airport": {
 							"type": "string"
@@ -420,10 +420,10 @@
 							"type": "integer"
 						},
 						"cargo_on": {
-							"type": "integer"
+							"type": "null"
 						},
 						"cargo_off": {
-							"type": "integer"
+							"type": "null"
 						},
 						"fuel_out": {
 							"type": "number"
@@ -456,7 +456,7 @@
 							"type": "integer"
 						},
 						"mission_id": {
-							"type": "string"
+							"type": "null"
 						},
 						"updated_at": {
 							"type": "string"

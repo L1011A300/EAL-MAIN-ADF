@@ -567,8 +567,7 @@
 									"AirportReferenceJSON": {},
 									"FltNbrRangeMatrixCSV": {},
 									"FlightToSQL": {}
-								},
-								"linkedServiceParameters": {}
+								}
 							},
 							"staging": {},
 							"compute": {
