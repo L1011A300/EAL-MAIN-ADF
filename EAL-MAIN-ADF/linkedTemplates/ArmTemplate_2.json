@@ -460,6 +460,12 @@
 						},
 						"updated_at": {
 							"type": "string"
+						},
+						"customer_name": {
+							"type": "string"
+						},
+						"customer_code": {
+							"type": "string"
 						}
 					}
 				}
