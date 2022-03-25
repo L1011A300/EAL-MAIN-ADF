@@ -418,6 +418,24 @@
 								"sink": {
 									"path": "$['updated_at']"
 								}
+							},
+							{
+								"source": {
+									"name": "customer_name",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['customer_name']"
+								}
+							},
+							{
+								"source": {
+									"name": "customer_code",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['customer_code']"
+								}
 							}
 						]
 					}
