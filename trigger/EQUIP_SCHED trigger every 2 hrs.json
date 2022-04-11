@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Runs Equip_Sched_data pipeline every two hours.",
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
