@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Extracts all data from USER_CATEGORY_PROD table at 1 or 2 a.m. lcl, depending on DST.",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "user_category_data",
