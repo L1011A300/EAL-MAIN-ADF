@@ -3552,7 +3552,7 @@
 				"annotations": [
 					"5:00 a.m. UTC"
 				],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "flight_crew_data",
