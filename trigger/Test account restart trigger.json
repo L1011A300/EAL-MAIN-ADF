@@ -1,0 +1,17 @@
+{
+	"name": "Test account restart trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15,
+				"startTime": "2022-04-11T16:10:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
