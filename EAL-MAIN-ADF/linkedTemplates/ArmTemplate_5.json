@@ -3522,7 +3522,7 @@
 			"properties": {
 				"description": "Runs Equip_Sched_data pipeline every two hours.",
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
@@ -3552,7 +3552,7 @@
 				"annotations": [
 					"5:00 a.m. UTC"
 				],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "flight_crew_data",

@@ -19,7 +19,7 @@
 			"properties": {
 				"description": "Extracts all data from USER_CATEGORY_PROD table at 1 or 2 a.m. lcl, depending on DST.",
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "user_category_data",
@@ -49,7 +49,7 @@
 			"properties": {
 				"description": "Extracts all data for USER_PROD table at 1:10 or 2:10 a.m. lcl., depending on DST.",
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "user_data",
@@ -109,7 +109,7 @@
 				"annotations": [
 					"10:30 a.m. UTC"
 				],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Delay_data",
@@ -150,7 +150,7 @@
 				"annotations": [
 					"Midnight UTC"
 				],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Flight_data",
@@ -190,7 +190,7 @@
 				"annotations": [
 					"Midnight UTC"
 				],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Delay_data",
@@ -269,7 +269,7 @@
 				"annotations": [
 					"10:30 a.m. UTC"
 				],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipeline": {
 					"pipelineReference": {
 						"referenceName": "Flight_data",
