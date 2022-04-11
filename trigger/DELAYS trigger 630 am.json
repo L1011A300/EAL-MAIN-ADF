@@ -5,7 +5,7 @@
 		"annotations": [
 			"10:30 a.m. UTC"
 		],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "Delay_data",
