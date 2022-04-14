@@ -482,7 +482,7 @@
 								"type": "Expression"
 							},
 							"lastADFTS": {
-								"value": "@variables('last_ADF_TS')",
+								"value": "@activity('Get_Prev_ADF_TIMESTAMP').output",
 								"type": "Expression"
 							}
 						}
