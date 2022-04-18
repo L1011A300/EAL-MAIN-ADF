@@ -1,0 +1,16 @@
+{
+	"name": "SF_source_bi_flight_TEST",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SkedFlexConnection_SSL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Source"
+		},
+		"annotations": [],
+		"type": "PostgreSqlTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
