@@ -26,7 +26,7 @@
 					"source": {
 						"type": "PostgreSqlSource",
 						"query": {
-							"value": "SELECT * FROM \"bi\".\"flight\"\nWHERE CAST(updated_at AS TIMESTAMP) > variables('last_ADF_TS')",
+							"value": "@concat('SELECT * FROM \"bi\".\"flight\"\nWHERE updated_at > ''',variables('last_ADF_TS'),'''')",
 							"type": "Expression"
 						}
 					},
@@ -557,7 +557,8 @@
 				"type": "String"
 			},
 			"last_ADF_TS": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "2022-03-24T15:41:51.157"
 			}
 		},
 		"folder": {
