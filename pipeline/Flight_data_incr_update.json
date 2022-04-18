@@ -6,7 +6,14 @@
 			{
 				"name": "SF_Flight_data_to_Azure_blob",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set last ADF TS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -17,7 +24,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "PostgreSqlSource"
+						"type": "PostgreSqlSource",
+						"query": {
+							"value": "SELECT * FROM \"bi\".\"flight\"\nWHERE CAST(updated_at AS DATE) > '2022-04-16'",
+							"type": "Expression"
+						}
 					},
 					"sink": {
 						"type": "JsonSink",
@@ -442,7 +453,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SF_source_bi_flight",
+						"referenceName": "SF_source_bi_flight_TEST",
 						"type": "DatasetReference"
 					}
 				],
@@ -458,7 +469,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "Set last ADF TS",
+						"activity": "SF_Flight_data_to_Azure_blob",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -497,14 +508,7 @@
 			{
 				"name": "Get_Prev_ADF_TIMESTAMP",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "SF_Flight_data_to_Azure_blob",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
