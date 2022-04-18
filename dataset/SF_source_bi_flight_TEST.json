@@ -10,7 +10,11 @@
 		},
 		"annotations": [],
 		"type": "PostgreSqlTable",
-		"schema": []
+		"schema": [],
+		"typeProperties": {
+			"schema": "bi",
+			"table": "flight"
+		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
 }
