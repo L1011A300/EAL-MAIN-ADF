@@ -26,7 +26,7 @@
 					"source": {
 						"type": "PostgreSqlSource",
 						"query": {
-							"value": "SELECT * FROM \"bi\".\"flight\"\nWHERE CAST(updated_at AS DATE) > '2022-04-16'",
+							"value": "SELECT * FROM \"bi\".\"flight\"\nWHERE CAST(updated_at AS TIMESTAMP) > variables('last_ADF_TS')",
 							"type": "Expression"
 						}
 					},
@@ -459,7 +459,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "SF_source_flights_PAX",
+						"referenceName": "SF_source_flights_TEST",
 						"type": "DatasetReference"
 					}
 				]
@@ -546,7 +546,7 @@
 				"typeProperties": {
 					"variableName": "last_ADF_TS",
 					"value": {
-						"value": "@string(activity('Get_Prev_ADF_TIMESTAMP').output['value'][0]['ADF_TIMESTAMP'])",
+						"value": "@string(activity('Get_Prev_ADF_TIMESTAMP').output)",
 						"type": "Expression"
 					}
 				}

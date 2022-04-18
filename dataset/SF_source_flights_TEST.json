@@ -10,7 +10,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "bi-flights-TEST",
+				"fileName": {
+					"value": "@concat(concat('bi-flights-base-TEST',split(utcnow(),'T')[0]),'.json')",
+					"type": "Expression"
+				},
 				"container": "sf-source-flights"
 			}
 		},
