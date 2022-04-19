@@ -8,7 +8,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Set last ADF TS",
+						"activity": "Get_Prev_ADF_TIMESTAMP",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -26,7 +26,7 @@
 					"source": {
 						"type": "PostgreSqlSource",
 						"query": {
-							"value": "@concat('SELECT * FROM \"bi\".\"flight\"\nWHERE updated_at > ''',variables('last_ADF_TS'),'''')",
+							"value": "SELECT * FROM \"bi\".\"flight\" WHERE updated_at > '@{activity('Get_Prev_ADF_TIMESTAMP').output.firstRow.LASTTS}'",
 							"type": "Expression"
 						}
 					},
@@ -520,7 +520,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT MAX([ADF_TIMESTAMP]) FROM [dbo].[SQL_FLIGHT_TABLE_TEST]",
+						"sqlReaderQuery": "SELECT MAX([ADF_TIMESTAMP]) AS LASTTS FROM [dbo].[SQL_FLIGHT_TABLE_TEST]",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -528,20 +528,13 @@
 						"referenceName": "SQL_FLT_TABLE_TEST",
 						"type": "DatasetReference"
 					},
-					"firstRowOnly": false
+					"firstRowOnly": true
 				}
 			},
 			{
 				"name": "Set last ADF TS",
 				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Get_Prev_ADF_TIMESTAMP",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "last_ADF_TS",
