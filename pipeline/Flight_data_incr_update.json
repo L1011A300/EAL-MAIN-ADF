@@ -485,7 +485,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "FLIGHTSblobtoSQL_incr_update",
+						"referenceName": "FLIGHTSblobtoSQL_incr_update_A",
 						"type": "DataFlowReference",
 						"parameters": {
 							"run_id": {
@@ -493,7 +493,7 @@
 								"type": "Expression"
 							},
 							"lastADFTS": {
-								"value": "@activity('Get_Prev_ADF_TIMESTAMP').output",
+								"value": "@activity('Get_Prev_ADF_TIMESTAMP').output.firstRow.LASTTS",
 								"type": "Expression"
 							}
 						}
