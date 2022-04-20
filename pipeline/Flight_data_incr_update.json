@@ -530,19 +530,6 @@
 					},
 					"firstRowOnly": true
 				}
-			},
-			{
-				"name": "Set last ADF TS",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "last_ADF_TS",
-					"value": {
-						"value": "@string(activity('Get_Prev_ADF_TIMESTAMP').output)",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"variables": {
