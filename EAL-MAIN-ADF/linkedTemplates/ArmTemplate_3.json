@@ -169,8 +169,7 @@
 				"type": "Binary",
 				"typeProperties": {
 					"location": {
-						"type": "HttpServerLocation",
-						"relativeUrl": "http://www.dneonline.com/calculator.asmx"
+						"type": "HttpServerLocation"
 					}
 				}
 			},
