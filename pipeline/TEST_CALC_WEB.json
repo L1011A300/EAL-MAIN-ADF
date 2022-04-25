@@ -17,10 +17,24 @@
 				"typeProperties": {
 					"url": "http://www.dneonline.com/calculator.asmx",
 					"method": "POST",
-					"body": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <tem:Add>\n         <tem:intA>{\"@variables('VAR_A')\"}</tem:intA>\n         <tem:intB>{\"@variables('VAR_B')\"}</tem:intB>\n      </tem:Add>\n   </soapenv:Body>\n</soapenv:Envelope>"
+					"headers": {
+						"Content-Type": "text/xml;charset=UTF-8",
+						"SOAPAction": "\"http://tempuri.org/Add\""
+					},
+					"body": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <tem:Add>\n         <tem:intA>{\"VAR_C\":\"@parameters('VAR_C')\"}</tem:intA>\n         <tem:intB>{\"VAR_D\":\"@parameters('VAR_D')\"}</tem:intB>\n      </tem:Add>\n   </soapenv:Body>\n</soapenv:Envelope>"
 				}
 			}
 		],
+		"parameters": {
+			"VAR_C": {
+				"type": "int",
+				"defaultValue": 10
+			},
+			"VAR_D": {
+				"type": "int",
+				"defaultValue": 5
+			}
+		},
 		"variables": {
 			"VAR_A": {
 				"type": "String",
