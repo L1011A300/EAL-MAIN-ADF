@@ -1,0 +1,12 @@
+{
+	"name": "TEST_HTTP_SERVER",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "http://www.dneonline.com/calculator.asmx",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
