@@ -315,6 +315,66 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TEST_CALC_WEB')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Web1",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "http://www.dneonline.com/calculator.asmx",
+							"method": "POST",
+							"headers": {
+								"Content-Type": "text/xml;charset=UTF-8",
+								"SOAPAction": "\"http://tempuri.org/Add\""
+							},
+							"body": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <tem:Add>\n         <tem:intA>{\"VAR_C\":\"@parameters('VAR_C')\"}</tem:intA>\n         <tem:intB>{\"VAR_D\":\"@parameters('VAR_D')\"}</tem:intB>\n      </tem:Add>\n   </soapenv:Body>\n</soapenv:Envelope>"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"VAR_C": {
+						"type": "int",
+						"defaultValue": 10
+					},
+					"VAR_D": {
+						"type": "int",
+						"defaultValue": 5
+					}
+				},
+				"variables": {
+					"VAR_A": {
+						"type": "String",
+						"defaultValue": "10"
+					},
+					"VAR_B": {
+						"type": "String",
+						"defaultValue": "5"
+					}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DOD_CNTRL_DELAY_CSV')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -546,29 +606,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MIS_Choice_Pax_Bag_SRC')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "MIS_Choice_REST",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Source"
-				},
-				"annotations": [],
-				"type": "RestResource",
-				"typeProperties": {
-					"relativeUrl": "flights/GetFlightByExternalID?externalID=19292&originIATA=GYE"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MIS_Choice_REST')]"
 			]
 		}
 	]

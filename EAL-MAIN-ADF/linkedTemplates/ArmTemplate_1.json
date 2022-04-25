@@ -13,6 +13,27 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_Pax_Bag_SRC')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MIS_Choice_REST",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": "flights/GetFlightByExternalID?externalID=19292&originIATA=GYE"
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MIS_Choice_Pax_Bags')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1074,68 +1095,6 @@
 							"type": "string"
 						},
 						"delay_code_name": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_equip_sched')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-equip-sched"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"eqp_sched_id": {
-							"type": "integer"
-						},
-						"ac_registration": {
-							"type": "string"
-						},
-						"status_code": {
-							"type": "string"
-						},
-						"status_name": {
-							"type": "string"
-						},
-						"status_description": {
-							"type": "string"
-						},
-						"start_time": {
-							"type": "string"
-						},
-						"end_time": {
-							"type": "string"
-						},
-						"notes": {
-							"type": "string"
-						},
-						"is_deleted": {
-							"type": "boolean"
-						},
-						"updated_at": {
 							"type": "string"
 						}
 					}
