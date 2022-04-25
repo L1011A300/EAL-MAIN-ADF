@@ -83,6 +83,10 @@
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime"
 		},
+		"TEST_HTTP_SERVER_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://www.dneonline.com/calculator.asmx"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -160,6 +164,9 @@
 					},
 					"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('SharePointOnlineList1_properties_typeProperties_servicePrincipalId')]"
+					},
+					"TEST_HTTP_SERVER_properties_typeProperties_url": {
+						"value": "[parameters('TEST_HTTP_SERVER_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -269,6 +276,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'EAL-MAIN-ADF_ArmTemplate_4')]"
+			]
+		},
+		{
+			"name": "EAL-MAIN-ADF_ArmTemplate_6",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_6.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'EAL-MAIN-ADF_ArmTemplate_5')]"
 			]
 		}
 	]

@@ -62,6 +62,9 @@
 		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
 			"value": "@trigger().outputs.windowEndTime"
 		},
+		"TEST_HTTP_SERVER_properties_typeProperties_url": {
+			"value": "http://www.dneonline.com/calculator.asmx"
+		},
 		"containerUri": {
 			"value": ""
 		},
