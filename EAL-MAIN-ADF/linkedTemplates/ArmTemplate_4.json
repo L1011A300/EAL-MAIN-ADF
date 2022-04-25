@@ -633,7 +633,7 @@
 									"type": "HttpReadSettings",
 									"requestMethod": "POST",
 									"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nSOAPAction: \"http://tempuri.org/Add\"\n",
-									"requestBody": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <tem:Add>\n         <tem:intA>{\"sum\":\"@variables('VAR_A')\"}</tem:intA>\n         <tem:intB>{\"sum\":\"@variables('VAR_B')\"}</tem:intB>\n      </tem:Add>\n   </soapenv:Body>\n</soapenv:Envelope>",
+									"requestBody": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <tem:Add>\n         <tem:intA>{\"@variables('VAR_A')\"}</tem:intA>\n         <tem:intB>{\"@variables('VAR_B')\"}</tem:intB>\n      </tem:Add>\n   </soapenv:Body>\n</soapenv:Envelope>",
 									"requestTimeout": ""
 								},
 								"formatSettings": {
