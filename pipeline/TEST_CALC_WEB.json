@@ -1,0 +1,39 @@
+{
+	"name": "TEST_CALC_WEB",
+	"properties": {
+		"activities": [
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "http://www.dneonline.com/calculator.asmx",
+					"method": "POST",
+					"body": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <tem:Add>\n         <tem:intA>{\"@variables('VAR_A')\"}</tem:intA>\n         <tem:intB>{\"@variables('VAR_B')\"}</tem:intB>\n      </tem:Add>\n   </soapenv:Body>\n</soapenv:Envelope>"
+				}
+			}
+		],
+		"variables": {
+			"VAR_A": {
+				"type": "String",
+				"defaultValue": "10"
+			},
+			"VAR_B": {
+				"type": "String",
+				"defaultValue": "5"
+			}
+		},
+		"folder": {
+			"name": "Testing"
+		},
+		"annotations": []
+	}
+}
