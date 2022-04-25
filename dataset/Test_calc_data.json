@@ -1,0 +1,17 @@
+{
+	"name": "Test_calc_data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TEST_HTTP_SERVER",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "http://www.dneonline.com/calculator.asmx"
+			}
+		}
+	}
+}
