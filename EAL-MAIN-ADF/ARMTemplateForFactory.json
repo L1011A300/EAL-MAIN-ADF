@@ -75,6 +75,10 @@
 			"type": "string",
 			"defaultValue": "9269a1f1-59ff-4866-97bc-78de45083f85"
 		},
+		"TEST_HTTP_SERVER_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://www.dneonline.com/calculator.asmx"
+		},
 		"Trigger_qk2_properties_pipeline_parameters_windowStart": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowStartTime"
@@ -82,10 +86,6 @@
 		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime"
-		},
-		"TEST_HTTP_SERVER_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "http://www.dneonline.com/calculator.asmx"
 		}
 	},
 	"variables": {
@@ -2618,7 +2618,7 @@
 					}
 				},
 				"folder": {
-					"name": "Testing"
+					"name": "Testing/Incremental Load"
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-06-14T16:02:16Z"
@@ -3190,7 +3190,7 @@
 					}
 				},
 				"folder": {
-					"name": "Testing"
+					"name": "Testing/Incremental Load"
 				},
 				"annotations": [],
 				"lastPublishTime": "2021-06-14T16:02:16Z"
@@ -4715,6 +4715,156 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TEST_CALC')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "COPY Calc Data",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "POST",
+									"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nSOAPAction: \"http://tempuri.org/Add\"\n",
+									"requestBody": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <tem:Add>\n         <tem:intA>{\"@parameters('VAR_C')\"}</tem:intA>\n         <tem:intB>{\"@parameters('VAR_D')\"}</tem:intB>\n      </tem:Add>\n   </soapenv:Body>\n</soapenv:Envelope>",
+									"requestTimeout": ""
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Test_calc_data",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Calc_Data_Blob",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"VAR_C": {
+						"type": "int",
+						"defaultValue": 5
+					},
+					"VAR_D": {
+						"type": "int",
+						"defaultValue": 10
+					}
+				},
+				"variables": {
+					"VAR_A": {
+						"type": "String",
+						"defaultValue": "10"
+					},
+					"VAR_B": {
+						"type": "String",
+						"defaultValue": "5"
+					}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Test_calc_data')]",
+				"[concat(variables('factoryId'), '/datasets/Calc_Data_Blob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TEST_CALC_WEB')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Web1",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "http://www.dneonline.com/calculator.asmx",
+							"method": "POST",
+							"headers": {
+								"Content-Type": "text/xml;charset=UTF-8",
+								"SOAPAction": "\"http://tempuri.org/Add\""
+							},
+							"body": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <tem:Add>\n         <tem:intA>{\"VAR_C\":\"@parameters('VAR_C')\"}</tem:intA>\n         <tem:intB>{\"VAR_D\":\"@parameters('VAR_D')\"}</tem:intB>\n      </tem:Add>\n   </soapenv:Body>\n</soapenv:Envelope>"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"VAR_C": {
+						"type": "int",
+						"defaultValue": 10
+					},
+					"VAR_D": {
+						"type": "int",
+						"defaultValue": 5
+					}
+				},
+				"variables": {
+					"VAR_A": {
+						"type": "String",
+						"defaultValue": "10"
+					},
+					"VAR_B": {
+						"type": "String",
+						"defaultValue": "5"
+					}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/TESTfltdatawthCategories')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -5706,6 +5856,29 @@
 				"[concat(variables('factoryId'), '/datasets/SF_source_bi_user')]",
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
 				"[concat(variables('factoryId'), '/dataflows/USERblobtoSQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Calc_Data_Blob')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Calc_Data",
+						"container": "tcn-test"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
 			]
 		},
 		{
@@ -9008,6 +9181,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Test_calc_data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TEST_HTTP_SERVER",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/TEST_HTTP_SERVER')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MIS_Choice')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -9125,6 +9319,21 @@
 				"type": "PostgreSql",
 				"typeProperties": {
 					"connectionString": "[parameters('SkedFlexConnection_SSL_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TEST_HTTP_SERVER')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('TEST_HTTP_SERVER_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []
@@ -10443,7 +10652,7 @@
 			"properties": {
 				"description": "Uses SF flight blob file with Pax and Mission ID as source. Adds flight category. Creates temp flight number as integer for join to flt nbr range.",
 				"folder": {
-					"name": "TEST"
+					"name": "TEST/Incremental Load"
 				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
@@ -10597,7 +10806,7 @@
 			"properties": {
 				"description": "Uses SF flight blob file with Pax and Mission ID as source. Adds flight category. Creates temp flight number as integer for join to flt nbr range.",
 				"folder": {
-					"name": "TEST"
+					"name": "TEST/Incremental Load"
 				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
@@ -11386,215 +11595,6 @@
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/TEST_HTTP_SERVER')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "HttpServer",
-				"typeProperties": {
-					"url": "[parameters('TEST_HTTP_SERVER_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Anonymous"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Test_calc_data')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "TEST_HTTP_SERVER",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "HttpServerLocation"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/TEST_HTTP_SERVER')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/TEST_CALC')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "COPY Calc Data",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "POST",
-									"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nSOAPAction: \"http://tempuri.org/Add\"\n",
-									"requestBody": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <tem:Add>\n         <tem:intA>{\"@parameters('VAR_C')\"}</tem:intA>\n         <tem:intB>{\"@parameters('VAR_D')\"}</tem:intB>\n      </tem:Add>\n   </soapenv:Body>\n</soapenv:Envelope>",
-									"requestTimeout": ""
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
-							},
-							"sink": {
-								"type": "BinarySink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "Test_calc_data",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "Calc_Data_Blob",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"VAR_C": {
-						"type": "int",
-						"defaultValue": 5
-					},
-					"VAR_D": {
-						"type": "int",
-						"defaultValue": 10
-					}
-				},
-				"variables": {
-					"VAR_A": {
-						"type": "String",
-						"defaultValue": "10"
-					},
-					"VAR_B": {
-						"type": "String",
-						"defaultValue": "5"
-					}
-				},
-				"folder": {
-					"name": "Testing"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Test_calc_data')]",
-				"[concat(variables('factoryId'), '/datasets/Calc_Data_Blob')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Calc_Data_Blob')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "Calc_Data",
-						"container": "tcn-test"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/TEST_CALC_WEB')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Web1",
-						"type": "WebActivity",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "http://www.dneonline.com/calculator.asmx",
-							"method": "POST",
-							"headers": {
-								"Content-Type": "text/xml;charset=UTF-8",
-								"SOAPAction": "\"http://tempuri.org/Add\""
-							},
-							"body": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <tem:Add>\n         <tem:intA>{\"VAR_C\":\"@parameters('VAR_C')\"}</tem:intA>\n         <tem:intB>{\"VAR_D\":\"@parameters('VAR_D')\"}</tem:intB>\n      </tem:Add>\n   </soapenv:Body>\n</soapenv:Envelope>"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"VAR_C": {
-						"type": "int",
-						"defaultValue": 10
-					},
-					"VAR_D": {
-						"type": "int",
-						"defaultValue": 5
-					}
-				},
-				"variables": {
-					"VAR_A": {
-						"type": "String",
-						"defaultValue": "10"
-					},
-					"VAR_B": {
-						"type": "String",
-						"defaultValue": "5"
-					}
-				},
-				"folder": {
-					"name": "Testing"
-				},
-				"annotations": []
-			},
-			"dependsOn": []
 		}
 	]
 }

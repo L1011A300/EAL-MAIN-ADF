@@ -56,14 +56,14 @@
 		"SharePointOnlineList1_properties_typeProperties_servicePrincipalId": {
 			"value": "9269a1f1-59ff-4866-97bc-78de45083f85"
 		},
+		"TEST_HTTP_SERVER_properties_typeProperties_url": {
+			"value": "http://www.dneonline.com/calculator.asmx"
+		},
 		"Trigger_qk2_properties_pipeline_parameters_windowStart": {
 			"value": "@trigger().outputs.windowStartTime"
 		},
 		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
 			"value": "@trigger().outputs.windowEndTime"
-		},
-		"TEST_HTTP_SERVER_properties_typeProperties_url": {
-			"value": "http://www.dneonline.com/calculator.asmx"
 		},
 		"containerUri": {
 			"value": ""
