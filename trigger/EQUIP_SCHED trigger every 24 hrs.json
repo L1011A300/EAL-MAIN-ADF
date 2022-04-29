@@ -1,9 +1,9 @@
 {
-	"name": "EQUIP_SCHED trigger every 2 hrs",
+	"name": "EQUIP_SCHED trigger every 24 hrs",
 	"properties": {
-		"description": "Runs Equip_Sched_data pipeline every two hours.",
+		"description": "Runs Equip_Sched_data pipeline every 24 hours.",
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
@@ -16,9 +16,9 @@
 		"typeProperties": {
 			"recurrence": {
 				"frequency": "Hour",
-				"interval": 2,
-				"startTime": "2021-11-29T14:00:00Z",
-				"timeZone": "UTC"
+				"interval": 24,
+				"startTime": "2022-04-29T06:00:00",
+				"timeZone": "Eastern Standard Time"
 			}
 		}
 	}
