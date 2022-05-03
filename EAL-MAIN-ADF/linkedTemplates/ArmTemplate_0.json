@@ -47,6 +47,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
+		"TEST_NavBlue_Connection_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'TEST_NavBlue_Connection'"
+		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.airline-choice.com/rest/"
@@ -78,6 +82,14 @@
 		"TEST_HTTP_SERVER_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "http://www.dneonline.com/calculator.asmx"
+		},
+		"TEST_NavBlue_Connection_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://nfp.navtechinc.com:444/NavtechPublicService.svc"
+		},
+		"TEST_NavBlue_Connection_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "EAL/bdavis"
 		}
 	},
 	"variables": {
@@ -375,6 +387,26 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TEST_NavBlue_Connection')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('TEST_NavBlue_Connection_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('TEST_NavBlue_Connection_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('TEST_NavBlue_Connection_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Calc_Data_Blob')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -510,64 +542,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Flt_nbr_range_matrix')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"sheetName": "FLT_NBR_RANGE",
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "FLT_NBR_RANGE.xlsx",
-						"container": "flight-number-range"
-					},
-					"firstRowAsHeader": true
-				},
-				"schema": [
-					{
-						"name": "EFF_DATE",
-						"type": "String"
-					},
-					{
-						"name": "END_DATE",
-						"type": "String"
-					},
-					{
-						"name": "BEGIN_FLT_NBR",
-						"type": "String"
-					},
-					{
-						"name": "END_FLT_NBR",
-						"type": "String"
-					},
-					{
-						"name": "FLIGHT_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "FLIGHT_SUBTYPE",
-						"type": "String"
-					},
-					{
-						"name": "FLT_TYPE_OPS_REPORT",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
 			]
 		}
 	]

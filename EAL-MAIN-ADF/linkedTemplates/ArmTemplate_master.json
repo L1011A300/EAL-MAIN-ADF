@@ -47,6 +47,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
+		"TEST_NavBlue_Connection_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'TEST_NavBlue_Connection'"
+		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.airline-choice.com/rest/"
@@ -86,6 +90,14 @@
 		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime"
+		},
+		"TEST_NavBlue_Connection_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://nfp.navtechinc.com:444/NavtechPublicService.svc"
+		},
+		"TEST_NavBlue_Connection_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "EAL/bdavis"
 		},
 		"containerUri": {
 			"type": "string",
@@ -144,6 +156,9 @@
 					"eal_staging_connection_connectionString": {
 						"value": "[parameters('eal_staging_connection_connectionString')]"
 					},
+					"TEST_NavBlue_Connection_password": {
+						"value": "[parameters('TEST_NavBlue_Connection_password')]"
+					},
 					"MIS_Choice_properties_typeProperties_url": {
 						"value": "[parameters('MIS_Choice_properties_typeProperties_url')]"
 					},
@@ -167,6 +182,12 @@
 					},
 					"TEST_HTTP_SERVER_properties_typeProperties_url": {
 						"value": "[parameters('TEST_HTTP_SERVER_properties_typeProperties_url')]"
+					},
+					"TEST_NavBlue_Connection_properties_typeProperties_url": {
+						"value": "[parameters('TEST_NavBlue_Connection_properties_typeProperties_url')]"
+					},
+					"TEST_NavBlue_Connection_properties_typeProperties_userName": {
+						"value": "[parameters('TEST_NavBlue_Connection_properties_typeProperties_userName')]"
 					}
 				}
 			},

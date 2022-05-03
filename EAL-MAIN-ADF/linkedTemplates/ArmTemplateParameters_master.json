@@ -35,6 +35,9 @@
 		"eal_staging_connection_connectionString": {
 			"value": ""
 		},
+		"TEST_NavBlue_Connection_password": {
+			"value": ""
+		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"value": "https://api.airline-choice.com/rest/"
 		},
@@ -64,6 +67,12 @@
 		},
 		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
 			"value": "@trigger().outputs.windowEndTime"
+		},
+		"TEST_NavBlue_Connection_properties_typeProperties_url": {
+			"value": "https://nfp.navtechinc.com:444/NavtechPublicService.svc"
+		},
+		"TEST_NavBlue_Connection_properties_typeProperties_userName": {
+			"value": "EAL/bdavis"
 		},
 		"containerUri": {
 			"value": ""
