@@ -1,0 +1,17 @@
+{
+	"name": "NAVBLUE_SOAP_XML",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Xml",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "navblue-test"
+			}
+		}
+	}
+}
