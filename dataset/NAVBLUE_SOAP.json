@@ -1,0 +1,17 @@
+{
+	"name": "NAVBLUE_SOAP",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "navblue-test"
+			}
+		}
+	}
+}
