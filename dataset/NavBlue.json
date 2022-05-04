@@ -5,11 +5,26 @@
 			"referenceName": "TEST_NavBlue_Connection",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"AtcAlc": {
+				"type": "string",
+				"defaultValue": "EAL"
+			},
+			"StdFromUtc": {
+				"type": "string",
+				"defaultValue": "2022-03-01T00:00:00"
+			},
+			"StdToUtc": {
+				"type": "string",
+				"defaultValue": "2022-03-03T00:00:00"
+			}
+		},
 		"annotations": [],
 		"type": "Xml",
 		"typeProperties": {
 			"location": {
-				"type": "HttpServerLocation"
+				"type": "HttpServerLocation",
+				"relativeUrl": "GetFlightInfo"
 			}
 		}
 	}
