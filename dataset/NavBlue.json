@@ -2,7 +2,7 @@
 	"name": "NavBlue",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "TEST_NavBlue_Connection",
+			"referenceName": "TEST_NavBlue_Connection_2",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
