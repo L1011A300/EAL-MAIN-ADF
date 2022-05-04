@@ -1,0 +1,15 @@
+{
+	"name": "TEST_NavBlue_Connection_2",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://nfp.navtechinc.com:444/NavtechPublicService",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Basic",
+			"userName": "EAL/bdavis",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDMxRTYxMEM4LUFDOTEtNDY5Qi04NUQzLTJEM0FDQTI5RTA5MV9lYTIxMTZjMS1lMjA5LTRjZTEtYWNkOC1mNDI2MTE1ODUxMmEiDQp9"
+		}
+	}
+}
