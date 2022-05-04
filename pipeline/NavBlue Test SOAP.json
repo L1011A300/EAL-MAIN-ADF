@@ -19,7 +19,9 @@
 						"type": "XmlSource",
 						"storeSettings": {
 							"type": "HttpReadSettings",
-							"requestMethod": "GET"
+							"requestMethod": "GET",
+							"additionalHeaders": "GetFlightInfo",
+							"requestTimeout": ""
 						},
 						"formatSettings": {
 							"type": "XmlReadSettings",
