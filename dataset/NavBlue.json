@@ -23,8 +23,7 @@
 		"type": "Xml",
 		"typeProperties": {
 			"location": {
-				"type": "HttpServerLocation",
-				"relativeUrl": "GetFlightInfo"
+				"type": "HttpServerLocation"
 			}
 		}
 	}
