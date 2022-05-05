@@ -29,6 +29,9 @@
 		"TEST_NavBlue_Connection_password": {
 			"value": ""
 		},
+		"TEST_NavBlue_Connection_2_password": {
+			"value": ""
+		},
 		"eal_edw_connection_connectionString": {
 			"value": ""
 		},
@@ -36,6 +39,9 @@
 			"value": ""
 		},
 		"eal_staging_connection_connectionString": {
+			"value": ""
+		},
+		"NavBlue_TEST_REST_password": {
 			"value": ""
 		},
 		"MIS_Choice_properties_typeProperties_url": {
@@ -68,11 +74,23 @@
 		"TEST_NavBlue_Connection_properties_typeProperties_userName": {
 			"value": "EAL/bdavis"
 		},
+		"TEST_NavBlue_Connection_2_properties_typeProperties_url": {
+			"value": "https://nfp.navtechinc.com:444/NavtechPublicService"
+		},
+		"TEST_NavBlue_Connection_2_properties_typeProperties_userName": {
+			"value": "EAL/bdavis"
+		},
 		"Trigger_qk2_properties_pipeline_parameters_windowStart": {
 			"value": "@trigger().outputs.windowStartTime"
 		},
 		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
 			"value": "@trigger().outputs.windowEndTime"
+		},
+		"NavBlue_TEST_REST_properties_typeProperties_url": {
+			"value": "https://nfp.navtechinc.com:444/NavtechPublicService"
+		},
+		"NavBlue_TEST_REST_properties_typeProperties_userName": {
+			"value": "EAL/bdavis"
 		},
 		"containerUri": {
 			"value": ""
