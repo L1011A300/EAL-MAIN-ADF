@@ -20,7 +20,6 @@
 						"storeSettings": {
 							"type": "HttpReadSettings",
 							"requestMethod": "GET",
-							"additionalHeaders": "GetFlightInfo",
 							"requestTimeout": ""
 						},
 						"formatSettings": {
