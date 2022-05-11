@@ -2,7 +2,7 @@
 	"name": "NavBlue",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "TEST_NAVBLUE_CONNECTION_base",
+			"referenceName": "NAVBLUE_2",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
@@ -16,7 +16,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "HttpServerLocation",
-				"relativeUrl": "NavtechPublicService.svc"
+				"relativeUrl": "GetFlightList"
 			}
 		}
 	}
