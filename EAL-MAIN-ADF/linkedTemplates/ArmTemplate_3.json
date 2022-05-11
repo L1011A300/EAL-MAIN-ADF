@@ -13,6 +13,106 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SQL_AIRPORT_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "iata_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "icao_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "faa_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "airport_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "city_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "state_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "country_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "weather_zone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "latitude",
+						"type": "float"
+					},
+					{
+						"name": "longitude",
+						"type": "float"
+					},
+					{
+						"name": "elevation_feet",
+						"type": "smallint"
+					},
+					{
+						"name": "iana_timezone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_base",
+						"type": "bit"
+					},
+					{
+						"name": "base_initial",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_active",
+						"type": "bit"
+					},
+					{
+						"name": "is_deleted",
+						"type": "bit"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_AIRPORT_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQL_DELAYS_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1199,95 +1299,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SourceDataset_qk2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/TEST_CALC')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "COPY Calc Data",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "POST",
-									"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nSOAPAction: \"http://tempuri.org/Add\"\n",
-									"requestBody": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tem=\"http://tempuri.org/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <tem:Add>\n         <tem:intA>{\"@parameters('VAR_C')\"}</tem:intA>\n         <tem:intB>{\"@parameters('VAR_D')\"}</tem:intB>\n      </tem:Add>\n   </soapenv:Body>\n</soapenv:Envelope>",
-									"requestTimeout": ""
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
-							},
-							"sink": {
-								"type": "BinarySink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "Test_calc_data",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "Calc_Data_Blob",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"VAR_C": {
-						"type": "int",
-						"defaultValue": 5
-					},
-					"VAR_D": {
-						"type": "int",
-						"defaultValue": 10
-					}
-				},
-				"variables": {
-					"VAR_A": {
-						"type": "String",
-						"defaultValue": "10"
-					},
-					"VAR_B": {
-						"type": "String",
-						"defaultValue": "5"
-					}
-				},
-				"folder": {
-					"name": "Testing"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Test_calc_data')]"
 			]
 		}
 	]

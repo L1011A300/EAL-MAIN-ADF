@@ -63,6 +63,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'TEST_NAVBLUE_CONNECTION_base'"
 		},
+		"NAVBLUE_2_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'NAVBLUE_2'"
+		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.airline-choice.com/rest/"
@@ -132,6 +136,14 @@
 			"defaultValue": "https://nfp.navtechinc.com:444/"
 		},
 		"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "EAL/bdavis"
+		},
+		"NAVBLUE_2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://navtech.aero/NavtechPublicService/"
+		},
+		"NAVBLUE_2_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "EAL/bdavis"
 		}
@@ -6966,7 +6978,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "TEST_NAVBLUE_CONNECTION_base",
+					"referenceName": "NAVBLUE_2",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
@@ -6980,12 +6992,12 @@
 				"typeProperties": {
 					"location": {
 						"type": "HttpServerLocation",
-						"relativeUrl": "NavtechPublicService.svc"
+						"relativeUrl": "GetFlightList"
 					}
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/TEST_NAVBLUE_CONNECTION_base')]"
+				"[concat(variables('factoryId'), '/linkedServices/NAVBLUE_2')]"
 			]
 		},
 		{
@@ -11918,6 +11930,26 @@
 					"password": {
 						"type": "SecureString",
 						"value": "[parameters('TEST_NAVBLUE_CONNECTION_base_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NAVBLUE_2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('NAVBLUE_2_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('NAVBLUE_2_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('NAVBLUE_2_password')]"
 					}
 				}
 			},

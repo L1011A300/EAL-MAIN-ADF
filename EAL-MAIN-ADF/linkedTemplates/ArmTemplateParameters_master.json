@@ -47,6 +47,9 @@
 		"TEST_NAVBLUE_CONNECTION_base_password": {
 			"value": ""
 		},
+		"NAVBLUE_2_password": {
+			"value": ""
+		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"value": "https://api.airline-choice.com/rest/"
 		},
@@ -99,6 +102,12 @@
 			"value": "https://nfp.navtechinc.com:444/"
 		},
 		"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName": {
+			"value": "EAL/bdavis"
+		},
+		"NAVBLUE_2_properties_typeProperties_url": {
+			"value": "http://navtech.aero/NavtechPublicService/"
+		},
+		"NAVBLUE_2_properties_typeProperties_userName": {
 			"value": "EAL/bdavis"
 		},
 		"containerUri": {
