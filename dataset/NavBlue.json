@@ -6,7 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"ForDayUtc": {
+			"P1": {
 				"type": "string",
 				"defaultValue": "2022-03-02"
 			}
