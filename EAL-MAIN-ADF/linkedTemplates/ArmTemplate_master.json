@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MIS_Choice_REST'"
 		},
+		"NavBlue_TEST_REST_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'NavBlue_TEST_REST'"
+		},
 		"Radixx_FTP_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Radixx_FTP'"
@@ -55,9 +59,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
-		"NavBlue_TEST_REST_password": {
+		"TEST_NAVBLUE_CONNECTION_base_password": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'NavBlue_TEST_REST'"
+			"metadata": "Secure string for 'password' of 'TEST_NAVBLUE_CONNECTION_base'"
 		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
@@ -74,6 +78,14 @@
 		"MIS_Choice_REST_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "eastern-test"
+		},
+		"NavBlue_TEST_REST_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://nfp.navtechinc.com:444/NavtechPublicService"
+		},
+		"NavBlue_TEST_REST_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "EAL/bdavis"
 		},
 		"Radixx_FTP_properties_typeProperties_host": {
 			"type": "string",
@@ -115,11 +127,11 @@
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime"
 		},
-		"NavBlue_TEST_REST_properties_typeProperties_url": {
+		"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://nfp.navtechinc.com:444/NavtechPublicService"
+			"defaultValue": "https://nfp.navtechinc.com:444/"
 		},
-		"NavBlue_TEST_REST_properties_typeProperties_userName": {
+		"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "EAL/bdavis"
 		},
@@ -156,6 +168,9 @@
 					"MIS_Choice_REST_password": {
 						"value": "[parameters('MIS_Choice_REST_password')]"
 					},
+					"NavBlue_TEST_REST_password": {
+						"value": "[parameters('NavBlue_TEST_REST_password')]"
+					},
 					"Radixx_FTP_password": {
 						"value": "[parameters('Radixx_FTP_password')]"
 					},
@@ -186,8 +201,8 @@
 					"eal_staging_connection_connectionString": {
 						"value": "[parameters('eal_staging_connection_connectionString')]"
 					},
-					"NavBlue_TEST_REST_password": {
-						"value": "[parameters('NavBlue_TEST_REST_password')]"
+					"TEST_NAVBLUE_CONNECTION_base_password": {
+						"value": "[parameters('TEST_NAVBLUE_CONNECTION_base_password')]"
 					},
 					"MIS_Choice_properties_typeProperties_url": {
 						"value": "[parameters('MIS_Choice_properties_typeProperties_url')]"
@@ -200,6 +215,12 @@
 					},
 					"MIS_Choice_REST_properties_typeProperties_userName": {
 						"value": "[parameters('MIS_Choice_REST_properties_typeProperties_userName')]"
+					},
+					"NavBlue_TEST_REST_properties_typeProperties_url": {
+						"value": "[parameters('NavBlue_TEST_REST_properties_typeProperties_url')]"
+					},
+					"NavBlue_TEST_REST_properties_typeProperties_userName": {
+						"value": "[parameters('NavBlue_TEST_REST_properties_typeProperties_userName')]"
 					},
 					"Radixx_FTP_properties_typeProperties_host": {
 						"value": "[parameters('Radixx_FTP_properties_typeProperties_host')]"
@@ -225,11 +246,11 @@
 					"TEST_NavBlue_Connection_2_properties_typeProperties_userName": {
 						"value": "[parameters('TEST_NavBlue_Connection_2_properties_typeProperties_userName')]"
 					},
-					"NavBlue_TEST_REST_properties_typeProperties_url": {
-						"value": "[parameters('NavBlue_TEST_REST_properties_typeProperties_url')]"
+					"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_url": {
+						"value": "[parameters('TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_url')]"
 					},
-					"NavBlue_TEST_REST_properties_typeProperties_userName": {
-						"value": "[parameters('NavBlue_TEST_REST_properties_typeProperties_userName')]"
+					"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName": {
+						"value": "[parameters('TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName')]"
 					}
 				}
 			},

@@ -13,6 +13,26 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DestinationDataset_qk2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "radixx-destination-tcn"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/FLT_NBR_RANGE_LIST')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -879,21 +899,13 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "TEST_NavBlue_Connection_2",
+					"referenceName": "TEST_NAVBLUE_CONNECTION_base",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
-					"AtcAlc": {
+					"P1": {
 						"type": "string",
-						"defaultValue": "EAL"
-					},
-					"StdFromUtc": {
-						"type": "string",
-						"defaultValue": "2022-03-01T00:00:00"
-					},
-					"StdToUtc": {
-						"type": "string",
-						"defaultValue": "2022-03-03T00:00:00"
+						"defaultValue": "2022-03-02"
 					}
 				},
 				"annotations": [],
@@ -901,7 +913,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "HttpServerLocation",
-						"relativeUrl": "GetFlightInfo"
+						"relativeUrl": "NavtechPublicService.svc"
 					}
 				}
 			},
@@ -1109,28 +1121,6 @@
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_bi_flight')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SkedFlexConnection_SSL",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Source"
-				},
-				"annotations": [],
-				"type": "PostgreSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "bi",
-					"table": "flight"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_bi_flight_TEST')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {

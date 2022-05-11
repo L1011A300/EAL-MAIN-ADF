@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MIS_Choice_REST'"
 		},
+		"NavBlue_TEST_REST_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'NavBlue_TEST_REST'"
+		},
 		"Radixx_FTP_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Radixx_FTP'"
@@ -55,9 +59,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
-		"NavBlue_TEST_REST_password": {
+		"TEST_NAVBLUE_CONNECTION_base_password": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'NavBlue_TEST_REST'"
+			"metadata": "Secure string for 'password' of 'TEST_NAVBLUE_CONNECTION_base'"
 		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
@@ -74,6 +78,14 @@
 		"MIS_Choice_REST_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "eastern-test"
+		},
+		"NavBlue_TEST_REST_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://nfp.navtechinc.com:444/NavtechPublicService"
+		},
+		"NavBlue_TEST_REST_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "EAL/bdavis"
 		},
 		"Radixx_FTP_properties_typeProperties_host": {
 			"type": "string",
@@ -115,11 +127,11 @@
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime"
 		},
-		"NavBlue_TEST_REST_properties_typeProperties_url": {
+		"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://nfp.navtechinc.com:444/NavtechPublicService"
+			"defaultValue": "https://nfp.navtechinc.com:444/"
 		},
-		"NavBlue_TEST_REST_properties_typeProperties_userName": {
+		"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "EAL/bdavis"
 		}
@@ -4171,7 +4183,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy data1",
+						"name": "NAVBLUE Copy XML to JSON",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -4188,6 +4200,8 @@
 								"storeSettings": {
 									"type": "HttpReadSettings",
 									"requestMethod": "GET",
+									"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nHost: nfp.navtechinc.com:444",
+									"requestBody": "<SOAP-ENV:Envelope\n\txmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n\txmlns:NavWeb=\"urn:NavWeb\">\n   <SOAP-ENV:Header>\n\t   <o:Security\n\t   \t\tSOAP-ENV:mustUnderstand=\"1\"\n\t\t\txmlns:o=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n\t\t<o:UsernameToken>\n\t\t\t<o:Username>EAL/bdavis</o:Username>\n\t\t\t<o:Password>T99oulon84@</o:Password>\n\t\t</o:UsernameToken>\n\t\t</o:Security>\n\t</SOAP-ENV:Header>\n   <SOAP-ENV:Body>\n      <NavWeb:GetFlightList>\n         <Input>\n            <User>\n               <EnvAlc>EAL</EnvAlc>\n               <UserId>bdavis</UserId>\n            </User>\n            <Input>\n               <ForDayUtc>2022-03-02</ForDayUtc>\n            </Input>\n         </Input>\n      </NavWeb:GetFlightList>\n   </SOAP-ENV:Body>\n</SOAP-ENV:Envelope>",
 									"requestTimeout": ""
 								},
 								"formatSettings": {
@@ -4212,9 +4226,7 @@
 								"referenceName": "NavBlue",
 								"type": "DatasetReference",
 								"parameters": {
-									"AtcAlc": "EAL",
-									"StdFromUtc": "2022-03-01T00:00:00",
-									"StdToUtc": "2022-03-03T00:00:00"
+									"P1": "2022-03-02"
 								}
 							}
 						],
@@ -6954,21 +6966,13 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "TEST_NavBlue_Connection_2",
+					"referenceName": "TEST_NAVBLUE_CONNECTION_base",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
-					"AtcAlc": {
+					"P1": {
 						"type": "string",
-						"defaultValue": "EAL"
-					},
-					"StdFromUtc": {
-						"type": "string",
-						"defaultValue": "2022-03-01T00:00:00"
-					},
-					"StdToUtc": {
-						"type": "string",
-						"defaultValue": "2022-03-03T00:00:00"
+						"defaultValue": "2022-03-02"
 					}
 				},
 				"annotations": [],
@@ -6976,12 +6980,12 @@
 				"typeProperties": {
 					"location": {
 						"type": "HttpServerLocation",
-						"relativeUrl": "GetFlightInfo"
+						"relativeUrl": "NavtechPublicService.svc"
 					}
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/TEST_NavBlue_Connection_2')]"
+				"[concat(variables('factoryId'), '/linkedServices/TEST_NAVBLUE_CONNECTION_base')]"
 			]
 		},
 		{
@@ -9457,6 +9461,26 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/NavBlue_TEST_REST')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('NavBlue_TEST_REST_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('NavBlue_TEST_REST_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('NavBlue_TEST_REST_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Radixx_FTP')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -11853,20 +11877,47 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/NavBlue_TEST_REST')]",
+			"name": "[concat(parameters('factoryName'), '/NAVBLUE_CSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "navblue-test"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TEST_NAVBLUE_CONNECTION_base')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"type": "RestService",
+				"type": "HttpServer",
 				"typeProperties": {
-					"url": "[parameters('NavBlue_TEST_REST_properties_typeProperties_url')]",
+					"url": "[parameters('TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Basic",
-					"userName": "[parameters('NavBlue_TEST_REST_properties_typeProperties_userName')]",
+					"userName": "[parameters('TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName')]",
 					"password": {
 						"type": "SecureString",
-						"value": "[parameters('NavBlue_TEST_REST_password')]"
+						"value": "[parameters('TEST_NAVBLUE_CONNECTION_base_password')]"
 					}
 				}
 			},

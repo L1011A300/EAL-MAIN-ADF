@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MIS_Choice_REST'"
 		},
+		"NavBlue_TEST_REST_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'NavBlue_TEST_REST'"
+		},
 		"Radixx_FTP_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'Radixx_FTP'"
@@ -55,9 +59,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
-		"NavBlue_TEST_REST_password": {
+		"TEST_NAVBLUE_CONNECTION_base_password": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'NavBlue_TEST_REST'"
+			"metadata": "Secure string for 'password' of 'TEST_NAVBLUE_CONNECTION_base'"
 		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
@@ -74,6 +78,14 @@
 		"MIS_Choice_REST_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "eastern-test"
+		},
+		"NavBlue_TEST_REST_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://nfp.navtechinc.com:444/NavtechPublicService"
+		},
+		"NavBlue_TEST_REST_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "EAL/bdavis"
 		},
 		"Radixx_FTP_properties_typeProperties_host": {
 			"type": "string",
@@ -107,11 +119,11 @@
 			"type": "string",
 			"defaultValue": "EAL/bdavis"
 		},
-		"NavBlue_TEST_REST_properties_typeProperties_url": {
+		"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://nfp.navtechinc.com:444/NavtechPublicService"
+			"defaultValue": "https://nfp.navtechinc.com:444/"
 		},
-		"NavBlue_TEST_REST_properties_typeProperties_userName": {
+		"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "EAL/bdavis"
 		}
@@ -268,6 +280,26 @@
 					"password": {
 						"type": "SecureString",
 						"value": "[parameters('MIS_Choice_REST_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NavBlue_TEST_REST')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('NavBlue_TEST_REST_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('NavBlue_TEST_REST_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('NavBlue_TEST_REST_password')]"
 					}
 				}
 			},
@@ -451,20 +483,20 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/NavBlue_TEST_REST')]",
+			"name": "[concat(parameters('factoryName'), '/TEST_NAVBLUE_CONNECTION_base')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"type": "RestService",
+				"type": "HttpServer",
 				"typeProperties": {
-					"url": "[parameters('NavBlue_TEST_REST_properties_typeProperties_url')]",
+					"url": "[parameters('TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Basic",
-					"userName": "[parameters('NavBlue_TEST_REST_properties_typeProperties_userName')]",
+					"userName": "[parameters('TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName')]",
 					"password": {
 						"type": "SecureString",
-						"value": "[parameters('NavBlue_TEST_REST_password')]"
+						"value": "[parameters('TEST_NAVBLUE_CONNECTION_base_password')]"
 					}
 				}
 			},
@@ -537,28 +569,6 @@
 						"type": "String"
 					}
 				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DestinationDataset_qk2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": "radixx-destination-tcn"
-					}
-				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
