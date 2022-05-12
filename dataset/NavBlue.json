@@ -2,15 +2,14 @@
 	"name": "NavBlue",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "NAVBLUE_2",
+			"referenceName": "TEST_NavBlue_Connection",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "Xml",
 		"typeProperties": {
 			"location": {
-				"type": "HttpServerLocation",
-				"relativeUrl": "GetFlightList"
+				"type": "HttpServerLocation"
 			}
 		}
 	}
