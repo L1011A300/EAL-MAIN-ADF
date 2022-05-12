@@ -2,14 +2,15 @@
 	"name": "NavBlue",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "TEST_NavBlue_Connection",
+			"referenceName": "TEST_NAVBLUE_CONNECTION_base",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "Xml",
 		"typeProperties": {
 			"location": {
-				"type": "HttpServerLocation"
+				"type": "HttpServerLocation",
+				"relativeUrl": "/NavtechPublicService.svc"
 			}
 		}
 	}
