@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MIS_Choice_REST'"
 		},
+		"NAVBLUE_2_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'NAVBLUE_2'"
+		},
 		"NavBlue_TEST_REST_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'NavBlue_TEST_REST'"
@@ -39,6 +43,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SkedFlexConnection_SSL'"
 		},
+		"TEST_NAVBLUE_CONNECTION_base_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'TEST_NAVBLUE_CONNECTION_base'"
+		},
 		"TEST_NavBlue_Connection_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'TEST_NavBlue_Connection'"
@@ -59,14 +67,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'eal_staging_connection'"
 		},
-		"TEST_NAVBLUE_CONNECTION_base_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'TEST_NAVBLUE_CONNECTION_base'"
-		},
-		"NAVBLUE_2_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'NAVBLUE_2'"
-		},
 		"MIS_Choice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.airline-choice.com/rest/"
@@ -82,6 +82,14 @@
 		"MIS_Choice_REST_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "eastern-test"
+		},
+		"NAVBLUE_2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://navtech.aero/NavtechPublicService/"
+		},
+		"NAVBLUE_2_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "EAL/bdavis"
 		},
 		"NavBlue_TEST_REST_properties_typeProperties_url": {
 			"type": "string",
@@ -107,6 +115,14 @@
 			"type": "string",
 			"defaultValue": "http://www.dneonline.com/calculator.asmx"
 		},
+		"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://nfp.navtechinc.com:444/"
+		},
+		"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "EAL/bdavis"
+		},
 		"TEST_NavBlue_Connection_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://nfp.navtechinc.com:444/NavtechPublicService.svc"
@@ -120,22 +136,6 @@
 			"defaultValue": "https://nfp.navtechinc.com:444/NavtechPublicService"
 		},
 		"TEST_NavBlue_Connection_2_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "EAL/bdavis"
-		},
-		"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://nfp.navtechinc.com:444/"
-		},
-		"TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "EAL/bdavis"
-		},
-		"NAVBLUE_2_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "http://navtech.aero/NavtechPublicService/"
-		},
-		"NAVBLUE_2_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "EAL/bdavis"
 		}
@@ -298,6 +298,26 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/NAVBLUE_2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('NAVBLUE_2_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('NAVBLUE_2_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('NAVBLUE_2_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/NavBlue_TEST_REST')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -416,6 +436,26 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TEST_NAVBLUE_CONNECTION_base')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('TEST_NAVBLUE_CONNECTION_base_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/TEST_NavBlue_Connection')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -490,46 +530,6 @@
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
 					"connectionString": "[parameters('eal_staging_connection_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/TEST_NAVBLUE_CONNECTION_base')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "HttpServer",
-				"typeProperties": {
-					"url": "[parameters('TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Basic",
-					"userName": "[parameters('TEST_NAVBLUE_CONNECTION_base_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('TEST_NAVBLUE_CONNECTION_base_password')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/NAVBLUE_2')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "HttpServer",
-				"typeProperties": {
-					"url": "[parameters('NAVBLUE_2_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Basic",
-					"userName": "[parameters('NAVBLUE_2_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('NAVBLUE_2_password')]"
-					}
 				}
 			},
 			"dependsOn": []
