@@ -5,12 +5,6 @@
 			"referenceName": "TEST_NAVBLUE_CONNECTION_base",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"P1": {
-				"type": "string",
-				"defaultValue": "2022-03-02"
-			}
-		},
 		"annotations": [],
 		"type": "Xml",
 		"typeProperties": {
