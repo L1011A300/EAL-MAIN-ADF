@@ -1,0 +1,28 @@
+{
+	"name": "NavBlue test parsing JSON",
+	"properties": {
+		"folder": {
+			"name": "TEST"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "NAVBLUE_JSON",
+						"type": "DatasetReference"
+					},
+					"name": "NavBlueJSON"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> NavBlueJSON"
+			]
+		}
+	}
+}
