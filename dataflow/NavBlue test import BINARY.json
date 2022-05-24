@@ -1,0 +1,67 @@
+{
+	"name": "NavBlue test import BINARY",
+	"properties": {
+		"folder": {
+			"name": "TEST"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "NavBlueXML"
+				},
+				{
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SQL_TEST_NAVBLUE_FLT_LIST",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flatten1"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> NavBlueXML",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> source1",
+				"NavBlueXML foldDown(unroll({s:Envelope}.{s:Body}.GetFlightListResponse.Flights),",
+				"     mapColumn(",
+				"          FltNum = {s:Envelope}.{s:Body}.GetFlightListResponse.Flights.Key.FltNum,",
+				"          OrigApt = {s:Envelope}.{s:Body}.GetFlightListResponse.Flights.Key.OrigApt,",
+				"          RepeatNumber = {s:Envelope}.{s:Body}.GetFlightListResponse.Flights.Key.RepeatNumber,",
+				"          StdUtc = {s:Envelope}.{s:Body}.GetFlightListResponse.Flights.Key.StdUtc,",
+				"          TestFlight = {s:Envelope}.{s:Body}.GetFlightListResponse.Flights.Key.TestFlight,",
+				"          WhoAlc = {s:Envelope}.{s:Body}.GetFlightListResponse.Flights.Key.WhoAlc",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          FltNum,",
+				"          OrigApt,",
+				"          RepeatNumber,",
+				"          StdUtc,",
+				"          TestFlight,",
+				"          WhoAlc",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

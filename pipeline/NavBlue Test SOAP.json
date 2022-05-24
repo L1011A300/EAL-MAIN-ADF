@@ -36,17 +36,19 @@
 					"sink": {
 						"type": "JsonSink",
 						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
 						},
 						"formatSettings": {
-							"type": "JsonWriteSettings"
+							"type": "JsonWriteSettings",
+							"filePattern": "setOfObjects"
 						}
 					},
 					"enableStaging": false
 				},
 				"inputs": [
 					{
-						"referenceName": "NavBlue",
+						"referenceName": "NavBlueSourceXML",
 						"type": "DatasetReference"
 					}
 				],
@@ -56,37 +58,6 @@
 						"type": "DatasetReference"
 					}
 				]
-			},
-			{
-				"name": "Data flow1",
-				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "NAVBLUE Copy XML to JSON",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "1.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataflow": {
-						"referenceName": "NavBlue test parsing JSON",
-						"type": "DataFlowReference"
-					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					},
-					"traceLevel": "Fine"
-				}
 			}
 		],
 		"parameters": {

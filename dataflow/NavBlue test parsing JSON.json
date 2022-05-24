@@ -19,6 +19,9 @@
 			"transformations": [
 				{
 					"name": "parse1"
+				},
+				{
+					"name": "flatten1"
 				}
 			],
 			"scriptLines": [
@@ -26,9 +29,12 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> NavBlueJSON",
-				"NavBlueJSON parse(column1 = ERROR_FUNCTION(''),",
+				"flatten1 parse(column1 = ERROR_FUNCTION(''),",
 				"     format: 'xml',",
-				"     namespaces: true) ~> parse1"
+				"     namespaces: true) ~> parse1",
+				"NavBlueJSON foldDown(unroll(),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1"
 			]
 		}
 	}
