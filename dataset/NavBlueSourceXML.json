@@ -1,5 +1,5 @@
 {
-	"name": "NavBlue",
+	"name": "NavBlueSourceXML",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "TEST_NAVBLUE_CONNECTION_base",
