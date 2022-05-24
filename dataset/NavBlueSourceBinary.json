@@ -1,0 +1,17 @@
+{
+	"name": "NavBlueSourceBinary",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TEST_NAVBLUE_CONNECTION_base",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "/NavtechPublicService.svc"
+			}
+		}
+	}
+}
