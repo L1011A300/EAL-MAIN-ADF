@@ -1,0 +1,19 @@
+{
+	"name": "NAVBLUEtestXMLfile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Xml",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "NAVBLUE030222a.xml",
+				"container": "navblue-test"
+			},
+			"encodingName": "UTF-8"
+		}
+	}
+}
