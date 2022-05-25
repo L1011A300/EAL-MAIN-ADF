@@ -1,0 +1,16 @@
+{
+	"name": "SQL_NAVBLUE_Flight_List_TEST",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_edw_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "NAVBLUE_FLIGHT_LIST_TEST"
+		}
+	}
+}
