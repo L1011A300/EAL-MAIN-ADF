@@ -4397,6 +4397,49 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "NAVBLUE Copy XML to JSON_copy1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "NAVBLUE FlightListToSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								},
+								"linkedServiceParameters": {}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -4416,7 +4459,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/NavBlueSourceXML')]",
-				"[concat(variables('factoryId'), '/datasets/NAVBLUE_CSV')]"
+				"[concat(variables('factoryId'), '/datasets/NAVBLUE_CSV')]",
+				"[concat(variables('factoryId'), '/dataflows/NAVBLUE FlightListToSQL')]"
 			]
 		},
 		{
@@ -12311,10 +12355,19 @@
 						"parameters{",
 						"     run_id as string",
 						"}",
-						"source(allowSchemaDrift: true,",
+						"source(output(",
+						"          WhoAlc as string,",
+						"          FltNum as string,",
+						"          StdUtc as timestamp 'MM/dd/yyyy HH:mm:ss',",
+						"          OrigApt as string,",
+						"          TestFlight as boolean,",
+						"          RepeatNumber as boolean",
+						"     ),",
+						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 derive(ADF_TIMESTAMP = currentTimestamp()) ~> derivedColumn1",
+						"source1 derive(ADF_TIMESTAMP = currentTimestamp(),",
+						"          RUN_ID = $run_id) ~> derivedColumn1",
 						"derivedColumn1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
