@@ -2,7 +2,7 @@
 	"name": "NAVBLUE FlightListToSQL",
 	"properties": {
 		"folder": {
-			"name": "TEST"
+			"name": "PROD"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -12,7 +12,7 @@
 						"referenceName": "NAVBLUE_CSV",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "NAVBLUEcsv"
 				}
 			],
 			"sinks": [
@@ -21,12 +21,12 @@
 						"referenceName": "SQL_NAVBLUE_Flight_List_TEST",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "COPYtoSQL"
 				}
 			],
 			"transformations": [
 				{
-					"name": "derivedColumn1"
+					"name": "AddADFTSandRUNID"
 				}
 			],
 			"scriptLines": [
@@ -43,10 +43,10 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 derive(ADF_TIMESTAMP = currentTimestamp(),",
-				"          RUN_ID = $run_id) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     ignoreNoFilesFound: false) ~> NAVBLUEcsv",
+				"NAVBLUEcsv derive(ADF_TIMESTAMP = currentTimestamp(),",
+				"          RUN_ID = $run_id) ~> AddADFTSandRUNID",
+				"AddADFTSandRUNID sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -56,7 +56,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+				"     errorHandlingOption: 'stopOnFirstError') ~> COPYtoSQL"
 			]
 		}
 	}

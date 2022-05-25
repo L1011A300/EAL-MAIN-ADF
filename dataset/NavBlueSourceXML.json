@@ -5,6 +5,9 @@
 			"referenceName": "TEST_NAVBLUE_CONNECTION_base",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Source"
+		},
 		"annotations": [],
 		"type": "Xml",
 		"typeProperties": {

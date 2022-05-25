@@ -1,9 +1,9 @@
 {
-	"name": "NavBlue Test SOAP_copy1",
+	"name": "NavBlue Flight List",
 	"properties": {
 		"activities": [
 			{
-				"name": "NAVBLUE Copy XML to JSON_copy1",
+				"name": "NAVBLUE Copy XML to CSV",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -123,7 +123,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "NAVBLUE Copy XML to JSON_copy1",
+						"activity": "NAVBLUE Copy XML to CSV",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -163,7 +163,7 @@
 			}
 		},
 		"folder": {
-			"name": "Testing"
+			"name": "PROD"
 		},
 		"annotations": []
 	}
