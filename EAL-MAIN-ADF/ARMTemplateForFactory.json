@@ -4213,7 +4213,10 @@
 									"type": "HttpReadSettings",
 									"requestMethod": "POST",
 									"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nSOAPAction: \"http://navtech.aero/NavtechPublicService/GetFlightList\"\nContent-Length: 802\nHost: nfp.navtechinc.com:444",
-									"requestBody": "@{replace('<SOAP-ENV:Envelope\n\txmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n\txmlns:NavWeb=\"urn:NavWeb\">\n   <SOAP-ENV:Header>\n\t   <o:Security\n\t   \t\tSOAP-ENV:mustUnderstand=\"1\"\n\t\t\txmlns:o=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n\t\t<o:UsernameToken>\n\t\t\t<o:Username>EAL/bdavis</o:Username>\n\t\t\t<o:Password>T99oulon84@</o:Password>\n\t\t</o:UsernameToken>\n\t\t</o:Security>\n\t</SOAP-ENV:Header>\n   <SOAP-ENV:Body>\n      <NavWeb:GetFlightList>\n         <Input>\n            <User>\n               <EnvAlc>EAL</EnvAlc>\n               <UserId>bdavis</UserId>\n            </User>\n            <Input>\n               <ForDayUtc>?P1</ForDayUtc>\n            </Input>\n         </Input>\n      </NavWeb:GetFlightList>\n   </SOAP-ENV:Body>\n</SOAP-ENV:Envelope>', '?P1', pipeline().parameters.P1)}",
+									"requestBody": {
+										"value": "@{replace('<SOAP-ENV:Envelope\n\txmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n\txmlns:NavWeb=\"urn:NavWeb\">\n   <SOAP-ENV:Header>\n\t   <o:Security\n\t   \t\tSOAP-ENV:mustUnderstand=\"1\"\n\t\t\txmlns:o=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n\t\t<o:UsernameToken>\n\t\t\t<o:Username>EAL/bdavis</o:Username>\n\t\t\t<o:Password>T99oulon84@</o:Password>\n\t\t</o:UsernameToken>\n\t\t</o:Security>\n\t</SOAP-ENV:Header>\n   <SOAP-ENV:Body>\n      <NavWeb:GetFlightList>\n         <Input>\n            <User>\n               <EnvAlc>EAL</EnvAlc>\n               <UserId>bdavis</UserId>\n            </User>\n            <Input>\n               <ForDayUtc>?P1</ForDayUtc>\n            </Input>\n         </Input>\n      </NavWeb:GetFlightList>\n   </SOAP-ENV:Body>\n</SOAP-ENV:Envelope>', '?P1', pipeline().parameters.P1)}",
+										"type": "Expression"
+									},
 									"requestTimeout": ""
 								},
 								"formatSettings": {
@@ -4225,17 +4228,19 @@
 							"sink": {
 								"type": "JsonSink",
 								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
+									"type": "AzureBlobStorageWriteSettings",
+									"copyBehavior": "PreserveHierarchy"
 								},
 								"formatSettings": {
-									"type": "JsonWriteSettings"
+									"type": "JsonWriteSettings",
+									"filePattern": "setOfObjects"
 								}
 							},
 							"enableStaging": false
 						},
 						"inputs": [
 							{
-								"referenceName": "NavBlue",
+								"referenceName": "NavBlueSourceXML",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -4265,8 +4270,153 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/NavBlue')]",
+				"[concat(variables('factoryId'), '/datasets/NavBlueSourceXML')]",
 				"[concat(variables('factoryId'), '/datasets/NAVBLUE_JSON')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NavBlue Test SOAP_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "NAVBLUE Copy XML to JSON_copy1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "XmlSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "POST",
+									"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nSOAPAction: \"http://navtech.aero/NavtechPublicService/GetFlightList\"\nContent-Length: 802\nHost: nfp.navtechinc.com:444",
+									"requestBody": "@{replace('<SOAP-ENV:Envelope\n\txmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n\txmlns:NavWeb=\"urn:NavWeb\">\n   <SOAP-ENV:Header>\n\t   <o:Security\n\t   \t\tSOAP-ENV:mustUnderstand=\"1\"\n\t\t\txmlns:o=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n\t\t<o:UsernameToken>\n\t\t\t<o:Username>EAL/bdavis</o:Username>\n\t\t\t<o:Password>T99oulon84@</o:Password>\n\t\t</o:UsernameToken>\n\t\t</o:Security>\n\t</SOAP-ENV:Header>\n   <SOAP-ENV:Body>\n      <NavWeb:GetFlightList>\n         <Input>\n            <User>\n               <EnvAlc>EAL</EnvAlc>\n               <UserId>bdavis</UserId>\n            </User>\n            <Input>\n               <ForDayUtc>?P1</ForDayUtc>\n            </Input>\n         </Input>\n      </NavWeb:GetFlightList>\n   </SOAP-ENV:Body>\n</SOAP-ENV:Envelope>', '?P1', pipeline().parameters.P1)}",
+									"requestTimeout": ""
+								},
+								"formatSettings": {
+									"type": "XmlReadSettings",
+									"validationMode": "none",
+									"namespaces": true
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings",
+									"copyBehavior": "FlattenHierarchy"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['Key']['WhoAlc']"
+										},
+										"sink": {
+											"name": "WhoAlc",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Key']['FltNum']"
+										},
+										"sink": {
+											"name": "FltNum",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Key']['StdUtc']"
+										},
+										"sink": {
+											"name": "StdUtc",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Key']['OrigApt']"
+										},
+										"sink": {
+											"name": "OrigApt",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Key']['TestFlight']"
+										},
+										"sink": {
+											"name": "TestFlight",
+											"type": "Boolean"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Key']['RepeatNumber']"
+										},
+										"sink": {
+											"name": "RepeatNumber",
+											"type": "Boolean"
+										}
+									}
+								],
+								"collectionReference": "$['s:Envelope']['s:Body']['GetFlightListResponse']['Flights']",
+								"mapComplexValuesToString": false
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "NavBlueSourceXML",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "NAVBLUE_CSV",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"P1": {
+						"type": "string",
+						"defaultValue": "2022-03-02"
+					}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/NavBlueSourceXML')]",
+				"[concat(variables('factoryId'), '/datasets/NAVBLUE_CSV')]"
 			]
 		},
 		{
@@ -6910,6 +7060,28 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/NAVBLUE_BINARY_TEST')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "navblue-test"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/NAVBLUE_CSV')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -6923,6 +7095,10 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('NAVBLUE-flight-list-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
 						"container": "navblue-test"
 					},
 					"columnDelimiter": ",",
@@ -7004,7 +7180,53 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/NavBlue')]",
+			"name": "[concat(parameters('factoryName'), '/NAVBLUEtestXMLfile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Xml",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "NAVBLUE030222a.xml",
+						"container": "navblue-test"
+					},
+					"encodingName": "UTF-8"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NavBlueSourceBinary')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TEST_NAVBLUE_CONNECTION_base",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": "/NavtechPublicService.svc"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/TEST_NAVBLUE_CONNECTION_base')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NavBlueSourceXML')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -9368,6 +9590,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SQL_TEST_NAVBLUE_FLT_LIST')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TEST_NAVBLUE_FLT_LIST"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQL_USER_CATEGORY_TABLE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -11514,6 +11757,84 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/MIS_Choice_Pax_Bags')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_MIS_CHOICE_PAX_BAGS_TABLE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NavBlue test import XML')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "TEST"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "NAVBLUEtestXMLfile",
+								"type": "DatasetReference"
+							},
+							"name": "NavBlueXML"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_TEST_NAVBLUE_FLT_LIST",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "flatten1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {s:Envelope} as ({@xmlns:s} as string, {@xmlns:u} as string, {s:Body} as ({@xmlns:xsd} as string, {@xmlns:xsi} as string, GetFlightListResponse as ({@xmlns} as string, Error as ({@xmlns} as string, {@xsi:nil} as boolean), ExecutionTimeSec as ({@xmlns} as string, {_value_} as double), Flights as ({@xmlns} as string, AircraftId as ({@xsi:nil} as boolean), AtcAlc as ({@xsi:nil} as boolean), DestApt as ({@xsi:nil} as boolean), Key as (FltNum as string, OrigApt as string, RepeatNumber as boolean, StdUtc as string, TestFlight as boolean, WhoAlc as string), StatusList as string)[], Warning as ({@xmlns} as string, {@xsi:nil} as boolean))), {s:Header} as ({o:Security} as ({@s:mustUnderstand} as boolean, {@xmlns:o} as string, {u:Timestamp} as ({@u:Id} as string, {u:Created} as string, {u:Expires} as string))))",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     validationMode: 'none',",
+						"     namespaces: false) ~> NavBlueXML",
+						"NavBlueXML foldDown(unroll({s:Envelope}.{s:Body}.GetFlightListResponse.Flights),",
+						"     mapColumn(",
+						"          FltNum = {s:Envelope}.{s:Body}.GetFlightListResponse.Flights.Key.FltNum,",
+						"          OrigApt = {s:Envelope}.{s:Body}.GetFlightListResponse.Flights.Key.OrigApt,",
+						"          RepeatNumber = {s:Envelope}.{s:Body}.GetFlightListResponse.Flights.Key.RepeatNumber,",
+						"          StdUtc = {s:Envelope}.{s:Body}.GetFlightListResponse.Flights.Key.StdUtc,",
+						"          TestFlight = {s:Envelope}.{s:Body}.GetFlightListResponse.Flights.Key.TestFlight,",
+						"          WhoAlc = {s:Envelope}.{s:Body}.GetFlightListResponse.Flights.Key.WhoAlc",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flatten1",
+						"flatten1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     recreate:true,",
+						"     format: 'table',",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          FltNum,",
+						"          OrigApt,",
+						"          RepeatNumber,",
+						"          StdUtc,",
+						"          TestFlight,",
+						"          WhoAlc",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/NAVBLUEtestXMLfile')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_TEST_NAVBLUE_FLT_LIST')]"
 			]
 		},
 		{

@@ -13,6 +13,130 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SF_FLT_CMBandSTDnbrs')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_FLIGHT_TEST"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_airport')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-airport"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"airport_id": {
+							"type": "integer"
+						},
+						"iata_code": {
+							"type": "string"
+						},
+						"icao_code": {
+							"type": "string"
+						},
+						"faa_code": {
+							"type": "string"
+						},
+						"airport_name": {
+							"type": "string"
+						},
+						"city_name": {
+							"type": "string"
+						},
+						"state_code": {
+							"type": "string"
+						},
+						"country_code": {
+							"type": "string"
+						},
+						"weather_zone": {
+							"type": "string"
+						},
+						"latitude": {
+							"type": "string"
+						},
+						"longitude": {
+							"type": "string"
+						},
+						"elevation_feet": {
+							"type": "integer"
+						},
+						"iana_timezone": {
+							"type": "string"
+						},
+						"is_base": {
+							"type": "boolean"
+						},
+						"base_initial": {
+							"type": "null"
+						},
+						"is_active": {
+							"type": "boolean"
+						},
+						"is_deleted": {
+							"type": "boolean"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_bi_airport')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SkedFlexConnection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "bi",
+					"table": "airport"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_bi_equip_sched')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -909,176 +1033,6 @@
 						}
 					}
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_pairing_item')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-pairing-item-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-pairingitem"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"pairing_id": {
-							"type": "integer"
-						},
-						"pairing_item_id": {
-							"type": "integer"
-						},
-						"pairing_item_type": {
-							"type": "string"
-						},
-						"flight_id": {
-							"type": "null"
-						},
-						"shift_name": {
-							"type": "string"
-						},
-						"shift_start_time": {
-							"type": "string"
-						},
-						"shift_end_time": {
-							"type": "string"
-						},
-						"shift_type": {
-							"type": "string"
-						},
-						"shift_is_work": {
-							"type": "boolean"
-						},
-						"shift_is_reserve": {
-							"type": "boolean"
-						},
-						"shift_is_sick": {
-							"type": "boolean"
-						},
-						"shift_is_training": {
-							"type": "boolean"
-						},
-						"shift_is_vacation": {
-							"type": "boolean"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_shift')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-shift-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-shift"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"shift_id": {
-							"type": "integer"
-						},
-						"user_id": {
-							"type": "integer"
-						},
-						"name": {
-							"type": "string"
-						},
-						"start_time": {
-							"type": "string"
-						},
-						"end_time": {
-							"type": "string"
-						},
-						"type": {
-							"type": "string"
-						},
-						"is_work": {
-							"type": "boolean"
-						},
-						"is_reserve": {
-							"type": "boolean"
-						},
-						"is_sick": {
-							"type": "boolean"
-						},
-						"is_training": {
-							"type": "boolean"
-						},
-						"is_vacation": {
-							"type": "boolean"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_user')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-user-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-user"
-					}
-				},
-				"schema": {}
 			},
 			"dependsOn": []
 		}
