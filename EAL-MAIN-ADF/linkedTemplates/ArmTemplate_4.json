@@ -40,6 +40,9 @@
 					"referenceName": "eal_edw_connection",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "SQL tables"
+				},
 				"annotations": [],
 				"type": "AzureSqlTable",
 				"schema": [],

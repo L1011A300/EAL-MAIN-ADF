@@ -908,6 +908,9 @@
 					"referenceName": "eal_main_blob_connection",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Azure blob"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -1039,6 +1042,9 @@
 				"linkedServiceName": {
 					"referenceName": "TEST_NAVBLUE_CONNECTION_base",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
 				},
 				"annotations": [],
 				"type": "Xml",

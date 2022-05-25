@@ -1441,13 +1441,13 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/NavBlue Test SOAP_copy1')]",
+			"name": "[concat(parameters('factoryName'), '/NavBlue Flight List')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "NAVBLUE Copy XML to JSON_copy1",
+						"name": "NAVBLUE Copy XML to CSV",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -1569,7 +1569,7 @@
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
-								"activity": "NAVBLUE Copy XML to JSON_copy1",
+								"activity": "NAVBLUE Copy XML to CSV",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1594,8 +1594,8 @@
 									}
 								},
 								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
+									"NAVBLUEcsv": {},
+									"COPYtoSQL": {}
 								},
 								"linkedServiceParameters": {}
 							},
@@ -1619,7 +1619,7 @@
 					}
 				},
 				"folder": {
-					"name": "Testing"
+					"name": "PROD"
 				},
 				"annotations": []
 			},
