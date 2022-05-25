@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "BinarySource",
+						"type": "XmlSource",
 						"storeSettings": {
 							"type": "HttpReadSettings",
 							"requestMethod": "POST",
@@ -25,27 +25,95 @@
 							"requestTimeout": ""
 						},
 						"formatSettings": {
-							"type": "BinaryReadSettings"
+							"type": "XmlReadSettings",
+							"validationMode": "none",
+							"namespaces": true
 						}
 					},
 					"sink": {
-						"type": "BinarySink",
+						"type": "DelimitedTextSink",
 						"storeSettings": {
 							"type": "AzureBlobStorageWriteSettings",
-							"copyBehavior": "PreserveHierarchy"
+							"copyBehavior": "FlattenHierarchy"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['Key']['WhoAlc']"
+								},
+								"sink": {
+									"name": "WhoAlc",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['Key']['FltNum']"
+								},
+								"sink": {
+									"name": "FltNum",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['Key']['StdUtc']"
+								},
+								"sink": {
+									"name": "StdUtc",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['Key']['OrigApt']"
+								},
+								"sink": {
+									"name": "OrigApt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['Key']['TestFlight']"
+								},
+								"sink": {
+									"name": "TestFlight",
+									"type": "Boolean"
+								}
+							},
+							{
+								"source": {
+									"path": "['Key']['RepeatNumber']"
+								},
+								"sink": {
+									"name": "RepeatNumber",
+									"type": "Boolean"
+								}
+							}
+						],
+						"collectionReference": "$['s:Envelope']['s:Body']['GetFlightListResponse']['Flights']",
+						"mapComplexValuesToString": false
+					}
 				},
 				"inputs": [
 					{
-						"referenceName": "NavBlueSourceBinary",
+						"referenceName": "NavBlueSourceXML",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "NAVBLUE_BINARY_TEST",
+						"referenceName": "NAVBLUE_CSV",
 						"type": "DatasetReference"
 					}
 				]
