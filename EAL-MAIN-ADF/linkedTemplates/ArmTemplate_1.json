@@ -914,7 +914,7 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": {
-							"value": "@concat(concat('NAVBLUE-flight-list-',split(utcnow(),'T')[0]),'.json')",
+							"value": "@concat(concat('NAVBLUE-flight-list-',split(utcnow(),'T')[0]),'.csv')",
 							"type": "Expression"
 						},
 						"container": "navblue-test"
