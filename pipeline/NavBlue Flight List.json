@@ -119,7 +119,7 @@
 				]
 			},
 			{
-				"name": "Data flow1",
+				"name": "NavBlue Flight List to SQL",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
