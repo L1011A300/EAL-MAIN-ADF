@@ -10,6 +10,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat(concat('NAVBLUE-flight-list-',split(utcnow(),'T')[0]),'.json')",
+					"type": "Expression"
+				},
 				"container": "navblue-test"
 			},
 			"columnDelimiter": ",",
