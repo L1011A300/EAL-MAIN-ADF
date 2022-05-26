@@ -183,7 +183,7 @@
 						"type": "DataFlowReference",
 						"parameters": {
 							"P1START": {
-								"value": "'@{pipeline().parameters.P1}'",
+								"value": "@pipeline().parameters.P1",
 								"type": "Expression"
 							}
 						}
