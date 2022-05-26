@@ -57,7 +57,8 @@
 				"     negate:false,",
 				"     broadcast: 'auto')~> exists1",
 				"derivedColumn1 filter(SCHED_DEP_DATE_STR == $P1START) ~> filter1",
-				"SQLSFFlightProd derive(SCHED_DEP_DATE_STR = toString(SCHED_DEP_DATE)) ~> derivedColumn1"
+				"SQLSFFlightProd derive(SCHED_DEP_DATE_STR = toString(SCHED_DEP_DATE),",
+				"          SCHED_DEP_DATE_PARAM = toString(byName($P1START))) ~> derivedColumn1"
 			]
 		}
 	}
