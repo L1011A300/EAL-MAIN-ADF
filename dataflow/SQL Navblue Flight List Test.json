@@ -29,11 +29,14 @@
 				},
 				{
 					"name": "filter1"
+				},
+				{
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
 				"parameters{",
-				"     P1START as date ($P1),",
+				"     P1START as string,",
 				"     P2END as string ('2022-03-03')",
 				"}",
 				"source(allowSchemaDrift: true,",
@@ -53,7 +56,8 @@
 				"SQLNavblueFlightListTest, filter1 exists(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
 				"     negate:false,",
 				"     broadcast: 'auto')~> exists1",
-				"SQLSFFlightProd filter(ERROR_FUNCTION('SCHED_DEP_DATE = $P1START')) ~> filter1"
+				"derivedColumn1 filter(SCHED_DEP_DATE_STR == $P1START) ~> filter1",
+				"SQLSFFlightProd derive(SCHED_DEP_DATE_STR = toString(SCHED_DEP_DATE)) ~> derivedColumn1"
 			]
 		}
 	}
