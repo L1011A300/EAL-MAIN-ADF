@@ -2540,7 +2540,7 @@
 										},
 										"sink": {
 											"name": "StdUtc",
-											"type": "String"
+											"type": "DateTime"
 										}
 									},
 									{
@@ -2640,7 +2640,7 @@
 				"parameters": {
 					"P1": {
 						"type": "string",
-						"defaultValue": "'2022-03-02'"
+						"defaultValue": "2022-03-02"
 					}
 				},
 				"folder": {
