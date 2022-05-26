@@ -180,7 +180,13 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "SQL Navblue Flight List Test",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"parameters": {
+							"P1START": {
+								"value": "@pipeline().parameters.P1",
+								"type": "Expression"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
