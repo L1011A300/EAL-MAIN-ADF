@@ -1,0 +1,95 @@
+{
+	"name": "SQL Navblue Flight List Test",
+	"properties": {
+		"folder": {
+			"name": "TEST"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SQL_NAVBLUE_Flight_List_TEST",
+						"type": "DatasetReference"
+					},
+					"name": "SQLNavblueFlightListTest"
+				},
+				{
+					"dataset": {
+						"referenceName": "SQL_FLIGHT_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "SQLSFFlightProd"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "exists1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SQLNavblueFlightListTest",
+				"source(output(",
+				"          actual_arrival_airport as string,",
+				"          actual_arrive_airport_id as string,",
+				"          actual_depart_airport_id as string,",
+				"          actual_departure_airport as string,",
+				"          actual_oooi_in as timestamp,",
+				"          actual_oooi_off as timestamp,",
+				"          actual_oooi_on as timestamp,",
+				"          actual_oooi_out as timestamp,",
+				"          aircraft_registration_number as string,",
+				"          aircraft_type as string,",
+				"          base_airport as string,",
+				"          base_airport_id as string,",
+				"          cargo_off as integer,",
+				"          cargo_on as integer,",
+				"          cargo_weight as integer,",
+				"          estimated_arrival as timestamp,",
+				"          estimated_departure as timestamp,",
+				"          flight_date as date,",
+				"          flight_id as integer,",
+				"          flight_number as string,",
+				"          flight_type as string,",
+				"          fuel_in as double,",
+				"          fuel_out as double,",
+				"          fuel_uplift as integer,",
+				"          fuel_uplifts as string,",
+				"          is_canceled as string,",
+				"          is_verified as string,",
+				"          lndg_actual_braking as string,",
+				"          lndg_midfield as string,",
+				"          lndg_rollout as string,",
+				"          lndg_touchdown_zone as string,",
+				"          maint_log_page as string,",
+				"          notes as string,",
+				"          ops_type as string,",
+				"          sched_arrive_airport_id as string,",
+				"          sched_depart_airport_id as string,",
+				"          scheduled_arrival as timestamp,",
+				"          scheduled_arrival_airport as string,",
+				"          scheduled_departure as timestamp,",
+				"          scheduled_departure_airport as string,",
+				"          updated_at as timestamp,",
+				"          ADF_TIMESTAMP as timestamp,",
+				"          RUN_ID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SQLSFFlightProd",
+				"SQLNavblueFlightListTest, filter1 exists(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"     negate:false,",
+				"     broadcast: 'auto')~> exists1",
+				"SQLSFFlightProd filter(scheduled_departure >= toTimestamp('2022-03-05 00:00:00.000')) ~> filter1"
+			]
+		}
+	}
+}
