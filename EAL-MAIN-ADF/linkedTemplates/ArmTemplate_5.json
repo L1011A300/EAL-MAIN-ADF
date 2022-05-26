@@ -92,72 +92,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/NAVBLUE FlightListToSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"folder": {
-					"name": "PROD"
-				},
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "NAVBLUE_CSV",
-								"type": "DatasetReference"
-							},
-							"name": "NAVBLUEcsv"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_NAVBLUE_Flight_List_TEST",
-								"type": "DatasetReference"
-							},
-							"name": "COPYtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddADFTSandRUNID"
-						}
-					],
-					"scriptLines": [
-						"parameters{",
-						"     run_id as string",
-						"}",
-						"source(output(",
-						"          WhoAlc as string,",
-						"          FltNum as string,",
-						"          StdUtc as timestamp 'MM/dd/yyyy HH:mm:ss',",
-						"          OrigApt as string,",
-						"          TestFlight as boolean,",
-						"          RepeatNumber as boolean",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> NAVBLUEcsv",
-						"NAVBLUEcsv derive(ADF_TIMESTAMP = currentTimestamp(),",
-						"          RUN_ID = $run_id) ~> AddADFTSandRUNID",
-						"AddADFTSandRUNID sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     recreate:true,",
-						"     format: 'table',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> COPYtoSQL"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/NavBlue test import XML')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -342,6 +276,127 @@
 						}
 					],
 					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tshift_id as string,\n\t\tuser_id as string,\n\t\tname as string,\n\t\tstart_time as string,\n\t\tend_time as string,\n\t\ttype as string,\n\t\tis_work as boolean,\n\t\tis_reserve as boolean,\n\t\tis_sick as boolean,\n\t\tis_training as boolean,\n\t\tis_vacation as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFShift\nSFShift derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tshift_id as string,\n\t\tuser_id as string,\n\t\tname as string,\n\t\tstart_time as timestamp,\n\t\tend_time as timestamp,\n\t\ttype as string,\n\t\tis_work as boolean,\n\t\tis_reserve as boolean,\n\t\tis_sick as boolean,\n\t\tis_training as boolean,\n\t\tis_vacation as boolean,\n\t\tupdated_at as string,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> SHIFTtoSQL"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL Navblue Flight List Test')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "TEST"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SQL_NAVBLUE_Flight_List_TEST",
+								"type": "DatasetReference"
+							},
+							"name": "SQLNavblueFlightListTest"
+						},
+						{
+							"dataset": {
+								"referenceName": "SQL_FLIGHT_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "SQLSFFlightProd"
+						},
+						{
+							"dataset": {
+								"referenceName": "SQL_AIRPORT_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "SQLAirportProd"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "exists1"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "JoinToAirports"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     P1START as string,",
+						"     P2END as string ('2022-03-03')",
+						"}",
+						"source(output(",
+						"          WhoAlc as string,",
+						"          FltNum as string,",
+						"          StdUtc as timestamp,",
+						"          OrigApt as string,",
+						"          TestFlight as boolean,",
+						"          RepeatNumber as boolean,",
+						"          ADF_TIMESTAMP as timestamp,",
+						"          RUN_ID as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> SQLNavblueFlightListTest",
+						"source(output(",
+						"          flight_number as string,",
+						"          SCHED_DEP_DATE as date,",
+						"          scheduled_departure as timestamp,",
+						"          sched_depart_airport_id as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     query: 'SELECT flight_number, CAST(scheduled_departure AS DATE) AS \\'SCHED_DEP_DATE\\'\\n, scheduled_departure\\n, sched_depart_airport_id\\nFROM dbo.SF_FLIGHT_PROD\\nWHERE aircraft_registration_number IS NOT NULL\\nAND is_canceled = \\'false\\'\\nAND CAST(scheduled_departure AS DATE) = \\'2022-03-02\\'',",
+						"     format: 'query') ~> SQLSFFlightProd",
+						"source(output(",
+						"          airport_id as string,",
+						"          icao_code as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     query: 'SELECT airport_id\\n, icao_code\\nFROM dbo.SF_AIRPORT_PROD',",
+						"     format: 'query') ~> SQLAirportProd",
+						"SQLNavblueFlightListTest, JoinToAirports exists(FltNum == flight_number",
+						"     && StdUtc == scheduled_departure",
+						"     && OrigApt == icao_code,",
+						"     negate:false,",
+						"     broadcast: 'auto')~> exists1",
+						"derivedColumn1 filter(SCHED_DEP_DATE_STR == $P1START) ~> filter1",
+						"SQLSFFlightProd derive(SCHED_DEP_DATE_STR = toString(SCHED_DEP_DATE),",
+						"          SCHED_DEP_DATE_PARAM = toDate($P1START)) ~> derivedColumn1",
+						"filter1, SQLAirportProd join(sched_depart_airport_id == airport_id,",
+						"     joinType:'inner',",
+						"     broadcast: 'auto')~> JoinToAirports",
+						"exists1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
 				}
 			},
 			"dependsOn": []
@@ -643,121 +698,66 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SQL Navblue Flight List Test')]",
+			"name": "[concat(parameters('factoryName'), '/NAVBLUE FlightListToSQL')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"folder": {
-					"name": "TEST"
+					"name": "PROD"
 				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "SQL_NAVBLUE_Flight_List_TEST",
+								"referenceName": "NAVBLUE_CSV",
 								"type": "DatasetReference"
 							},
-							"name": "SQLNavblueFlightListTest"
-						},
-						{
-							"dataset": {
-								"referenceName": "SQL_FLIGHT_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "SQLSFFlightProd"
-						},
-						{
-							"dataset": {
-								"referenceName": "SQL_AIRPORT_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "SQLAirportProd"
+							"name": "NAVBLUEcsv"
 						}
 					],
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "AzureSqlTable1",
+								"referenceName": "SQL_NAVBLUE_Flight_List_TEST",
 								"type": "DatasetReference"
 							},
-							"name": "sink1"
+							"name": "COPYtoSQL"
 						}
 					],
 					"transformations": [
 						{
-							"name": "exists1"
-						},
-						{
-							"name": "filter1"
-						},
-						{
-							"name": "derivedColumn1"
-						},
-						{
-							"name": "JoinToAirports"
+							"name": "AddADFTSandRUNID"
 						}
 					],
 					"scriptLines": [
 						"parameters{",
-						"     P1START as string,",
-						"     P2END as string ('2022-03-03')",
+						"     run_id as string",
 						"}",
 						"source(output(",
 						"          WhoAlc as string,",
 						"          FltNum as string,",
-						"          StdUtc as timestamp,",
+						"          StdUtc as string,",
 						"          OrigApt as string,",
 						"          TestFlight as boolean,",
-						"          RepeatNumber as boolean,",
-						"          ADF_TIMESTAMP as timestamp,",
-						"          RUN_ID as string",
+						"          RepeatNumber as boolean",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> SQLNavblueFlightListTest",
-						"source(output(",
-						"          flight_number as string,",
-						"          SCHED_DEP_DATE as date,",
-						"          scheduled_departure as timestamp,",
-						"          sched_depart_airport_id as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     query: 'SELECT flight_number, CAST(scheduled_departure AS DATE) AS \\'SCHED_DEP_DATE\\'\\n, scheduled_departure\\n, sched_depart_airport_id\\nFROM dbo.SF_FLIGHT_PROD\\nWHERE aircraft_registration_number IS NOT NULL\\nAND is_canceled = \\'false\\'\\nAND CAST(scheduled_departure AS DATE) = \\'2022-03-02\\'',",
-						"     format: 'query') ~> SQLSFFlightProd",
-						"source(output(",
-						"          airport_id as string,",
-						"          icao_code as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     query: 'SELECT airport_id\\n, icao_code\\nFROM dbo.SF_AIRPORT_PROD',",
-						"     format: 'query') ~> SQLAirportProd",
-						"SQLNavblueFlightListTest, JoinToAirports exists(FltNum == flight_number",
-						"     && StdUtc == scheduled_departure",
-						"     && OrigApt == icao_code,",
-						"     negate:false,",
-						"     broadcast: 'auto')~> exists1",
-						"derivedColumn1 filter(SCHED_DEP_DATE_STR == $P1START) ~> filter1",
-						"SQLSFFlightProd derive(SCHED_DEP_DATE_STR = toString(SCHED_DEP_DATE),",
-						"          SCHED_DEP_DATE_PARAM = toDate($P1START)) ~> derivedColumn1",
-						"filter1, SQLAirportProd join(sched_depart_airport_id == airport_id,",
-						"     joinType:'inner',",
-						"     broadcast: 'auto')~> JoinToAirports",
-						"exists1 sink(allowSchemaDrift: true,",
+						"     ignoreNoFilesFound: false) ~> NAVBLUEcsv",
+						"NAVBLUEcsv derive(ADF_TIMESTAMP = currentTimestamp(),",
+						"          RUN_ID = $run_id) ~> AddADFTSandRUNID",
+						"AddADFTSandRUNID sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:true,",
 						"     updateable:false,",
 						"     upsertable:false,",
+						"     recreate:true,",
 						"     format: 'table',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+						"     errorHandlingOption: 'stopOnFirstError') ~> COPYtoSQL"
 					]
 				}
 			},

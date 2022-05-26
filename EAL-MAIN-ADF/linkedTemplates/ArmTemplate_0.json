@@ -535,26 +535,24 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Calc_Data_Blob')]",
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
+					"referenceName": "eal_edw_connection",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "Binary",
+				"type": "AzureSqlTable",
+				"schema": [],
 				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "Calc_Data",
-						"container": "tcn-test"
-					}
+					"schema": "dbo",
+					"table": "NAVBLUE_FLIGHT_LIST_LIVE_FLTS"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
 			]
 		}
 	]
