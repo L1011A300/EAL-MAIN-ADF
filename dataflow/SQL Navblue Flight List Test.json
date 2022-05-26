@@ -20,9 +20,24 @@
 						"type": "DatasetReference"
 					},
 					"name": "SQLSFFlightProd"
+				},
+				{
+					"dataset": {
+						"referenceName": "SQL_AIRPORT_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "SQLAirportProd"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "exists1"
@@ -32,6 +47,9 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "JoinToAirports"
 				}
 			],
 			"scriptLines": [
@@ -39,26 +57,61 @@
 				"     P1START as string,",
 				"     P2END as string ('2022-03-03')",
 				"}",
-				"source(allowSchemaDrift: true,",
+				"source(output(",
+				"          WhoAlc as string,",
+				"          FltNum as string,",
+				"          StdUtc as timestamp,",
+				"          OrigApt as string,",
+				"          TestFlight as boolean,",
+				"          RepeatNumber as boolean,",
+				"          ADF_TIMESTAMP as timestamp,",
+				"          RUN_ID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> SQLNavblueFlightListTest",
 				"source(output(",
 				"          flight_number as string,",
 				"          SCHED_DEP_DATE as date,",
+				"          scheduled_departure as timestamp,",
 				"          sched_depart_airport_id as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     query: 'SELECT flight_number, CAST(scheduled_departure AS DATE) AS \\'SCHED_DEP_DATE\\' ,sched_depart_airport_id\\nFROM dbo.SF_FLIGHT_PROD\\nWHERE aircraft_registration_number IS NOT NULL\\nAND is_canceled = \\'false\\'',",
+				"     query: 'SELECT flight_number, CAST(scheduled_departure AS DATE) AS \\'SCHED_DEP_DATE\\'\\n, scheduled_departure\\n, sched_depart_airport_id\\nFROM dbo.SF_FLIGHT_PROD\\nWHERE aircraft_registration_number IS NOT NULL\\nAND is_canceled = \\'false\\'\\nAND CAST(scheduled_departure AS DATE) = \\'2022-03-02\\'',",
 				"     format: 'query') ~> SQLSFFlightProd",
-				"SQLNavblueFlightListTest, filter1 exists(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"source(output(",
+				"          airport_id as string,",
+				"          icao_code as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT airport_id\\n, icao_code\\nFROM dbo.SF_AIRPORT_PROD',",
+				"     format: 'query') ~> SQLAirportProd",
+				"SQLNavblueFlightListTest, JoinToAirports exists(FltNum == flight_number",
+				"     && StdUtc == scheduled_departure",
+				"     && OrigApt == icao_code,",
 				"     negate:false,",
 				"     broadcast: 'auto')~> exists1",
 				"derivedColumn1 filter(SCHED_DEP_DATE_STR == $P1START) ~> filter1",
 				"SQLSFFlightProd derive(SCHED_DEP_DATE_STR = toString(SCHED_DEP_DATE),",
-				"          SCHED_DEP_DATE_PARAM = toString(byName($P1START))) ~> derivedColumn1"
+				"          SCHED_DEP_DATE_PARAM = toDate($P1START)) ~> derivedColumn1",
+				"filter1, SQLAirportProd join(sched_depart_airport_id == airport_id,",
+				"     joinType:'inner',",
+				"     broadcast: 'auto')~> JoinToAirports",
+				"exists1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
