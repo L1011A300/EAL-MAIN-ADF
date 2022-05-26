@@ -32,6 +32,9 @@
 				}
 			],
 			"scriptLines": [
+				"parameters{",
+				"     P1 as string ('2022-03-02 00:00:00.000')",
+				"}",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
@@ -88,7 +91,7 @@
 				"SQLNavblueFlightListTest, filter1 exists(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
 				"     negate:false,",
 				"     broadcast: 'auto')~> exists1",
-				"SQLSFFlightProd filter(scheduled_departure >= toTimestamp('2022-03-05 00:00:00.000')) ~> filter1"
+				"SQLSFFlightProd filter(scheduled_departure >= toTimestamp($P1)) ~> filter1"
 			]
 		}
 	}
