@@ -73,7 +73,7 @@
 								},
 								"sink": {
 									"name": "StdUtc",
-									"type": "String"
+									"type": "DateTime"
 								}
 							},
 							{
