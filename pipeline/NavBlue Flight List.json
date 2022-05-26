@@ -199,7 +199,7 @@
 		"parameters": {
 			"P1": {
 				"type": "string",
-				"defaultValue": "2022-03-15"
+				"defaultValue": "'2022-03-15'"
 			}
 		},
 		"folder": {

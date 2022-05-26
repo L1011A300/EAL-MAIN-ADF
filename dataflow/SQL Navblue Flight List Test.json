@@ -56,7 +56,7 @@
 				"SQLNavblueFlightListTest, filter1 exists(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
 				"     negate:false,",
 				"     broadcast: 'auto')~> exists1",
-				"derivedColumn1 filter(SCHED_DEP_DATE_STR == $P1START) ~> filter1",
+				"derivedColumn1 filter(SCHED_DEP_DATE_STR == '2022-03-15') ~> filter1",
 				"SQLSFFlightProd derive(SCHED_DEP_DATE_STR = toString(SCHED_DEP_DATE)) ~> derivedColumn1"
 			]
 		}
