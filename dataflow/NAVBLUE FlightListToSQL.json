@@ -36,7 +36,7 @@
 				"source(output(",
 				"          WhoAlc as string,",
 				"          FltNum as string,",
-				"          StdUtc as timestamp 'MM/dd/yyyy HH:mm:ss',",
+				"          StdUtc as string,",
 				"          OrigApt as string,",
 				"          TestFlight as boolean,",
 				"          RepeatNumber as boolean",
