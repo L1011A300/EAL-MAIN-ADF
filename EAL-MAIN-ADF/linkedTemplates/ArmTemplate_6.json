@@ -2489,7 +2489,7 @@
 									"requestMethod": "POST",
 									"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nSOAPAction: \"http://navtech.aero/NavtechPublicService/GetFlightList\"\nContent-Length: 802\nHost: nfp.navtechinc.com:444",
 									"requestBody": {
-										"value": "@{replace('<SOAP-ENV:Envelope\n\txmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n\txmlns:NavWeb=\"urn:NavWeb\">\n   <SOAP-ENV:Header>\n\t   <o:Security\n\t   \t\tSOAP-ENV:mustUnderstand=\"1\"\n\t\t\txmlns:o=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n\t\t<o:UsernameToken>\n\t\t\t<o:Username>EAL/bdavis</o:Username>\n\t\t\t<o:Password>T99oulon84@</o:Password>\n\t\t</o:UsernameToken>\n\t\t</o:Security>\n\t</SOAP-ENV:Header>\n   <SOAP-ENV:Body>\n      <NavWeb:GetFlightList>\n         <Input>\n            <User>\n               <EnvAlc>EAL</EnvAlc>\n               <UserId>bdavis</UserId>\n            </User>\n            <Input>\n               <ForDayUtc>?P1</ForDayUtc>\n            </Input>\n         </Input>\n      </NavWeb:GetFlightList>\n   </SOAP-ENV:Body>\n</SOAP-ENV:Envelope>', '?P1', pipeline().parameters.P1)}",
+										"value": "@{replace('<SOAP-ENV:Envelope\n\txmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n\txmlns:NavWeb=\"urn:NavWeb\">\n   <SOAP-ENV:Header>\n\t   <o:Security\n\t   \t\tSOAP-ENV:mustUnderstand=\"1\"\n\t\t\txmlns:o=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n\t\t<o:UsernameToken>\n\t\t\t<o:Username>EAL/bdavis</o:Username>\n\t\t\t<o:Password>T99oulon84@</o:Password>\n\t\t</o:UsernameToken>\n\t\t</o:Security>\n\t</SOAP-ENV:Header>\n   <SOAP-ENV:Body>\n      <NavWeb:GetFlightList>\n         <Input>\n            <User>\n               <EnvAlc>EAL</EnvAlc>\n               <UserId>bdavis</UserId>\n            </User>\n            <Input>\n               <ForDayUtc>?P1</ForDayUtc>\n            </Input>\n         </Input>\n      </NavWeb:GetFlightList>\n   </SOAP-ENV:Body>\n</SOAP-ENV:Envelope>', '?P1', formatDateTime(adddays(utcnow(),-1),'yyyy-MM-dd'))}",
 										"type": "Expression"
 									},
 									"requestTimeout": ""
@@ -2631,17 +2631,50 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "SQL Navblue Flight List Live Flts",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "NavBlue Flight List to SQL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SQL Navblue Flight List Live Flts",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SQLNavblueFlightListTest": {},
+									"SQLSFFlightProd": {},
+									"SQLAirportProd": {},
+									"SQLFlightListLiveFlights": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
-				},
-				"parameters": {
-					"P1": {
-						"type": "string",
-						"defaultValue": "2022-03-02"
-					}
 				},
 				"folder": {
 					"name": "PROD"

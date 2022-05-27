@@ -4214,7 +4214,7 @@
 									"requestMethod": "POST",
 									"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nSOAPAction: \"http://navtech.aero/NavtechPublicService/GetFlightList\"\nContent-Length: 802\nHost: nfp.navtechinc.com:444",
 									"requestBody": {
-										"value": "@{replace('<SOAP-ENV:Envelope\n\txmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n\txmlns:NavWeb=\"urn:NavWeb\">\n   <SOAP-ENV:Header>\n\t   <o:Security\n\t   \t\tSOAP-ENV:mustUnderstand=\"1\"\n\t\t\txmlns:o=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n\t\t<o:UsernameToken>\n\t\t\t<o:Username>EAL/bdavis</o:Username>\n\t\t\t<o:Password>T99oulon84@</o:Password>\n\t\t</o:UsernameToken>\n\t\t</o:Security>\n\t</SOAP-ENV:Header>\n   <SOAP-ENV:Body>\n      <NavWeb:GetFlightList>\n         <Input>\n            <User>\n               <EnvAlc>EAL</EnvAlc>\n               <UserId>bdavis</UserId>\n            </User>\n            <Input>\n               <ForDayUtc>?P1</ForDayUtc>\n            </Input>\n         </Input>\n      </NavWeb:GetFlightList>\n   </SOAP-ENV:Body>\n</SOAP-ENV:Envelope>', '?P1', pipeline().parameters.P1)}",
+										"value": "@{replace('<SOAP-ENV:Envelope\n\txmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n\txmlns:NavWeb=\"urn:NavWeb\">\n   <SOAP-ENV:Header>\n\t   <o:Security\n\t   \t\tSOAP-ENV:mustUnderstand=\"1\"\n\t\t\txmlns:o=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n\t\t<o:UsernameToken>\n\t\t\t<o:Username>EAL/bdavis</o:Username>\n\t\t\t<o:Password>T99oulon84@</o:Password>\n\t\t</o:UsernameToken>\n\t\t</o:Security>\n\t</SOAP-ENV:Header>\n   <SOAP-ENV:Body>\n      <NavWeb:GetFlightList>\n         <Input>\n            <User>\n               <EnvAlc>EAL</EnvAlc>\n               <UserId>bdavis</UserId>\n            </User>\n            <Input>\n               <ForDayUtc>?P1</ForDayUtc>\n            </Input>\n         </Input>\n      </NavWeb:GetFlightList>\n   </SOAP-ENV:Body>\n</SOAP-ENV:Envelope>', '?P1', formatDateTime(adddays(utcnow(),-1),'yyyy-MM-dd'))}",
 										"type": "Expression"
 									},
 									"requestTimeout": ""
@@ -4356,17 +4356,50 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "SQL Navblue Flight List Live Flts",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "NavBlue Flight List to SQL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SQL Navblue Flight List Live Flts",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SQLNavblueFlightListTest": {},
+									"SQLSFFlightProd": {},
+									"SQLAirportProd": {},
+									"SQLFlightListLiveFlights": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
-				},
-				"parameters": {
-					"P1": {
-						"type": "string",
-						"defaultValue": "2022-03-02"
-					}
 				},
 				"folder": {
 					"name": "PROD"
@@ -4376,7 +4409,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/NavBlueSourceXML')]",
 				"[concat(variables('factoryId'), '/datasets/NAVBLUE_CSV')]",
-				"[concat(variables('factoryId'), '/dataflows/NAVBLUE FlightListToSQL')]"
+				"[concat(variables('factoryId'), '/dataflows/NAVBLUE FlightListToSQL')]",
+				"[concat(variables('factoryId'), '/dataflows/SQL Navblue Flight List Live Flts')]"
 			]
 		},
 		{
@@ -6196,7 +6230,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"name": "[concat(parameters('factoryName'), '/SQL_NAVBLUE_FLIGHT_LIST_LIVE_FLTS')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -11857,6 +11891,75 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/NAVBLUE FlightListToSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "PROD"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "NAVBLUE_CSV",
+								"type": "DatasetReference"
+							},
+							"name": "NAVBLUEcsv"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_NAVBLUE_Flight_List_TEST",
+								"type": "DatasetReference"
+							},
+							"name": "COPYtoSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddADFTSandRUNID"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     run_id as string",
+						"}",
+						"source(output(",
+						"          WhoAlc as string,",
+						"          FltNum as string,",
+						"          StdUtc as string,",
+						"          OrigApt as string,",
+						"          TestFlight as boolean,",
+						"          RepeatNumber as boolean",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> NAVBLUEcsv",
+						"NAVBLUEcsv derive(ADF_TIMESTAMP = currentTimestamp(),",
+						"          RUN_ID = $run_id) ~> AddADFTSandRUNID",
+						"AddADFTSandRUNID sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     recreate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> COPYtoSQL"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/NAVBLUE_CSV')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_NAVBLUE_Flight_List_TEST')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/NavBlue test import XML')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -12058,10 +12161,11 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SQL Navblue Flight List Test')]",
+			"name": "[concat(parameters('factoryName'), '/SQL Navblue Flight List Live Flts')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "Filters yesterday NavBlue Flight List for flights that actually operated in SF.",
 				"folder": {
 					"name": "TEST"
 				},
@@ -12093,31 +12197,26 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "AzureSqlTable1",
+								"referenceName": "SQL_NAVBLUE_FLIGHT_LIST_LIVE_FLTS",
 								"type": "DatasetReference"
 							},
-							"name": "sink1"
+							"name": "SQLFlightListLiveFlights"
 						}
 					],
 					"transformations": [
 						{
-							"name": "exists1"
-						},
-						{
-							"name": "filter1"
+							"name": "CompToSFflights",
+							"description": "Compare yesterday's NavBlue flights to flights that actually operated in SF. Pass thru NavBlue flights that actually operated."
 						},
 						{
 							"name": "derivedColumn1"
 						},
 						{
-							"name": "JoinToAirports"
+							"name": "JoinToAirports",
+							"description": "Retrieve ICAO airport codes from SF Airports table to add to SF Flight data.  ICAO airport code is needed as part of primary key to match against NavBlue flight list."
 						}
 					],
 					"scriptLines": [
-						"parameters{",
-						"     P1START as string,",
-						"     P2END as string ('2022-03-03')",
-						"}",
 						"source(output(",
 						"          WhoAlc as string,",
 						"          FltNum as string,",
@@ -12141,7 +12240,7 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     query: 'SELECT flight_number, CAST(scheduled_departure AS DATE) AS \\'SCHED_DEP_DATE\\'\\n, scheduled_departure\\n, sched_depart_airport_id\\nFROM dbo.SF_FLIGHT_PROD\\nWHERE aircraft_registration_number IS NOT NULL\\nAND is_canceled = \\'false\\'\\nAND CAST(scheduled_departure AS DATE) = \\'2022-03-02\\'',",
+						"     query: 'SELECT flight_number, CAST(scheduled_departure AS DATE) AS \\'SCHED_DEP_DATE\\'\\n, scheduled_departure\\n, sched_depart_airport_id\\nFROM dbo.SF_FLIGHT_PROD\\nWHERE aircraft_registration_number IS NOT NULL\\nAND is_canceled = \\'false\\'\\nAND CAST(scheduled_departure AS DATE) = DATEADD(day,-1,CONVERT(date, GETUTCDATE()))',",
 						"     format: 'query') ~> SQLSFFlightProd",
 						"source(output(",
 						"          airport_id as string,",
@@ -12156,14 +12255,12 @@
 						"     && StdUtc == scheduled_departure",
 						"     && OrigApt == icao_code,",
 						"     negate:false,",
-						"     broadcast: 'auto')~> exists1",
-						"derivedColumn1 filter(SCHED_DEP_DATE_STR == $P1START) ~> filter1",
-						"SQLSFFlightProd derive(SCHED_DEP_DATE_STR = toString(SCHED_DEP_DATE),",
-						"          SCHED_DEP_DATE_PARAM = toDate($P1START)) ~> derivedColumn1",
-						"filter1, SQLAirportProd join(sched_depart_airport_id == airport_id,",
+						"     broadcast: 'auto')~> CompToSFflights",
+						"SQLSFFlightProd derive(SCHED_DEP_DATE_STR = toString(SCHED_DEP_DATE)) ~> derivedColumn1",
+						"derivedColumn1, SQLAirportProd join(sched_depart_airport_id == airport_id,",
 						"     joinType:'inner',",
 						"     broadcast: 'auto')~> JoinToAirports",
-						"exists1 sink(allowSchemaDrift: true,",
+						"CompToSFflights sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:true,",
@@ -12172,7 +12269,7 @@
 						"     format: 'table',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+						"     errorHandlingOption: 'stopOnFirstError') ~> SQLFlightListLiveFlights"
 					]
 				}
 			},
@@ -12180,7 +12277,7 @@
 				"[concat(variables('factoryId'), '/datasets/SQL_NAVBLUE_Flight_List_TEST')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_FLIGHT_TABLE')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_AIRPORT_TABLE')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]"
+				"[concat(variables('factoryId'), '/datasets/SQL_NAVBLUE_FLIGHT_LIST_LIVE_FLTS')]"
 			]
 		},
 		{
@@ -12495,75 +12592,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/NAVBLUE FlightListToSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"folder": {
-					"name": "PROD"
-				},
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "NAVBLUE_CSV",
-								"type": "DatasetReference"
-							},
-							"name": "NAVBLUEcsv"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_NAVBLUE_Flight_List_TEST",
-								"type": "DatasetReference"
-							},
-							"name": "COPYtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddADFTSandRUNID"
-						}
-					],
-					"scriptLines": [
-						"parameters{",
-						"     run_id as string",
-						"}",
-						"source(output(",
-						"          WhoAlc as string,",
-						"          FltNum as string,",
-						"          StdUtc as string,",
-						"          OrigApt as string,",
-						"          TestFlight as boolean,",
-						"          RepeatNumber as boolean",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> NAVBLUEcsv",
-						"NAVBLUEcsv derive(ADF_TIMESTAMP = currentTimestamp(),",
-						"          RUN_ID = $run_id) ~> AddADFTSandRUNID",
-						"AddADFTSandRUNID sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     recreate:true,",
-						"     format: 'table',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> COPYtoSQL"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/NAVBLUE_CSV')]",
-				"[concat(variables('factoryId'), '/datasets/SQL_NAVBLUE_Flight_List_TEST')]"
 			]
 		}
 	]
