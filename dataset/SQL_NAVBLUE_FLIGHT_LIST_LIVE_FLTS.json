@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTable1",
+	"name": "SQL_NAVBLUE_FLIGHT_LIST_LIVE_FLTS",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "eal_edw_connection",

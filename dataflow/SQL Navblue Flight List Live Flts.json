@@ -1,6 +1,7 @@
 {
-	"name": "SQL Navblue Flight List Test",
+	"name": "SQL Navblue Flight List Live Flts",
 	"properties": {
+		"description": "Filters yesterday NavBlue Flight List for flights that actually operated in SF.",
 		"folder": {
 			"name": "TEST"
 		},
@@ -32,31 +33,26 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "SQL_NAVBLUE_FLIGHT_LIST_LIVE_FLTS",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "SQLFlightListLiveFlights"
 				}
 			],
 			"transformations": [
 				{
-					"name": "exists1"
-				},
-				{
-					"name": "filter1"
+					"name": "CompToSFflights",
+					"description": "Compare yesterday's NavBlue flights to flights that actually operated in SF. Pass thru NavBlue flights that actually operated."
 				},
 				{
 					"name": "derivedColumn1"
 				},
 				{
-					"name": "JoinToAirports"
+					"name": "JoinToAirports",
+					"description": "Retrieve ICAO airport codes from SF Airports table to add to SF Flight data.  ICAO airport code is needed as part of primary key to match against NavBlue flight list."
 				}
 			],
 			"scriptLines": [
-				"parameters{",
-				"     P1START as string,",
-				"     P2END as string ('2022-03-03')",
-				"}",
 				"source(output(",
 				"          WhoAlc as string,",
 				"          FltNum as string,",
@@ -80,7 +76,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     query: 'SELECT flight_number, CAST(scheduled_departure AS DATE) AS \\'SCHED_DEP_DATE\\'\\n, scheduled_departure\\n, sched_depart_airport_id\\nFROM dbo.SF_FLIGHT_PROD\\nWHERE aircraft_registration_number IS NOT NULL\\nAND is_canceled = \\'false\\'\\nAND CAST(scheduled_departure AS DATE) = \\'2022-03-02\\'',",
+				"     query: 'SELECT flight_number, CAST(scheduled_departure AS DATE) AS \\'SCHED_DEP_DATE\\'\\n, scheduled_departure\\n, sched_depart_airport_id\\nFROM dbo.SF_FLIGHT_PROD\\nWHERE aircraft_registration_number IS NOT NULL\\nAND is_canceled = \\'false\\'\\nAND CAST(scheduled_departure AS DATE) = DATEADD(day,-1,CONVERT(date, GETUTCDATE()))',",
 				"     format: 'query') ~> SQLSFFlightProd",
 				"source(output(",
 				"          airport_id as string,",
@@ -95,14 +91,12 @@
 				"     && StdUtc == scheduled_departure",
 				"     && OrigApt == icao_code,",
 				"     negate:false,",
-				"     broadcast: 'auto')~> exists1",
-				"derivedColumn1 filter(SCHED_DEP_DATE_STR == $P1START) ~> filter1",
-				"SQLSFFlightProd derive(SCHED_DEP_DATE_STR = toString(SCHED_DEP_DATE),",
-				"          SCHED_DEP_DATE_PARAM = toDate($P1START)) ~> derivedColumn1",
-				"filter1, SQLAirportProd join(sched_depart_airport_id == airport_id,",
+				"     broadcast: 'auto')~> CompToSFflights",
+				"SQLSFFlightProd derive(SCHED_DEP_DATE_STR = toString(SCHED_DEP_DATE)) ~> derivedColumn1",
+				"derivedColumn1, SQLAirportProd join(sched_depart_airport_id == airport_id,",
 				"     joinType:'inner',",
 				"     broadcast: 'auto')~> JoinToAirports",
-				"exists1 sink(allowSchemaDrift: true,",
+				"CompToSFflights sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -111,7 +105,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+				"     errorHandlingOption: 'stopOnFirstError') ~> SQLFlightListLiveFlights"
 			]
 		}
 	}
