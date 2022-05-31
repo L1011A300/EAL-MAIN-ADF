@@ -51,62 +51,11 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['s:Envelope']['s:Header']['o:Security']['u:Timestamp']['u:Created']"
-								}
-							},
-							{
-								"source": {
-									"path": "$['s:Envelope']['s:Header']['o:Security']['u:Timestamp']['u:Expires']"
-								}
-							},
-							{
-								"source": {
-									"path": "$['s:Envelope']['s:Header']['o:Security']['u:Timestamp']['u:@Id']"
-								}
-							},
-							{
-								"source": {
-									"path": "$['s:Envelope']['s:Header']['o:Security']['s:@mustUnderstand']"
-								}
-							},
-							{
-								"source": {
-									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Error']['xsi:@nil']"
-								}
-							},
-							{
-								"source": {
-									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Warning']['xsi:@nil']"
-								}
-							},
-							{
-								"source": {
-									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['ExecutionTimeSec']"
-								}
-							},
-							{
-								"source": {
-									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Formats']['Id']"
-								}
-							},
-							{
-								"source": {
 									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Formats']['Data']"
-								}
-							},
-							{
-								"source": {
-									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Formats']['IsBase64']"
-								}
-							},
-							{
-								"source": {
-									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['EffFileContents']['xsi:@nil']"
-								}
-							},
-							{
-								"source": {
-									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['EffFileName']['xsi:@nil']"
+								},
+								"sink": {
+									"name": "Data",
+									"type": "String"
 								}
 							}
 						],
