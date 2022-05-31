@@ -1,0 +1,204 @@
+{
+	"name": "NavBlue Recall Flight TEST",
+	"properties": {
+		"activities": [
+			{
+				"name": "NAVBLUE Copy XML to CSV",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "XmlSource",
+						"storeSettings": {
+							"type": "HttpReadSettings",
+							"requestMethod": "POST",
+							"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nSOAPAction: \"http://navtech.aero/NavtechPublicService/RecallFlight\"\nHost: nfp.navtechinc.com:444",
+							"requestBody": {
+								"value": "<s:Envelope\n\txmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"\n\txmlns:NavWeb=\"urn:NavWeb\"\n\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n   <s:Header>\n   \t<o:Security\n\t   \t\ts:mustUnderstand=\"1\"\n\t\t\txmlns:o=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n\t\t<o:UsernameToken>\n\t\t\t<o:Username>EAL/bdavis</o:Username>\n\t\t\t<o:Password>T99oulon84@</o:Password>\n\t\t</o:UsernameToken>\n\t</o:Security>\n   </s:Header>\n   <s:Body>\n      <NavWeb:RecallFlight>\n         <Input xsi:type=\"NavWeb:RecallFlightRequest\">\n           <User xsi:type=\"NavWeb:User\">\n               <EnvAlc>EAL</EnvAlc>\n               <UserId>bdavis</UserId>\n           </User>\n           <SerialNumber>20569</SerialNumber>\n         \t<Formats xsi:type=\"NavWeb:FormatInput\">\n\t\t\t<PackageLayoutFile>Arinc633</PackageLayoutFile>\n\t\t</Formats>\n\t   </Input>\t\n      </NavWeb:RecallFlight>\n   </s:Body>\n</s:Envelope>",
+								"type": "Expression"
+							},
+							"requestTimeout": ""
+						},
+						"formatSettings": {
+							"type": "XmlReadSettings",
+							"validationMode": "none",
+							"namespaces": true
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "FlattenHierarchy"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['s:Envelope']['s:Header']['o:Security']['u:Timestamp']['u:Created']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['s:Envelope']['s:Header']['o:Security']['u:Timestamp']['u:Expires']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['s:Envelope']['s:Header']['o:Security']['u:Timestamp']['u:@Id']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['s:Envelope']['s:Header']['o:Security']['s:@mustUnderstand']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Error']['xsi:@nil']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Warning']['xsi:@nil']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['ExecutionTimeSec']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Formats']['Id']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Formats']['Data']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Formats']['IsBase64']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['EffFileContents']['xsi:@nil']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['EffFileName']['xsi:@nil']"
+								}
+							}
+						],
+						"collectionReference": "",
+						"mapComplexValuesToString": false
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "NavBlueSourceXML",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "NAVBLUE_CSV_RecallFlight",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "NavBlue Flight List to SQL",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "NAVBLUE Copy XML to CSV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "NAVBLUE FlightListToSQL",
+						"type": "DataFlowReference",
+						"parameters": {
+							"run_id": {
+								"value": "'@{pipeline().RunId}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "SQL Navblue Flight List Live Flts",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "NavBlue Flight List to SQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "SQL Navblue Flight List Live Flts",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Testing"
+		},
+		"annotations": []
+	}
+}
