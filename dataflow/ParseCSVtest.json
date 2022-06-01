@@ -28,8 +28,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 aggregate(groupBy(Data),",
-				"     AGG = collect(Data)) ~> aggregate1"
+				"source1 aggregate(AGG = collect(Data)) ~> aggregate1"
 			]
 		}
 	}
