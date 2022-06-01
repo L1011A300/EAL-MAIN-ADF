@@ -32,7 +32,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
 				"source1 aggregate(AGG = collect(Data)) ~> aggregate1",
-				"aggregate1 parse(AGG = AGG ? string,",
+				"aggregate1 parse(ParsedColumn = ERROR_FUNCTION(''),",
 				"     format: 'xml',",
 				"     namespaces: true) ~> parse1"
 			]
