@@ -19,6 +19,9 @@
 			"transformations": [
 				{
 					"name": "aggregate1"
+				},
+				{
+					"name": "parse1"
 				}
 			],
 			"scriptLines": [
@@ -28,7 +31,10 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 aggregate(AGG = collect(Data)) ~> aggregate1"
+				"source1 aggregate(AGG = collect(Data)) ~> aggregate1",
+				"aggregate1 parse(AGG = AGG ? string,",
+				"     format: 'xml',",
+				"     namespaces: true) ~> parse1"
 			]
 		}
 	}
