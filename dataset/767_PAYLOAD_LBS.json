@@ -1,0 +1,36 @@
+{
+	"name": "767_PAYLOAD_LBS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "AIRCRAFT_PAYLOAD_LBS.csv",
+				"container": "navblue-test"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "TAIL",
+				"type": "String"
+			},
+			{
+				"name": "TYPE",
+				"type": "String"
+			},
+			{
+				"name": "PAYLOAD_LBS",
+				"type": "String"
+			}
+		]
+	}
+}
