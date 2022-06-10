@@ -15,13 +15,18 @@
 					"name": "source1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "aggregate1"
-				},
-				{
-					"name": "parse1"
 				},
 				{
 					"name": "ModifyColumns1",
@@ -39,11 +44,12 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
 				"source1 aggregate(AGG = collect(Data)) ~> aggregate1",
-				"derivedColumn1 parse(ParsedColumn = ERROR_FUNCTION(''),",
-				"     format: 'xml',",
-				"     namespaces: true) ~> parse1",
 				"aggregate1 derive(AGG = toString(AGG)) ~> ModifyColumns1",
-				"ModifyColumns1 derive(AGG = replace('\\\"','\"')) ~> derivedColumn1"
+				"ModifyColumns1 derive(AGG = replace('\\\"','\"')) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
