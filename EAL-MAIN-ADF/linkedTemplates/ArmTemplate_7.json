@@ -6,12 +6,559 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "EAL-MAIN-ADF"
+		},
+		"Trigger_qk2_properties_pipeline_parameters_windowStart": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
+		"Trigger_qk2_properties_pipeline_parameters_windowEnd": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowEndTime"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/user_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF user data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "user_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['user_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "payroll_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['payroll_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "employee_id",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['employee_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "username",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['username']"
+										}
+									},
+									{
+										"source": {
+											"name": "first_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['first_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "middle_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['middle_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "last_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['last_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "preferred_nickname",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['preferred_nickname']"
+										}
+									},
+									{
+										"source": {
+											"name": "email",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['email']"
+										}
+									},
+									{
+										"source": {
+											"name": "pilot_license",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['pilot_license']"
+										}
+									},
+									{
+										"source": {
+											"name": "phone_numbers",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['phone_numbers']"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_birth",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date_of_birth']"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_hire",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date_of_hire']"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_longevity",
+											"type": "DateTime"
+										},
+										"sink": {
+											"path": "$['date_of_longevity']"
+										}
+									},
+									{
+										"source": {
+											"name": "company_rank",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['company_rank']"
+										}
+									},
+									{
+										"source": {
+											"name": "pilot_rank",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['pilot_rank']"
+										}
+									},
+									{
+										"source": {
+											"name": "fa_rank",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['fa_rank']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									},
+									{
+										"source": {
+											"name": "enabled",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['enabled']"
+										}
+									},
+									{
+										"source": {
+											"name": "deleted",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['deleted']"
+										}
+									},
+									{
+										"source": {
+											"name": "is_disabled",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['is_disabled']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_user",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_user",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "USERblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF user data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "USERblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFUser": {},
+									"USERtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "PROD"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Trigger_qk2')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "TCN_COPY_TEST",
+						"type": "PipelineReference"
+					},
+					"parameters": {
+						"windowStart": {
+							"type": "Expression",
+							"value": "[parameters('Trigger_qk2_properties_pipeline_parameters_windowStart')]"
+						},
+						"windowEnd": {
+							"type": "Expression",
+							"value": "[parameters('Trigger_qk2_properties_pipeline_parameters_windowEnd')]"
+						}
+					}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Minute",
+					"interval": 15,
+					"startTime": "2021-08-23T20:15:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Boeing 767 payload table')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Payload767LBStoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Payload767toSQL",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"PayloadLBS": {},
+									"SQL767Payload": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AIRPORT trigger after midnight UTC')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [
+					"Midnight UTC"
+				],
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "Airport_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-11-08T00:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"count": 5,
+						"intervalInSeconds": 240
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EQUIP_SCHED trigger every 24 hrs')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Runs Equip_Sched_data pipeline every 24 hours.",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Equip_sched_data",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 24,
+						"startTime": "2022-05-02T06:00:00",
+						"timeZone": "Eastern Standard Time"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Flight_Crew trigger 1am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [
+					"5:00 a.m. UTC"
+				],
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "flight_crew_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-10-02T05:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Test account restart trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Equip_sched_data",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 15,
+						"startTime": "2022-04-11T16:10:00Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/User_Category trigger 1-2am')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Extracts all data from USER_CATEGORY_PROD table at 1 or 2 a.m. lcl, depending on DST.",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "user_category_data",
+						"type": "PipelineReference"
+					},
+					"parameters": {}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 24,
+					"startTime": "2021-12-12T06:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/User_data trigger 1-2am')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
@@ -40,7 +587,9 @@
 					"dependsOn": []
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/user_data')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DELAYS trigger 630 am')]",
@@ -82,7 +631,9 @@
 					]
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger after midnight UTC')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/FLIGHT trigger after midnight UTC')]",
@@ -122,7 +673,9 @@
 					]
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger after midnight UTC')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DELAYS trigger after midnight UTC')]",
