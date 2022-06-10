@@ -1,0 +1,16 @@
+{
+	"name": "SQL_767_Payloads",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_edw_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "BOEING_767_PAYLOAD_LBS"
+		}
+	}
+}

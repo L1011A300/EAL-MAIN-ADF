@@ -1,0 +1,50 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"folder": {
+			"name": "PROD"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "767_PAYLOAD_LBS",
+						"type": "DatasetReference"
+					},
+					"name": "PayloadLBS"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SQL_767_Payloads",
+						"type": "DatasetReference"
+					},
+					"name": "SQL767Payload"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          TAIL as string,",
+				"          TYPE as string,",
+				"          PAYLOAD_LBS as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> PayloadLBS",
+				"PayloadLBS sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> SQL767Payload"
+			]
+		}
+	}
+}
