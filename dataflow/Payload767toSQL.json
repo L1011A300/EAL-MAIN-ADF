@@ -40,10 +40,16 @@
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
+				"     recreate:true,",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> SQL767Payload"
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          TAIL,",
+				"          TYPE,",
+				"          PAYLOAD_LBS",
+				"     )) ~> SQL767Payload"
 			]
 		}
 	}
