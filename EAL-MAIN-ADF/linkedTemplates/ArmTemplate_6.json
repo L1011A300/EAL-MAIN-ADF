@@ -54,7 +54,7 @@
 					"cancelAfter": {}
 				},
 				"folder": {
-					"name": "Testing"
+					"name": "PROD"
 				},
 				"annotations": []
 			},
