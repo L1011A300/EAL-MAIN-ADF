@@ -535,7 +535,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Calc_Data_Blob')]",
+			"name": "[concat(parameters('factoryName'), '/767_PAYLOAD_LBS')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -543,15 +543,40 @@
 					"referenceName": "eal_main_blob_connection",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Source"
+				},
 				"annotations": [],
-				"type": "Binary",
+				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "Calc_Data",
-						"container": "tcn-test"
+						"fileName": "AIRCRAFT_PAYLOAD_LBS.csv",
+						"container": "navblue-test"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "TAIL",
+						"type": "String"
+					},
+					{
+						"name": "TYPE",
+						"type": "String"
+					},
+					{
+						"name": "PAYLOAD_LBS",
+						"type": "String"
+					},
+					{
+						"name": "SEATS",
+						"type": "String"
 					}
-				}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
