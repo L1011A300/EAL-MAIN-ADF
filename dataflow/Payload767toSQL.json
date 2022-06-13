@@ -29,7 +29,8 @@
 				"source(output(",
 				"          TAIL as string,",
 				"          TYPE as string,",
-				"          PAYLOAD_LBS as integer",
+				"          PAYLOAD_LBS as integer,",
+				"          SEATS as integer",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -48,7 +49,8 @@
 				"     mapColumn(",
 				"          TAIL,",
 				"          TYPE,",
-				"          PAYLOAD_LBS",
+				"          PAYLOAD_LBS,",
+				"          SEATS",
 				"     )) ~> SQL767Payload"
 			]
 		}
