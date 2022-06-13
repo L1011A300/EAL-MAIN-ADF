@@ -5,6 +5,9 @@
 			"referenceName": "eal_main_blob_connection",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Source"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
@@ -29,6 +32,10 @@
 			},
 			{
 				"name": "PAYLOAD_LBS",
+				"type": "String"
+			},
+			{
+				"name": "SEATS",
 				"type": "String"
 			}
 		]
