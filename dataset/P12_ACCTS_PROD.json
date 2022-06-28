@@ -1,0 +1,16 @@
+{
+	"name": "P12_ACCTS_PROD",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_edw_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "P12_ACCTS_PROD"
+		}
+	}
+}

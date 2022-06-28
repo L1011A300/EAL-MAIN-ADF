@@ -1,0 +1,86 @@
+{
+	"name": "P12_ACCOUNTS",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "P12_ACCOUNTS",
+						"type": "DatasetReference"
+					},
+					"name": "P12Accts"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "P12_ACCTS_PROD",
+						"type": "DatasetReference"
+					},
+					"name": "P12AcctsSQL"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     run_id as string",
+				"}",
+				"source(output(",
+				"          country_code as string,",
+				"          P12_REGION as string,",
+				"          P12_ACCT_CD_GAL_SCHED as string,",
+				"          P12_ACCT_CD_GAL_SCHED_SUBTTL as string,",
+				"          P12_ACCT_CD_GAL_SCHED_TTL as string,",
+				"          P12_ACCT_CD_GAL_NONSCHED as string,",
+				"          P12_ACCT_CD_GAL_NONSCHED_SUBTTL as string,",
+				"          P12_ACCT_CD_GAL_NONSCHED_TTL as string,",
+				"          P12_ACCT_CD_COST_SCHED as string,",
+				"          P12_ACCT_CD_COST_SCHED_SUBTTL as string,",
+				"          P12_ACCT_CD_COST_SCHED_TTL as string,",
+				"          P12_ACCT_CD_COST_NONSCHED as string,",
+				"          P12_ACCT_CD_COST_NONSCHED_SUBTTL as string,",
+				"          P12_ACCT_CD_COST_NONSCHED_TTL as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> P12Accts",
+				"P12Accts derive(ADF_TIMESTAMP = currentTimestamp(),",
+				"          RUN_ID = $run_id) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          country_code,",
+				"          P12_REGION,",
+				"          P12_ACCT_CD_GAL_SCHED,",
+				"          P12_ACCT_CD_GAL_SCHED_SUBTTL,",
+				"          P12_ACCT_CD_GAL_SCHED_TTL,",
+				"          P12_ACCT_CD_GAL_NONSCHED,",
+				"          P12_ACCT_CD_GAL_NONSCHED_SUBTTL,",
+				"          P12_ACCT_CD_GAL_NONSCHED_TTL,",
+				"          P12_ACCT_CD_COST_SCHED,",
+				"          P12_ACCT_CD_COST_SCHED_SUBTTL,",
+				"          P12_ACCT_CD_COST_SCHED_TTL,",
+				"          P12_ACCT_CD_COST_NONSCHED,",
+				"          P12_ACCT_CD_COST_NONSCHED_SUBTTL,",
+				"          P12_ACCT_CD_COST_NONSCHED_TTL,",
+				"          ADF_TIMESTAMP,",
+				"          RUN_ID",
+				"     )) ~> P12AcctsSQL"
+			]
+		}
+	}
+}
