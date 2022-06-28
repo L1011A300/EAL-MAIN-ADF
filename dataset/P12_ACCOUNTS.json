@@ -1,0 +1,80 @@
+{
+	"name": "P12_ACCOUNTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "P12_ACCTS.csv",
+				"container": "flight-number-range"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "country_code",
+				"type": "String"
+			},
+			{
+				"name": "P12_REGION",
+				"type": "String"
+			},
+			{
+				"name": "P12_ACCT_CD_GAL_SCHED",
+				"type": "String"
+			},
+			{
+				"name": "P12_ACCT_CD_GAL_SCHED_SUBTTL",
+				"type": "String"
+			},
+			{
+				"name": "P12_ACCT_CD_GAL_SCHED_TTL",
+				"type": "String"
+			},
+			{
+				"name": "P12_ACCT_CD_GAL_NONSCHED",
+				"type": "String"
+			},
+			{
+				"name": "P12_ACCT_CD_GAL_NONSCHED_SUBTTL",
+				"type": "String"
+			},
+			{
+				"name": "P12_ACCT_CD_GAL_NONSCHED_TTL",
+				"type": "String"
+			},
+			{
+				"name": "P12_ACCT_CD_COST_SCHED",
+				"type": "String"
+			},
+			{
+				"name": "P12_ACCT_CD_COST_SCHED_SUBTTL",
+				"type": "String"
+			},
+			{
+				"name": "P12_ACCT_CD_COST_SCHED_TTL",
+				"type": "String"
+			},
+			{
+				"name": "P12_ACCT_CD_COST_NONSCHED",
+				"type": "String"
+			},
+			{
+				"name": "P12_ACCT_CD_COST_NONSCHED_SUBTTL",
+				"type": "String"
+			},
+			{
+				"name": "P12_ACCT_CD_COST_NONSCHED_TTL",
+				"type": "String"
+			}
+		]
+	}
+}
