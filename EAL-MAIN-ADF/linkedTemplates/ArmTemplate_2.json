@@ -36,6 +36,108 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/P12_ACCOUNTS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "P12_ACCTS.csv",
+						"container": "flight-number-range"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "country_code",
+						"type": "String"
+					},
+					{
+						"name": "P12_REGION",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_GAL_SCHED",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_GAL_SCHED_SUBTTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_GAL_SCHED_TTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_GAL_NONSCHED",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_GAL_NONSCHED_SUBTTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_GAL_NONSCHED_TTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_COST_SCHED",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_COST_SCHED_SUBTTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_COST_SCHED_TTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_COST_NONSCHED",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_COST_NONSCHED_SUBTTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_COST_NONSCHED_TTL",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/P12_ACCTS_PROD')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "P12_ACCTS_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/RADIXX_DESTINATION_TCN_FILE')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -533,190 +635,6 @@
 						},
 						"is_deleted": {
 							"type": "boolean"
-						},
-						"updated_at": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_flight_crew')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-flight-crew-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-user-category"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_source_flights')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "SF flight data copied from bi.flight",
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Azure blob"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
-							"type": "Expression"
-						},
-						"container": "sf-source-flights"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"flight_id": {
-							"type": "integer"
-						},
-						"flight_number": {
-							"type": "string"
-						},
-						"flight_date": {
-							"type": "string"
-						},
-						"aircraft_registration_number": {
-							"type": "string"
-						},
-						"aircraft_type": {
-							"type": "string"
-						},
-						"ops_type": {
-							"type": "string"
-						},
-						"scheduled_departure": {
-							"type": "string"
-						},
-						"scheduled_arrival": {
-							"type": "string"
-						},
-						"estimated_departure": {
-							"type": "string"
-						},
-						"estimated_arrival": {
-							"type": "string"
-						},
-						"actual_oooi_out": {
-							"type": "string"
-						},
-						"actual_oooi_off": {
-							"type": "string"
-						},
-						"actual_oooi_on": {
-							"type": "string"
-						},
-						"actual_oooi_in": {
-							"type": "string"
-						},
-						"base_airport_id": {
-							"type": "string"
-						},
-						"sched_depart_airport_id": {
-							"type": "string"
-						},
-						"sched_arrive_airport_id": {
-							"type": "string"
-						},
-						"actual_depart_airport_id": {
-							"type": "string"
-						},
-						"actual_arrive_airport_id": {
-							"type": "string"
-						},
-						"base_airport": {
-							"type": "string"
-						},
-						"scheduled_departure_airport": {
-							"type": "string"
-						},
-						"scheduled_arrival_airport": {
-							"type": "string"
-						},
-						"actual_departure_airport": {
-							"type": "string"
-						},
-						"actual_arrival_airport": {
-							"type": "string"
-						},
-						"is_verified": {
-							"type": "boolean"
-						},
-						"notes": {
-							"type": "string"
-						},
-						"is_canceled": {
-							"type": "boolean"
-						},
-						"flight_type": {
-							"type": "string"
-						},
-						"cargo_weight": {
-							"type": "integer"
-						},
-						"cargo_on": {
-							"type": "integer"
-						},
-						"cargo_off": {
-							"type": "integer"
-						},
-						"fuel_out": {
-							"type": "number"
-						},
-						"fuel_in": {
-							"type": "number"
-						},
-						"fuel_uplift": {
-							"type": "integer"
-						},
-						"fuel_uplifts": {
-							"type": "string"
-						},
-						"maint_log_page": {
-							"type": "string"
-						},
-						"lndg_touchdown_zone": {
-							"type": "null"
-						},
-						"lndg_midfield": {
-							"type": "null"
-						},
-						"lndg_rollout": {
-							"type": "null"
-						},
-						"lndg_actual_braking": {
-							"type": "null"
 						},
 						"updated_at": {
 							"type": "string"

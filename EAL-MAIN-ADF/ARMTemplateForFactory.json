@@ -4730,6 +4730,66 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/P12_Accts_date')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "P12Accounts",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "P12_ACCOUNTS",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"P12Accts": {},
+									"P12AcctsSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"date": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "PROD"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/P12_ACCOUNTS')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Pairing_Item_data')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -7520,9 +7580,9 @@
 						"container": "navblue-test"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "\\",
+					"escapeChar": "",
 					"firstRowAsHeader": true,
-					"quoteChar": "\""
+					"quoteChar": ""
 				},
 				"schema": [
 					{
@@ -7685,6 +7745,112 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/TEST_NAVBLUE_CONNECTION_base')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/P12_ACCOUNTS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "P12_ACCTS.csv",
+						"container": "flight-number-range"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "country_code",
+						"type": "String"
+					},
+					{
+						"name": "P12_REGION",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_GAL_SCHED",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_GAL_SCHED_SUBTTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_GAL_SCHED_TTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_GAL_NONSCHED",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_GAL_NONSCHED_SUBTTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_GAL_NONSCHED_TTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_COST_SCHED",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_COST_SCHED_SUBTTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_COST_SCHED_TTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_COST_NONSCHED",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_COST_NONSCHED_SUBTTL",
+						"type": "String"
+					},
+					{
+						"name": "P12_ACCT_CD_COST_NONSCHED_TTL",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/P12_ACCTS_PROD')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "P12_ACCTS_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
 			]
 		},
 		{
@@ -10570,14 +10736,7 @@
 				"annotations": [
 					"Midnight UTC"
 				],
-				"runtimeState": "Started",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "Delay_data",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
+				"runtimeState": "Stopped",
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -10601,7 +10760,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Delay_data')]",
 				"[concat(variables('factoryId'), '/triggers/FLIGHT trigger after midnight UTC')]"
 			]
 		},
@@ -10688,14 +10846,7 @@
 				"annotations": [
 					"Midnight UTC"
 				],
-				"runtimeState": "Started",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "Flight_data",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
+				"runtimeState": "Stopped",
 				"type": "TumblingWindowTrigger",
 				"typeProperties": {
 					"frequency": "Hour",
@@ -10719,7 +10870,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Flight_data')]",
 				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger after midnight UTC')]"
 			]
 		},
@@ -12413,6 +12563,98 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/P12_ACCOUNTS')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "P12_ACCOUNTS",
+								"type": "DatasetReference"
+							},
+							"name": "P12Accts"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "P12_ACCTS_PROD",
+								"type": "DatasetReference"
+							},
+							"name": "P12AcctsSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     run_id as string",
+						"}",
+						"source(output(",
+						"          country_code as string,",
+						"          P12_REGION as string,",
+						"          P12_ACCT_CD_GAL_SCHED as string,",
+						"          P12_ACCT_CD_GAL_SCHED_SUBTTL as string,",
+						"          P12_ACCT_CD_GAL_SCHED_TTL as string,",
+						"          P12_ACCT_CD_GAL_NONSCHED as string,",
+						"          P12_ACCT_CD_GAL_NONSCHED_SUBTTL as string,",
+						"          P12_ACCT_CD_GAL_NONSCHED_TTL as string,",
+						"          P12_ACCT_CD_COST_SCHED as string,",
+						"          P12_ACCT_CD_COST_SCHED_SUBTTL as string,",
+						"          P12_ACCT_CD_COST_SCHED_TTL as string,",
+						"          P12_ACCT_CD_COST_NONSCHED as string,",
+						"          P12_ACCT_CD_COST_NONSCHED_SUBTTL as string,",
+						"          P12_ACCT_CD_COST_NONSCHED_TTL as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> P12Accts",
+						"P12Accts derive(ADF_TIMESTAMP = currentTimestamp(),",
+						"          RUN_ID = $run_id) ~> derivedColumn1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     recreate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          country_code,",
+						"          P12_REGION,",
+						"          P12_ACCT_CD_GAL_SCHED,",
+						"          P12_ACCT_CD_GAL_SCHED_SUBTTL,",
+						"          P12_ACCT_CD_GAL_SCHED_TTL,",
+						"          P12_ACCT_CD_GAL_NONSCHED,",
+						"          P12_ACCT_CD_GAL_NONSCHED_SUBTTL,",
+						"          P12_ACCT_CD_GAL_NONSCHED_TTL,",
+						"          P12_ACCT_CD_COST_SCHED,",
+						"          P12_ACCT_CD_COST_SCHED_SUBTTL,",
+						"          P12_ACCT_CD_COST_SCHED_TTL,",
+						"          P12_ACCT_CD_COST_NONSCHED,",
+						"          P12_ACCT_CD_COST_NONSCHED_SUBTTL,",
+						"          P12_ACCT_CD_COST_NONSCHED_TTL,",
+						"          ADF_TIMESTAMP,",
+						"          RUN_ID",
+						"     )) ~> P12AcctsSQL"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/P12_ACCOUNTS')]",
+				"[concat(variables('factoryId'), '/datasets/P12_ACCTS_PROD')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PAIRINGITEMblobtoSQL')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -12541,9 +12783,10 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 aggregate(AGG = collect(Data)) ~> aggregate1",
+						"source1 aggregate(groupBy(Data),",
+						"     AGG = collect(Data)) ~> aggregate1",
 						"aggregate1 derive(AGG = toString(AGG)) ~> ModifyColumns1",
-						"ModifyColumns1 derive(AGG = replace('\\\"','\"')) ~> derivedColumn1",
+						"ModifyColumns1 derive(Data = replace('\\\"','\\\"','\"')) ~> derivedColumn1",
 						"derivedColumn1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     skipDuplicateMapInputs: true,",
@@ -13095,265 +13338,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/P12_ACCOUNTS')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "P12_ACCTS.csv",
-						"container": "flight-number-range"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "country_code",
-						"type": "String"
-					},
-					{
-						"name": "P12_REGION",
-						"type": "String"
-					},
-					{
-						"name": "P12_ACCT_CD_GAL_SCHED",
-						"type": "String"
-					},
-					{
-						"name": "P12_ACCT_CD_GAL_SCHED_SUBTTL",
-						"type": "String"
-					},
-					{
-						"name": "P12_ACCT_CD_GAL_SCHED_TTL",
-						"type": "String"
-					},
-					{
-						"name": "P12_ACCT_CD_GAL_NONSCHED",
-						"type": "String"
-					},
-					{
-						"name": "P12_ACCT_CD_GAL_NONSCHED_SUBTTL",
-						"type": "String"
-					},
-					{
-						"name": "P12_ACCT_CD_GAL_NONSCHED_TTL",
-						"type": "String"
-					},
-					{
-						"name": "P12_ACCT_CD_COST_SCHED",
-						"type": "String"
-					},
-					{
-						"name": "P12_ACCT_CD_COST_SCHED_SUBTTL",
-						"type": "String"
-					},
-					{
-						"name": "P12_ACCT_CD_COST_SCHED_TTL",
-						"type": "String"
-					},
-					{
-						"name": "P12_ACCT_CD_COST_NONSCHED",
-						"type": "String"
-					},
-					{
-						"name": "P12_ACCT_CD_COST_NONSCHED_SUBTTL",
-						"type": "String"
-					},
-					{
-						"name": "P12_ACCT_CD_COST_NONSCHED_TTL",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/P12_ACCOUNTS')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "P12_ACCOUNTS",
-								"type": "DatasetReference"
-							},
-							"name": "P12Accts"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "P12_ACCTS_PROD",
-								"type": "DatasetReference"
-							},
-							"name": "P12AcctsSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "derivedColumn1"
-						}
-					],
-					"scriptLines": [
-						"parameters{",
-						"     run_id as string",
-						"}",
-						"source(output(",
-						"          country_code as string,",
-						"          P12_REGION as string,",
-						"          P12_ACCT_CD_GAL_SCHED as string,",
-						"          P12_ACCT_CD_GAL_SCHED_SUBTTL as string,",
-						"          P12_ACCT_CD_GAL_SCHED_TTL as string,",
-						"          P12_ACCT_CD_GAL_NONSCHED as string,",
-						"          P12_ACCT_CD_GAL_NONSCHED_SUBTTL as string,",
-						"          P12_ACCT_CD_GAL_NONSCHED_TTL as string,",
-						"          P12_ACCT_CD_COST_SCHED as string,",
-						"          P12_ACCT_CD_COST_SCHED_SUBTTL as string,",
-						"          P12_ACCT_CD_COST_SCHED_TTL as string,",
-						"          P12_ACCT_CD_COST_NONSCHED as string,",
-						"          P12_ACCT_CD_COST_NONSCHED_SUBTTL as string,",
-						"          P12_ACCT_CD_COST_NONSCHED_TTL as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> P12Accts",
-						"P12Accts derive(ADF_TIMESTAMP = currentTimestamp(),",
-						"          RUN_ID = $run_id) ~> derivedColumn1",
-						"derivedColumn1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     recreate:true,",
-						"     format: 'table',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          country_code,",
-						"          P12_REGION,",
-						"          P12_ACCT_CD_GAL_SCHED,",
-						"          P12_ACCT_CD_GAL_SCHED_SUBTTL,",
-						"          P12_ACCT_CD_GAL_SCHED_TTL,",
-						"          P12_ACCT_CD_GAL_NONSCHED,",
-						"          P12_ACCT_CD_GAL_NONSCHED_SUBTTL,",
-						"          P12_ACCT_CD_GAL_NONSCHED_TTL,",
-						"          P12_ACCT_CD_COST_SCHED,",
-						"          P12_ACCT_CD_COST_SCHED_SUBTTL,",
-						"          P12_ACCT_CD_COST_SCHED_TTL,",
-						"          P12_ACCT_CD_COST_NONSCHED,",
-						"          P12_ACCT_CD_COST_NONSCHED_SUBTTL,",
-						"          P12_ACCT_CD_COST_NONSCHED_TTL,",
-						"          ADF_TIMESTAMP,",
-						"          RUN_ID",
-						"     )) ~> P12AcctsSQL"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/P12_ACCOUNTS')]",
-				"[concat(variables('factoryId'), '/datasets/P12_ACCTS_PROD')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/P12_ACCTS_PROD')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "P12_ACCTS_PROD"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/P12_Accts_date')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "P12Accounts",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "P12_ACCOUNTS",
-								"type": "DataFlowReference",
-								"parameters": {
-									"run_id": {
-										"value": "'@{pipeline().RunId}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"P12Accts": {},
-									"P12AcctsSQL": {}
-								},
-								"linkedServiceParameters": {}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"date": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "PROD"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/P12_ACCOUNTS')]"
 			]
 		}
 	]
