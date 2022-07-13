@@ -17,7 +17,7 @@
 				"container": "navblue-test"
 			},
 			"columnDelimiter": ",",
-			"rowDelimiter": "£",
+			"rowDelimiter": "\r",
 			"escapeChar": "",
 			"firstRowAsHeader": true,
 			"quoteChar": ""
