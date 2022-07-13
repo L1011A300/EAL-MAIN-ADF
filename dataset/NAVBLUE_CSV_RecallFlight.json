@@ -23,21 +23,7 @@
 		},
 		"schema": [
 			{
-				"type": "String"
-			},
-			{
-				"type": "String"
-			},
-			{
-				"type": "String"
-			},
-			{
-				"type": "String"
-			},
-			{
-				"type": "String"
-			},
-			{
+				"name": "Data",
 				"type": "String"
 			}
 		]
