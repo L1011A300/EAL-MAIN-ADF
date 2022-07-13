@@ -16,8 +16,8 @@
 				},
 				"container": "navblue-test"
 			},
-			"columnDelimiter": "",
-			"rowDelimiter": "",
+			"columnDelimiter": ",",
+			"rowDelimiter": "£",
 			"escapeChar": "",
 			"firstRowAsHeader": true,
 			"quoteChar": ""
