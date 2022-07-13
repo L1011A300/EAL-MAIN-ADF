@@ -1,0 +1,18 @@
+{
+	"name": "RecallFlightXMLfromSOAP",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Xml",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "RecallFlight_XML_from_SOAP",
+				"container": "navblue-test"
+			}
+		}
+	}
+}
