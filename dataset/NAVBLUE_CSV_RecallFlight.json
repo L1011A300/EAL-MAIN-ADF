@@ -16,7 +16,7 @@
 				},
 				"container": "navblue-test"
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": "\t",
 			"rowDelimiter": "\r",
 			"escapeChar": "",
 			"firstRowAsHeader": true,

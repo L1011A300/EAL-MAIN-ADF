@@ -1,0 +1,68 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"folder": {
+			"name": "TEST"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "NAVBLUE_CSV_RecallFlight",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "parse1"
+				},
+				{
+					"name": "flatten1"
+				},
+				{
+					"name": "parse2"
+				},
+				{
+					"name": "stringify1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Data as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"derivedColumn2 parse(Data = Data ? (FlightPlan as (FuelHeader as (TakeOffFuel as (EstimatedWeight as (Value as integer))))),",
+				"     format: 'xml',",
+				"     namespaces: true,",
+				"     namespacePrefixes: ['http://www.w3.org/2001/XMLSchema-instance'->'xsi']) ~> parse1",
+				"source1 foldDown(unroll(),",
+				"     mapColumn(",
+				"          Data",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"parse1 parse(format: 'xml',",
+				"     namespaces: true) ~> parse2",
+				"derivedColumn1 stringify(XML = ERROR_FUNCTION('FlightIdentifier as string') ? string,",
+				"     format: 'delimited',",
+				"     columnNamesAsHeader: true,",
+				"     columnDelimiter: '     ',",
+				"     nullValue: '') ~> stringify1",
+				"source1 derive(XML = replace(Data,'<?xml version=\"1.0\" encoding=\"UTF-8\"?>')) ~> derivedColumn1",
+				"source1 derive(Data = replace(Data,'<?xml version=\"1.0\" encoding=\"UTF-8\"?>')) ~> derivedColumn2"
+			]
+		}
+	}
+}
