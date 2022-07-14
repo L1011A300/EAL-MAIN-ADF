@@ -2,7 +2,7 @@
 	"name": "dataflow1",
 	"properties": {
 		"folder": {
-			"name": "TEST"
+			"name": "NavBlue"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -28,25 +28,19 @@
 				},
 				{
 					"name": "stringify1"
-				},
-				{
-					"name": "derivedColumn1"
-				},
-				{
-					"name": "derivedColumn2"
 				}
 			],
 			"scriptLines": [
 				"source(output(",
-				"          Data as string",
+				"          {_col0_} as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
-				"derivedColumn2 parse(Data = Data ? (FlightPlan as (FuelHeader as (TakeOffFuel as (EstimatedWeight as (Value as integer))))),",
+				"source1 parse(New = {_col0_} ? (FlightPlan as (FlightPlanSummary as (OutTime as (EstimatedTime as (Value as string))))),",
+				"          EstFuelWeight = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (Duration as (Value as string))))),",
 				"     format: 'xml',",
-				"     namespaces: true,",
-				"     namespacePrefixes: ['http://www.w3.org/2001/XMLSchema-instance'->'xsi']) ~> parse1",
+				"     namespaces: false) ~> parse1",
 				"source1 foldDown(unroll(),",
 				"     mapColumn(",
 				"          Data",
@@ -55,13 +49,11 @@
 				"     skipDuplicateMapOutputs: false) ~> flatten1",
 				"parse1 parse(format: 'xml',",
 				"     namespaces: true) ~> parse2",
-				"derivedColumn1 stringify(XML = ERROR_FUNCTION('FlightIdentifier as string') ? string,",
+				"source1 stringify(XML = {_col0_} ? string,",
 				"     format: 'delimited',",
 				"     columnNamesAsHeader: true,",
 				"     columnDelimiter: '     ',",
-				"     nullValue: '') ~> stringify1",
-				"source1 derive(XML = replace(Data,'<?xml version=\"1.0\" encoding=\"UTF-8\"?>')) ~> derivedColumn1",
-				"source1 derive(Data = replace(Data,'<?xml version=\"1.0\" encoding=\"UTF-8\"?>')) ~> derivedColumn2"
+				"     nullValue: '') ~> stringify1"
 			]
 		}
 	}
