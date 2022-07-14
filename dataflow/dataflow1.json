@@ -24,10 +24,10 @@
 					"name": "flatten1"
 				},
 				{
-					"name": "parse2"
+					"name": "stringify1"
 				},
 				{
-					"name": "stringify1"
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -47,13 +47,17 @@
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten1",
-				"parse1 parse(format: 'xml',",
-				"     namespaces: true) ~> parse2",
 				"source1 stringify(XML = {_col0_} ? string,",
 				"     format: 'delimited',",
 				"     columnNamesAsHeader: true,",
 				"     columnDelimiter: '     ',",
-				"     nullValue: '') ~> stringify1"
+				"     nullValue: '') ~> stringify1",
+				"parse1 select(mapColumn(",
+				"          New,",
+				"          EstFuelWeight",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1"
 			]
 		}
 	}
