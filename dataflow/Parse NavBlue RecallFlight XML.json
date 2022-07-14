@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "Parse NavBlue RecallFlight XML",
 	"properties": {
 		"folder": {
 			"name": "NavBlue"
