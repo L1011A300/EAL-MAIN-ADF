@@ -54,8 +54,8 @@
 									"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Formats']['Data']"
 								},
 								"sink": {
-									"name": "Data",
-									"type": "String"
+									"type": "String",
+									"ordinal": 1
 								}
 							}
 						],
@@ -79,14 +79,7 @@
 			{
 				"name": "NavBlue Flight List to SQL",
 				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "NAVBLUE Copy XML to CSV",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "1.00:00:00",
 					"retry": 0,
@@ -146,7 +139,7 @@
 			}
 		],
 		"folder": {
-			"name": "Testing"
+			"name": "NavBlue"
 		},
 		"annotations": []
 	}
