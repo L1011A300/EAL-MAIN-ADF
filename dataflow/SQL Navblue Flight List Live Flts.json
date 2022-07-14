@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Filters yesterday NavBlue Flight List for flights that actually operated in SF.",
 		"folder": {
-			"name": "TEST"
+			"name": "NavBlue"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -95,6 +95,8 @@
 				"SQLSFFlightProd derive(SCHED_DEP_DATE_STR = toString(SCHED_DEP_DATE)) ~> derivedColumn1",
 				"derivedColumn1, SQLAirportProd join(sched_depart_airport_id == airport_id,",
 				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> JoinToAirports",
 				"CompToSFflights sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
