@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": {
-					"value": "@concat(concat('NAVBLUE-recall-flight-',split(utcnow(),'T')[0]),'.csv')",
+					"value": "@concat(concat('NAVBLUE-recall-flight-',split(utcnow(),'T')[0]),'.xml')",
 					"type": "Expression"
 				},
 				"container": "navblue-test"
@@ -19,14 +19,9 @@
 			"columnDelimiter": "\t",
 			"rowDelimiter": "\r",
 			"escapeChar": "",
-			"firstRowAsHeader": true,
+			"firstRowAsHeader": false,
 			"quoteChar": ""
 		},
-		"schema": [
-			{
-				"name": "Data",
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }
