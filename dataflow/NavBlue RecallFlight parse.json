@@ -2,7 +2,7 @@
 	"name": "NavBlue RecallFlight parse",
 	"properties": {
 		"folder": {
-			"name": "TEST"
+			"name": "NavBlue"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
