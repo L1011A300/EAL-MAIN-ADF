@@ -12,13 +12,13 @@
 						"referenceName": "NAVBLUE_CSV_RecallFlight",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "NavBlueCSVreallyXML"
 				}
 			],
 			"sinks": [],
 			"transformations": [
 				{
-					"name": "parse1"
+					"name": "ParseXML"
 				},
 				{
 					"name": "flatten1"
@@ -27,7 +27,7 @@
 					"name": "stringify1"
 				},
 				{
-					"name": "select1"
+					"name": "RemoveXMLcolumn"
 				}
 			],
 			"scriptLines": [
@@ -36,28 +36,28 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 parse(New = {_col0_} ? (FlightPlan as (FlightPlanSummary as (OutTime as (EstimatedTime as (Value as string))))),",
+				"     ignoreNoFilesFound: false) ~> NavBlueCSVreallyXML",
+				"NavBlueCSVreallyXML parse(New = {_col0_} ? (FlightPlan as (FlightPlanSummary as (OutTime as (EstimatedTime as (Value as string))))),",
 				"          EstFuelWeight = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (Duration as (Value as string))))),",
 				"     format: 'xml',",
-				"     namespaces: false) ~> parse1",
-				"source1 foldDown(unroll(),",
+				"     namespaces: false) ~> ParseXML",
+				"NavBlueCSVreallyXML foldDown(unroll(),",
 				"     mapColumn(",
 				"          Data",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten1",
-				"source1 stringify(XML = {_col0_} ? string,",
+				"NavBlueCSVreallyXML stringify(XML = {_col0_} ? string,",
 				"     format: 'delimited',",
 				"     columnNamesAsHeader: true,",
 				"     columnDelimiter: '     ',",
 				"     nullValue: '') ~> stringify1",
-				"parse1 select(mapColumn(",
+				"ParseXML select(mapColumn(",
 				"          New,",
 				"          EstFuelWeight",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1"
+				"     skipDuplicateMapOutputs: true) ~> RemoveXMLcolumn"
 			]
 		}
 	}
