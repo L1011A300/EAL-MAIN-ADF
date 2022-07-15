@@ -21,13 +21,13 @@
 					"name": "ParseXML"
 				},
 				{
-					"name": "flatten1"
-				},
-				{
 					"name": "stringify1"
 				},
 				{
 					"name": "RemoveXMLcolumn"
+				},
+				{
+					"name": "flatten2"
 				}
 			],
 			"scriptLines": [
@@ -37,27 +37,30 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> NavBlueCSVreallyXML",
-				"NavBlueCSVreallyXML parse(New = {_col0_} ? (FlightPlan as (FlightPlanSummary as (OutTime as (EstimatedTime as (Value as string))))),",
-				"          EstFuelWeight = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (Duration as (Value as string))))),",
+				"NavBlueCSVreallyXML parse(EstOutTime = {_col0_} ? (FlightPlan as (FlightPlanSummary as (OutTime as (EstimatedTime as (Value as string))))),",
+				"          TakeOffFuelDuration = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (Duration as (Value as string))))),",
+				"          TakeOffFuelWeightUnit = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (EstimatedWeight as ({@unit} as string))))),",
+				"          TakeOffFuelWeightKG = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (EstimatedWeight as string)))),",
 				"     format: 'xml',",
 				"     namespaces: false) ~> ParseXML",
-				"NavBlueCSVreallyXML foldDown(unroll(),",
-				"     mapColumn(",
-				"          Data",
-				"     ),",
-				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten1",
-				"NavBlueCSVreallyXML stringify(XML = {_col0_} ? string,",
+				"NavBlueCSVreallyXML stringify({_col0_} = {_col0_} ? string,",
 				"     format: 'delimited',",
 				"     columnNamesAsHeader: true,",
 				"     columnDelimiter: '     ',",
 				"     nullValue: '') ~> stringify1",
 				"ParseXML select(mapColumn(",
-				"          New,",
-				"          EstFuelWeight",
+				"          EstOutTime,",
+				"          TakeOffFuelDuration,",
+				"          TakeOffFuelWeight = TakeOffFuelWeightUnit",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> RemoveXMLcolumn"
+				"     skipDuplicateMapOutputs: true) ~> RemoveXMLcolumn",
+				"NavBlueCSVreallyXML foldDown(unroll(),",
+				"     mapColumn(",
+				"          {_col0_}",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten2"
 			]
 		}
 	}
