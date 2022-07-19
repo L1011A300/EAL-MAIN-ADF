@@ -15,13 +15,18 @@
 					"name": "NavBlueCSVreallyXML"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Json1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "ParseXML"
-				},
-				{
-					"name": "stringify1"
 				},
 				{
 					"name": "RemoveXMLcolumn"
@@ -43,11 +48,6 @@
 				"          TakeOffFuelWeightKG = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (EstimatedWeight as string)))),",
 				"     format: 'xml',",
 				"     namespaces: false) ~> ParseXML",
-				"NavBlueCSVreallyXML stringify({_col0_} = {_col0_} ? string,",
-				"     format: 'delimited',",
-				"     columnNamesAsHeader: true,",
-				"     columnDelimiter: '     ',",
-				"     nullValue: '') ~> stringify1",
 				"ParseXML select(mapColumn(",
 				"          EstOutTime,",
 				"          TakeOffFuelDuration,",
@@ -60,7 +60,15 @@
 				"          {_col0_}",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten2"
+				"     skipDuplicateMapOutputs: false) ~> flatten2",
+				"RemoveXMLcolumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          HTML as (HEAD as (link as ({@rel} as string, {@type} as string, {@href} as string), STYLE as ({@type} as string, {_value_} as string), TITLE as string), BODY as (DIV as (P as ({@class} as string, {_value_} as string)[], BR as string[], PRE as (font as ({@color} as string, {_value_} as string)[], {_value_} as string[])[], {@id} as string, {_value_} as string))),",
+				"          {s:Envelope} as ({s:Header} as ({o:Security} as ({u:Timestamp} as ({u:Created} as string, {u:Expires} as string, {u:@Id} as string), {s:@mustUnderstand} as integer)), {s:Body} as (GetFlightListResponse as (Error as ({xsi:@nil} as boolean), Warning as ({xsi:@nil} as boolean), ExecutionTimeSec as double, Flights as (Key as (WhoAlc as string, FltNum as integer, StdUtc as string, OrigApt as string, TestFlight as boolean, RepeatNumber as integer), DestApt as ({xsi:@nil} as boolean), AircraftId as ({xsi:@nil} as boolean), AtcAlc as ({xsi:@nil} as boolean))[])))",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}

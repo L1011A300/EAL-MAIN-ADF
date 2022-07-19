@@ -1,0 +1,240 @@
+{
+	"name": "Json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "navblue-test"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"HTML": {
+					"type": "object",
+					"properties": {
+						"HEAD": {
+							"type": "object",
+							"properties": {
+								"link": {
+									"type": "object",
+									"properties": {
+										"@rel": {
+											"type": "string"
+										},
+										"@type": {
+											"type": "string"
+										},
+										"@href": {
+											"type": "string"
+										}
+									}
+								},
+								"STYLE": {
+									"type": "object",
+									"properties": {
+										"@type": {
+											"type": "string"
+										},
+										"_value_": {
+											"type": "string"
+										}
+									}
+								},
+								"TITLE": {
+									"type": "string"
+								}
+							}
+						},
+						"BODY": {
+							"type": "object",
+							"properties": {
+								"DIV": {
+									"type": "object",
+									"properties": {
+										"P": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"@class": {
+														"type": "string"
+													},
+													"_value_": {
+														"type": "string"
+													}
+												}
+											}
+										},
+										"BR": {
+											"type": "array",
+											"items": {
+												"type": "null"
+											}
+										},
+										"PRE": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"font": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"@color": {
+																	"type": "string"
+																},
+																"_value_": {
+																	"type": "string"
+																}
+															}
+														}
+													},
+													"_value_": {
+														"type": "array",
+														"items": {
+															"type": "string"
+														}
+													}
+												}
+											}
+										},
+										"@id": {
+											"type": "string"
+										},
+										"_value_": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"s:Envelope": {
+					"type": "object",
+					"properties": {
+						"s:Header": {
+							"type": "object",
+							"properties": {
+								"o:Security": {
+									"type": "object",
+									"properties": {
+										"u:Timestamp": {
+											"type": "object",
+											"properties": {
+												"u:Created": {
+													"type": "string"
+												},
+												"u:Expires": {
+													"type": "string"
+												},
+												"u:@Id": {
+													"type": "string"
+												}
+											}
+										},
+										"s:@mustUnderstand": {
+											"type": "integer"
+										}
+									}
+								}
+							}
+						},
+						"s:Body": {
+							"type": "object",
+							"properties": {
+								"GetFlightListResponse": {
+									"type": "object",
+									"properties": {
+										"Error": {
+											"type": "object",
+											"properties": {
+												"xsi:@nil": {
+													"type": "boolean"
+												}
+											}
+										},
+										"Warning": {
+											"type": "object",
+											"properties": {
+												"xsi:@nil": {
+													"type": "boolean"
+												}
+											}
+										},
+										"ExecutionTimeSec": {
+											"type": "number"
+										},
+										"Flights": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"Key": {
+														"type": "object",
+														"properties": {
+															"WhoAlc": {
+																"type": "string"
+															},
+															"FltNum": {
+																"type": "integer"
+															},
+															"StdUtc": {
+																"type": "string"
+															},
+															"OrigApt": {
+																"type": "string"
+															},
+															"TestFlight": {
+																"type": "boolean"
+															},
+															"RepeatNumber": {
+																"type": "integer"
+															}
+														}
+													},
+													"DestApt": {
+														"type": "object",
+														"properties": {
+															"xsi:@nil": {
+																"type": "boolean"
+															}
+														}
+													},
+													"AircraftId": {
+														"type": "object",
+														"properties": {
+															"xsi:@nil": {
+																"type": "boolean"
+															}
+														}
+													},
+													"AtcAlc": {
+														"type": "object",
+														"properties": {
+															"xsi:@nil": {
+																"type": "boolean"
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
