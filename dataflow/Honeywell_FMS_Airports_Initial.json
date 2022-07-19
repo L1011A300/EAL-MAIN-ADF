@@ -57,16 +57,17 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> HoneywellInitial",
+				"     ignoreNoFilesFound: false,",
+				"     rowUrlColumn: 'File_ID') ~> HoneywellInitial",
 				"HoneywellInitial select(mapColumn(",
 				"          Key,",
-				"          ICAO_Code = Ident",
+				"          ICAO_Code = Ident,",
+				"          File_ID",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RemoveExtraColumns",
 				"RemoveExtraColumns derive(ADF_TIMESTAMP = currentTimestamp(),",
-				"          RUN_ID = $run_id,",
-				"          FILE_ID = ERROR_FUNCTION('')) ~> derivedColumn1"
+				"          RUN_ID = $run_id) ~> derivedColumn1"
 			]
 		}
 	}
