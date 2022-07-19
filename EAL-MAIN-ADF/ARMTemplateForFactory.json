@@ -13738,6 +13738,9 @@
 					"referenceName": "eal_edw_connection",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Honeywell_FMS_Airports"
+				},
 				"annotations": [],
 				"type": "AzureSqlTable",
 				"schema": [],
