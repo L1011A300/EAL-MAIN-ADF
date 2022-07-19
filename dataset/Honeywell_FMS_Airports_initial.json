@@ -1,0 +1,127 @@
+{
+	"name": "Honeywell_FMS_Airports_initial",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_main_blob_connection",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Honeywell_FMS_Airports"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "ES72207002_Airports.csv",
+				"container": "honeywell-fms-airports"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "RecordIndex",
+				"type": "String"
+			},
+			{
+				"name": "Key",
+				"type": "String"
+			},
+			{
+				"name": "Ident",
+				"type": "String"
+			},
+			{
+				"name": "RevCode",
+				"type": "String"
+			},
+			{
+				"name": "ProceduresExist",
+				"type": "String"
+			},
+			{
+				"name": "RunwaysExist",
+				"type": "String"
+			},
+			{
+				"name": "SpeedLimitCoded",
+				"type": "String"
+			},
+			{
+				"name": "TransAltValid",
+				"type": "String"
+			},
+			{
+				"name": "TrueNorth",
+				"type": "String"
+			},
+			{
+				"name": "Latitude",
+				"type": "String"
+			},
+			{
+				"name": "Longitude",
+				"type": "String"
+			},
+			{
+				"name": "MagVar",
+				"type": "String"
+			},
+			{
+				"name": "Elevation",
+				"type": "String"
+			},
+			{
+				"name": "SpeedLimit",
+				"type": "String"
+			},
+			{
+				"name": "SpeedLimitAltitude",
+				"type": "String"
+			},
+			{
+				"name": "TransAltitude",
+				"type": "String"
+			},
+			{
+				"name": "GatesExist",
+				"type": "String"
+			},
+			{
+				"name": "AlternatesExist",
+				"type": "String"
+			},
+			{
+				"name": "MaxRunwayLength",
+				"type": "String"
+			},
+			{
+				"name": "RevState",
+				"type": "String"
+			},
+			{
+				"name": "CC",
+				"type": "String"
+			},
+			{
+				"name": "SidExist",
+				"type": "String"
+			},
+			{
+				"name": "StarExist",
+				"type": "String"
+			},
+			{
+				"name": "ApproachExist",
+				"type": "String"
+			},
+			{
+				"name": "EosidExist",
+				"type": "String"
+			}
+		]
+	}
+}
