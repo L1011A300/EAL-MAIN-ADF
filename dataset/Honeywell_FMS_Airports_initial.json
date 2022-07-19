@@ -5,11 +5,6 @@
 			"referenceName": "eal_main_blob_connection",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"File_name": {
-				"type": "string"
-			}
-		},
 		"folder": {
 			"name": "Honeywell_FMS_Airports"
 		},
