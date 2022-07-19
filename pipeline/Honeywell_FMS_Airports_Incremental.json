@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Honeywell_FMS_Airports_Initial",
+				"name": "Honeywell_FMS_Airports_Incremental",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
