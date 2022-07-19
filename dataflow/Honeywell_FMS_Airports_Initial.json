@@ -64,7 +64,9 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RemoveExtraColumns",
-				"RemoveExtraColumns derive({} = ERROR_FUNCTION('')) ~> derivedColumn1"
+				"RemoveExtraColumns derive(ADF_TIMESTAMP = currentTimestamp(),",
+				"          RUN_ID = $run_id,",
+				"          FILE_ID = ERROR_FUNCTION('')) ~> derivedColumn1"
 			]
 		}
 	}
