@@ -1,0 +1,67 @@
+{
+	"name": "Honeywell_FMS_Airports_Initial",
+	"properties": {
+		"folder": {
+			"name": "Honeywell_FMS_Airports"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Honeywell_FMS_Airports_initial",
+						"type": "DatasetReference"
+					},
+					"name": "HoneywellInitial"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "RemoveExtraColumns"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     run_id as string",
+				"}",
+				"source(output(",
+				"          RecordIndex as string,",
+				"          Key as string,",
+				"          Ident as string,",
+				"          RevCode as string,",
+				"          ProceduresExist as string,",
+				"          RunwaysExist as string,",
+				"          SpeedLimitCoded as string,",
+				"          TransAltValid as string,",
+				"          TrueNorth as string,",
+				"          Latitude as string,",
+				"          Longitude as string,",
+				"          MagVar as string,",
+				"          Elevation as string,",
+				"          SpeedLimit as string,",
+				"          SpeedLimitAltitude as string,",
+				"          TransAltitude as string,",
+				"          GatesExist as string,",
+				"          AlternatesExist as string,",
+				"          MaxRunwayLength as string,",
+				"          RevState as string,",
+				"          CC as string,",
+				"          SidExist as string,",
+				"          StarExist as string,",
+				"          ApproachExist as string,",
+				"          EosidExist as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> HoneywellInitial",
+				"HoneywellInitial select(mapColumn(",
+				"          Key,",
+				"          ICAO_Code = Ident",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> RemoveExtraColumns"
+			]
+		}
+	}
+}
