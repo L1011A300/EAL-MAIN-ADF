@@ -13997,6 +13997,308 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Honeywell_FMS_Airports_Incremental')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Honeywell_FMS_Airports"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Honeywell_FMS_Airports_Incremental",
+								"type": "DatasetReference"
+							},
+							"name": "HoneywellInitial"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Honeywell_FMS_Airports",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "RemoveExtraColumns"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "OrderColumns"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     run_id as string",
+						"}",
+						"source(output(",
+						"          RecordIndex as string,",
+						"          Key as string,",
+						"          Ident as string,",
+						"          RevCode as string,",
+						"          ProceduresExist as string,",
+						"          RunwaysExist as string,",
+						"          GatesExist as string,",
+						"          AlternatesExist as string,",
+						"          SpeedLimitCoded as string,",
+						"          TransAltValid as string,",
+						"          Latitude as string,",
+						"          Longitude as string,",
+						"          Elevation as string,",
+						"          SpeedLimit as string,",
+						"          SpeedLimitAltitude as string,",
+						"          TransAltitude as string,",
+						"          MaxRunwayLength as string,",
+						"          RevState as string,",
+						"          TrueNorth as string,",
+						"          MagVar as string,",
+						"          CC as string,",
+						"          SidExist as string,",
+						"          StarExist as string,",
+						"          ApproachExist as string,",
+						"          EosidExist as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     rowUrlColumn: 'File_ID') ~> HoneywellInitial",
+						"HoneywellInitial select(mapColumn(",
+						"          ICAO_Code = Ident,",
+						"          File_ID",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RemoveExtraColumns",
+						"RemoveExtraColumns derive(ADF_TIMESTAMP = currentTimestamp(),",
+						"          File_ID = substring(File_ID,2,10),",
+						"          RUN_ID = $run_id) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          File_ID,",
+						"          ICAO_Code,",
+						"          ADF_TIMESTAMP,",
+						"          RUN_ID",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> OrderColumns",
+						"OrderColumns sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Honeywell_FMS_Airports_Incremental')]",
+				"[concat(variables('factoryId'), '/datasets/Honeywell_FMS_Airports')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Honeywell_FMS_Airports_Incremental')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Honeywell_FMS_Airports"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "ES62207001.csv",
+						"container": "honeywell-fms-airports"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "RecordIndex",
+						"type": "String"
+					},
+					{
+						"name": "Key",
+						"type": "String"
+					},
+					{
+						"name": "Ident",
+						"type": "String"
+					},
+					{
+						"name": "RevCode",
+						"type": "String"
+					},
+					{
+						"name": "ProceduresExist",
+						"type": "String"
+					},
+					{
+						"name": "RunwaysExist",
+						"type": "String"
+					},
+					{
+						"name": "GatesExist",
+						"type": "String"
+					},
+					{
+						"name": "AlternatesExist",
+						"type": "String"
+					},
+					{
+						"name": "SpeedLimitCoded",
+						"type": "String"
+					},
+					{
+						"name": "TransAltValid",
+						"type": "String"
+					},
+					{
+						"name": "Latitude",
+						"type": "String"
+					},
+					{
+						"name": "Longitude",
+						"type": "String"
+					},
+					{
+						"name": "Elevation",
+						"type": "String"
+					},
+					{
+						"name": "SpeedLimit",
+						"type": "String"
+					},
+					{
+						"name": "SpeedLimitAltitude",
+						"type": "String"
+					},
+					{
+						"name": "TransAltitude",
+						"type": "String"
+					},
+					{
+						"name": "MaxRunwayLength",
+						"type": "String"
+					},
+					{
+						"name": "RevState",
+						"type": "String"
+					},
+					{
+						"name": "TrueNorth",
+						"type": "String"
+					},
+					{
+						"name": "MagVar",
+						"type": "String"
+					},
+					{
+						"name": "CC",
+						"type": "String"
+					},
+					{
+						"name": "SidExist",
+						"type": "String"
+					},
+					{
+						"name": "StarExist",
+						"type": "String"
+					},
+					{
+						"name": "ApproachExist",
+						"type": "String"
+					},
+					{
+						"name": "EosidExist",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Honeywell_FMS_Airports_Incremental')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Honeywell_FMS_Airports_Incremental",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Honeywell_FMS_Airports_Incremental",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"HoneywellInitial": {},
+									"sink1": {}
+								},
+								"linkedServiceParameters": {}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"date": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Honeywell_FMS_Airports_Incremental')]"
+			]
 		}
 	]
 }
