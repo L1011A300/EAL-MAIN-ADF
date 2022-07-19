@@ -19,6 +19,9 @@
 			"transformations": [
 				{
 					"name": "RemoveExtraColumns"
+				},
+				{
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -60,7 +63,8 @@
 				"          ICAO_Code = Ident",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> RemoveExtraColumns"
+				"     skipDuplicateMapOutputs: true) ~> RemoveExtraColumns",
+				"RemoveExtraColumns derive({} = ERROR_FUNCTION('')) ~> derivedColumn1"
 			]
 		}
 	}
