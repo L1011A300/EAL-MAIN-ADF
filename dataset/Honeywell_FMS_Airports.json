@@ -1,0 +1,16 @@
+{
+	"name": "Honeywell_FMS_Airports",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "eal_edw_connection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "HONEYWELL_FMS_AIRPORTS_PROD"
+		}
+	}
+}

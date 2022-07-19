@@ -15,16 +15,30 @@
 					"name": "HoneywellInitial"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Honeywell_FMS_Airports",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "RemoveExtraColumns"
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "OrderColumns"
 				}
 			],
 			"scriptLines": [
+				"parameters{",
+				"     run_id as string",
+				"}",
 				"source(output(",
 				"          RecordIndex as string,",
 				"          Key as string,",
@@ -57,13 +71,31 @@
 				"     ignoreNoFilesFound: false,",
 				"     rowUrlColumn: 'File_ID') ~> HoneywellInitial",
 				"HoneywellInitial select(mapColumn(",
-				"          Key,",
 				"          ICAO_Code = Ident,",
 				"          File_ID",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RemoveExtraColumns",
-				"RemoveExtraColumns derive(ADF_TIMESTAMP = currentTimestamp()) ~> derivedColumn1"
+				"RemoveExtraColumns derive(ADF_TIMESTAMP = currentTimestamp(),",
+				"          File_ID = substring(File_ID,2,10)) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          File_ID,",
+				"          ICAO_Code,",
+				"          ADF_TIMESTAMP",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> OrderColumns",
+				"OrderColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
