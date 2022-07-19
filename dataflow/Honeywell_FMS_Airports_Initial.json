@@ -25,9 +25,6 @@
 				}
 			],
 			"scriptLines": [
-				"parameters{",
-				"     run_id as string",
-				"}",
 				"source(output(",
 				"          RecordIndex as string,",
 				"          Key as string,",
@@ -66,8 +63,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RemoveExtraColumns",
-				"RemoveExtraColumns derive(ADF_TIMESTAMP = currentTimestamp(),",
-				"          RUN_ID = $run_id) ~> derivedColumn1"
+				"RemoveExtraColumns derive(ADF_TIMESTAMP = currentTimestamp()) ~> derivedColumn1"
 			]
 		}
 	}
