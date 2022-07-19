@@ -47,6 +47,14 @@
 				"type": "String"
 			},
 			{
+				"name": "GatesExist",
+				"type": "String"
+			},
+			{
+				"name": "AlternatesExist",
+				"type": "String"
+			},
+			{
 				"name": "SpeedLimitCoded",
 				"type": "String"
 			},
@@ -55,19 +63,11 @@
 				"type": "String"
 			},
 			{
-				"name": "TrueNorth",
-				"type": "String"
-			},
-			{
 				"name": "Latitude",
 				"type": "String"
 			},
 			{
 				"name": "Longitude",
-				"type": "String"
-			},
-			{
-				"name": "MagVar",
 				"type": "String"
 			},
 			{
@@ -87,19 +87,19 @@
 				"type": "String"
 			},
 			{
-				"name": "GatesExist",
-				"type": "String"
-			},
-			{
-				"name": "AlternatesExist",
-				"type": "String"
-			},
-			{
 				"name": "MaxRunwayLength",
 				"type": "String"
 			},
 			{
 				"name": "RevState",
+				"type": "String"
+			},
+			{
+				"name": "TrueNorth",
+				"type": "String"
+			},
+			{
+				"name": "MagVar",
 				"type": "String"
 			},
 			{
