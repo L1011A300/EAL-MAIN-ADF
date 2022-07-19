@@ -991,36 +991,18 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": {
-							"value": "@concat(concat('NAVBLUE-recall-flight-',split(utcnow(),'T')[0]),'.csv')",
+							"value": "@concat(concat('NAVBLUE-recall-flight-',split(utcnow(),'T')[0]),'.xml')",
 							"type": "Expression"
 						},
 						"container": "navblue-test"
 					},
-					"columnDelimiter": ",",
+					"columnDelimiter": "\t",
+					"rowDelimiter": "\r",
 					"escapeChar": "",
-					"firstRowAsHeader": true,
+					"firstRowAsHeader": false,
 					"quoteChar": ""
 				},
-				"schema": [
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					}
-				]
+				"schema": []
 			},
 			"dependsOn": []
 		},

@@ -4452,7 +4452,7 @@
 					"cancelAfter": {}
 				},
 				"folder": {
-					"name": "PROD"
+					"name": "NavBlue"
 				},
 				"annotations": []
 			},
@@ -4497,14 +4497,14 @@
 								"formatSettings": {
 									"type": "XmlReadSettings",
 									"validationMode": "none",
-									"namespaces": true
+									"detectDataType": true,
+									"namespaces": false
 								}
 							},
 							"sink": {
 								"type": "DelimitedTextSink",
 								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings",
-									"copyBehavior": "FlattenHierarchy"
+									"type": "AzureBlobStorageWriteSettings"
 								},
 								"formatSettings": {
 									"type": "DelimitedTextWriteSettings",
@@ -4521,13 +4521,13 @@
 											"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Formats']['Data']"
 										},
 										"sink": {
-											"name": "Data",
-											"type": "String"
+											"type": "String",
+											"ordinal": 1
 										}
 									}
 								],
 								"collectionReference": "",
-								"mapComplexValuesToString": false
+								"mapComplexValuesToString": true
 							}
 						},
 						"inputs": [
@@ -4632,7 +4632,7 @@
 					"cancelAfter": {}
 				},
 				"folder": {
-					"name": "Testing"
+					"name": "NavBlue"
 				},
 				"annotations": []
 			},
@@ -4720,7 +4720,7 @@
 					}
 				},
 				"folder": {
-					"name": "Testing"
+					"name": "NavBlue"
 				},
 				"annotations": []
 			},
@@ -7574,36 +7574,18 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": {
-							"value": "@concat(concat('NAVBLUE-recall-flight-',split(utcnow(),'T')[0]),'.csv')",
+							"value": "@concat(concat('NAVBLUE-recall-flight-',split(utcnow(),'T')[0]),'.xml')",
 							"type": "Expression"
 						},
 						"container": "navblue-test"
 					},
-					"columnDelimiter": ",",
+					"columnDelimiter": "\t",
+					"rowDelimiter": "\r",
 					"escapeChar": "",
-					"firstRowAsHeader": true,
+					"firstRowAsHeader": false,
 					"quoteChar": ""
 				},
-				"schema": [
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					}
-				]
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
@@ -7906,6 +7888,29 @@
 					"quoteChar": "\""
 				},
 				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RecallFlightXMLfromSOAP')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Xml",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "RecallFlight_XML_from_SOAP",
+						"container": "navblue-test"
+					}
+				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
@@ -12490,7 +12495,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"folder": {
-					"name": "TEST"
+					"name": "NavBlue"
 				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
@@ -12737,12 +12742,93 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Parse NavBlue RecallFlight XML')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "NavBlue"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "NAVBLUE_CSV_RecallFlight",
+								"type": "DatasetReference"
+							},
+							"name": "NavBlueCSVreallyXML"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Json1",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "ParseXML"
+						},
+						{
+							"name": "RemoveXMLcolumn"
+						},
+						{
+							"name": "flatten2"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {_col0_} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> NavBlueCSVreallyXML",
+						"NavBlueCSVreallyXML parse(EstOutTime = {_col0_} ? (FlightPlan as (FlightPlanSummary as (OutTime as (EstimatedTime as (Value as string))))),",
+						"          TakeOffFuelDuration = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (Duration as (Value as string))))),",
+						"          TakeOffFuelWeightUnit = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (EstimatedWeight as ({@unit} as string))))),",
+						"          TakeOffFuelWeightKG = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (EstimatedWeight as string)))),",
+						"     format: 'xml',",
+						"     namespaces: false) ~> ParseXML",
+						"ParseXML select(mapColumn(",
+						"          EstOutTime,",
+						"          TakeOffFuelDuration,",
+						"          TakeOffFuelWeight = TakeOffFuelWeightUnit",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RemoveXMLcolumn",
+						"NavBlueCSVreallyXML foldDown(unroll(),",
+						"     mapColumn(",
+						"          {_col0_}",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flatten2",
+						"RemoveXMLcolumn sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          HTML as (HEAD as (link as ({@rel} as string, {@type} as string, {@href} as string), STYLE as ({@type} as string, {_value_} as string), TITLE as string), BODY as (DIV as (P as ({@class} as string, {_value_} as string)[], BR as string[], PRE as (font as ({@color} as string, {_value_} as string)[], {_value_} as string[])[], {@id} as string, {_value_} as string))),",
+						"          {s:Envelope} as ({s:Header} as ({o:Security} as ({u:Timestamp} as ({u:Created} as string, {u:Expires} as string, {u:@Id} as string), {s:@mustUnderstand} as integer)), {s:Body} as (GetFlightListResponse as (Error as ({xsi:@nil} as boolean), Warning as ({xsi:@nil} as boolean), ExecutionTimeSec as double, Flights as (Key as (WhoAlc as string, FltNum as integer, StdUtc as string, OrigApt as string, TestFlight as boolean, RepeatNumber as integer), DestApt as ({xsi:@nil} as boolean), AircraftId as ({xsi:@nil} as boolean), AtcAlc as ({xsi:@nil} as boolean))[])))",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/NAVBLUE_CSV_RecallFlight')]",
+				"[concat(variables('factoryId'), '/datasets/Json1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ParseCSVtest')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"folder": {
-					"name": "TEST"
+					"name": "NavBlue"
 				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
@@ -12911,7 +12997,7 @@
 			"properties": {
 				"description": "Filters yesterday NavBlue Flight List for flights that actually operated in SF.",
 				"folder": {
-					"name": "TEST"
+					"name": "NavBlue"
 				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
@@ -13338,6 +13424,575 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SF_source_user')]",
 				"[concat(variables('factoryId'), '/datasets/SQL_USER_TABLE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Honeywell_FMS_Airports_initial')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Honeywell_FMS_Airports"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "ES72207002_Airports.csv",
+						"container": "honeywell-fms-airports"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "RecordIndex",
+						"type": "String"
+					},
+					{
+						"name": "Key",
+						"type": "String"
+					},
+					{
+						"name": "Ident",
+						"type": "String"
+					},
+					{
+						"name": "RevCode",
+						"type": "String"
+					},
+					{
+						"name": "ProceduresExist",
+						"type": "String"
+					},
+					{
+						"name": "RunwaysExist",
+						"type": "String"
+					},
+					{
+						"name": "SpeedLimitCoded",
+						"type": "String"
+					},
+					{
+						"name": "TransAltValid",
+						"type": "String"
+					},
+					{
+						"name": "TrueNorth",
+						"type": "String"
+					},
+					{
+						"name": "Latitude",
+						"type": "String"
+					},
+					{
+						"name": "Longitude",
+						"type": "String"
+					},
+					{
+						"name": "MagVar",
+						"type": "String"
+					},
+					{
+						"name": "Elevation",
+						"type": "String"
+					},
+					{
+						"name": "SpeedLimit",
+						"type": "String"
+					},
+					{
+						"name": "SpeedLimitAltitude",
+						"type": "String"
+					},
+					{
+						"name": "TransAltitude",
+						"type": "String"
+					},
+					{
+						"name": "GatesExist",
+						"type": "String"
+					},
+					{
+						"name": "AlternatesExist",
+						"type": "String"
+					},
+					{
+						"name": "MaxRunwayLength",
+						"type": "String"
+					},
+					{
+						"name": "RevState",
+						"type": "String"
+					},
+					{
+						"name": "CC",
+						"type": "String"
+					},
+					{
+						"name": "SidExist",
+						"type": "String"
+					},
+					{
+						"name": "StarExist",
+						"type": "String"
+					},
+					{
+						"name": "ApproachExist",
+						"type": "String"
+					},
+					{
+						"name": "EosidExist",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Honeywell_FMS_Airports_Initial')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Honeywell_FMS_Airports"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Honeywell_FMS_Airports_initial",
+								"type": "DatasetReference"
+							},
+							"name": "HoneywellInitial"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Honeywell_FMS_Airports",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "RemoveExtraColumns"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "OrderColumns"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     run_id as string",
+						"}",
+						"source(output(",
+						"          RecordIndex as string,",
+						"          Key as string,",
+						"          Ident as string,",
+						"          RevCode as string,",
+						"          ProceduresExist as string,",
+						"          RunwaysExist as string,",
+						"          SpeedLimitCoded as string,",
+						"          TransAltValid as string,",
+						"          TrueNorth as string,",
+						"          Latitude as string,",
+						"          Longitude as string,",
+						"          MagVar as string,",
+						"          Elevation as string,",
+						"          SpeedLimit as string,",
+						"          SpeedLimitAltitude as string,",
+						"          TransAltitude as string,",
+						"          GatesExist as string,",
+						"          AlternatesExist as string,",
+						"          MaxRunwayLength as string,",
+						"          RevState as string,",
+						"          CC as string,",
+						"          SidExist as string,",
+						"          StarExist as string,",
+						"          ApproachExist as string,",
+						"          EosidExist as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     rowUrlColumn: 'File_ID') ~> HoneywellInitial",
+						"HoneywellInitial select(mapColumn(",
+						"          ICAO_Code = Ident,",
+						"          File_ID",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RemoveExtraColumns",
+						"RemoveExtraColumns derive(ADF_TIMESTAMP = currentTimestamp(),",
+						"          File_ID = substring(File_ID,2,10),",
+						"          RUN_ID = $run_id) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          File_ID,",
+						"          ICAO_Code,",
+						"          ADF_TIMESTAMP,",
+						"          RUN_ID",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> OrderColumns",
+						"OrderColumns sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     recreate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Honeywell_FMS_Airports_initial')]",
+				"[concat(variables('factoryId'), '/datasets/Honeywell_FMS_Airports')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Honeywell_FMS_Airports_Initial')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Honeywell_FMS_Airports_Initial",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Honeywell_FMS_Airports_Initial",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"HoneywellInitial": {},
+									"sink1": {}
+								},
+								"linkedServiceParameters": {}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"date": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Honeywell_FMS_Airports_Initial')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Honeywell_FMS_Airports')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "HONEYWELL_FMS_AIRPORTS_PROD"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_edw_connection')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Json1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "navblue-test"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"HTML": {
+							"type": "object",
+							"properties": {
+								"HEAD": {
+									"type": "object",
+									"properties": {
+										"link": {
+											"type": "object",
+											"properties": {
+												"@rel": {
+													"type": "string"
+												},
+												"@type": {
+													"type": "string"
+												},
+												"@href": {
+													"type": "string"
+												}
+											}
+										},
+										"STYLE": {
+											"type": "object",
+											"properties": {
+												"@type": {
+													"type": "string"
+												},
+												"_value_": {
+													"type": "string"
+												}
+											}
+										},
+										"TITLE": {
+											"type": "string"
+										}
+									}
+								},
+								"BODY": {
+									"type": "object",
+									"properties": {
+										"DIV": {
+											"type": "object",
+											"properties": {
+												"P": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"@class": {
+																"type": "string"
+															},
+															"_value_": {
+																"type": "string"
+															}
+														}
+													}
+												},
+												"BR": {
+													"type": "array",
+													"items": {
+														"type": "null"
+													}
+												},
+												"PRE": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"font": {
+																"type": "array",
+																"items": {
+																	"type": "object",
+																	"properties": {
+																		"@color": {
+																			"type": "string"
+																		},
+																		"_value_": {
+																			"type": "string"
+																		}
+																	}
+																}
+															},
+															"_value_": {
+																"type": "array",
+																"items": {
+																	"type": "string"
+																}
+															}
+														}
+													}
+												},
+												"@id": {
+													"type": "string"
+												},
+												"_value_": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							}
+						},
+						"s:Envelope": {
+							"type": "object",
+							"properties": {
+								"s:Header": {
+									"type": "object",
+									"properties": {
+										"o:Security": {
+											"type": "object",
+											"properties": {
+												"u:Timestamp": {
+													"type": "object",
+													"properties": {
+														"u:Created": {
+															"type": "string"
+														},
+														"u:Expires": {
+															"type": "string"
+														},
+														"u:@Id": {
+															"type": "string"
+														}
+													}
+												},
+												"s:@mustUnderstand": {
+													"type": "integer"
+												}
+											}
+										}
+									}
+								},
+								"s:Body": {
+									"type": "object",
+									"properties": {
+										"GetFlightListResponse": {
+											"type": "object",
+											"properties": {
+												"Error": {
+													"type": "object",
+													"properties": {
+														"xsi:@nil": {
+															"type": "boolean"
+														}
+													}
+												},
+												"Warning": {
+													"type": "object",
+													"properties": {
+														"xsi:@nil": {
+															"type": "boolean"
+														}
+													}
+												},
+												"ExecutionTimeSec": {
+													"type": "number"
+												},
+												"Flights": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"Key": {
+																"type": "object",
+																"properties": {
+																	"WhoAlc": {
+																		"type": "string"
+																	},
+																	"FltNum": {
+																		"type": "integer"
+																	},
+																	"StdUtc": {
+																		"type": "string"
+																	},
+																	"OrigApt": {
+																		"type": "string"
+																	},
+																	"TestFlight": {
+																		"type": "boolean"
+																	},
+																	"RepeatNumber": {
+																		"type": "integer"
+																	}
+																}
+															},
+															"DestApt": {
+																"type": "object",
+																"properties": {
+																	"xsi:@nil": {
+																		"type": "boolean"
+																	}
+																}
+															},
+															"AircraftId": {
+																"type": "object",
+																"properties": {
+																	"xsi:@nil": {
+																		"type": "boolean"
+																	}
+																}
+															},
+															"AtcAlc": {
+																"type": "object",
+																"properties": {
+																	"xsi:@nil": {
+																		"type": "boolean"
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/eal_main_blob_connection')]"
 			]
 		}
 	]

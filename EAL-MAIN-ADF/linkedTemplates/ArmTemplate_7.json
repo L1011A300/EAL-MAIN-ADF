@@ -21,6 +21,1492 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Flight_offline_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FLIGHTOFLblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FLIGHTS_OFLblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFFlight": {},
+									"AirportReferenceJSON": {},
+									"FlightToSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Inactive"
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-06-14T16:02:16Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MIS_Choice_Pax_Bags')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "MIS_PAX_BAGS_to_Blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings",
+									"copyBehavior": "FlattenHierarchy"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['Flight']['ID']"
+										},
+										"sink": {
+											"path": "$['Flight']['ID']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['SegmentNo']"
+										},
+										"sink": {
+											"path": "$['Flight']['SegmentNo']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['ExternalID']"
+										},
+										"sink": {
+											"path": "$['Flight']['ExternalID']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['CarrierCode']"
+										},
+										"sink": {
+											"path": "$['Flight']['CarrierCode']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['FlightNo']"
+										},
+										"sink": {
+											"path": "$['Flight']['FlightNo']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['MarketingCarrierCode']"
+										},
+										"sink": {
+											"path": "$['Flight']['MarketingCarrierCode']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['MarketingFlightNo']"
+										},
+										"sink": {
+											"path": "$['Flight']['MarketingFlightNo']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['Type']"
+										},
+										"sink": {
+											"path": "$['Flight']['Type']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['TailNo']"
+										},
+										"sink": {
+											"path": "$['Flight']['TailNo']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['OriginIATA']"
+										},
+										"sink": {
+											"path": "$['Flight']['OriginIATA']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['OriginICAO']"
+										},
+										"sink": {
+											"path": "$['Flight']['OriginICAO']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['OriginAirportName']"
+										},
+										"sink": {
+											"path": "$['Flight']['OriginAirportName']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['OriginAirportCity']"
+										},
+										"sink": {
+											"path": "$['Flight']['OriginAirportCity']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['OriginAirportCountryCode']"
+										},
+										"sink": {
+											"path": "$['Flight']['OriginAirportCountryCode']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['DepartureTerminal']"
+										},
+										"sink": {
+											"path": "$['Flight']['DepartureTerminal']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['DepartureGate']"
+										},
+										"sink": {
+											"path": "$['Flight']['DepartureGate']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['DestinationIATA']"
+										},
+										"sink": {
+											"path": "$['Flight']['DestinationIATA']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['DestinationICAO']"
+										},
+										"sink": {
+											"path": "$['Flight']['DestinationICAO']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['DestinationAirportName']"
+										},
+										"sink": {
+											"path": "$['Flight']['DestinationAirportName']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['DestinationAirportCity']"
+										},
+										"sink": {
+											"path": "$['Flight']['DestinationAirportCity']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['DestinationAirportCountryCode']"
+										},
+										"sink": {
+											"path": "$['Flight']['DestinationAirportCountryCode']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['ArrivalTerminal']"
+										},
+										"sink": {
+											"path": "$['Flight']['ArrivalTerminal']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['ArrivalGate']"
+										},
+										"sink": {
+											"path": "$['Flight']['ArrivalGate']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['ScheduledDepartureTime']"
+										},
+										"sink": {
+											"path": "$['Flight']['ScheduledDepartureTime']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['ScheduledDepartureTimeUTC']"
+										},
+										"sink": {
+											"path": "$['Flight']['ScheduledDepartureTimeUTC']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['EstimatedDepartureTime']"
+										},
+										"sink": {
+											"path": "$['Flight']['EstimatedDepartureTime']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['ScheduledArrivalTime']"
+										},
+										"sink": {
+											"path": "$['Flight']['ScheduledArrivalTime']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['EstimatedArrivalTime']"
+										},
+										"sink": {
+											"path": "$['Flight']['EstimatedArrivalTime']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['BoardingTime']"
+										},
+										"sink": {
+											"path": "$['Flight']['BoardingTime']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['Message']"
+										},
+										"sink": {
+											"path": "$['Flight']['Message']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['Status']"
+										},
+										"sink": {
+											"path": "$['Flight']['Status']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['EnablePassengerAPIS']"
+										},
+										"sink": {
+											"path": "$['Flight']['EnablePassengerAPIS']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['EnableCrewAPIS']"
+										},
+										"sink": {
+											"path": "$['Flight']['EnableCrewAPIS']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['EnableDCS']"
+										},
+										"sink": {
+											"path": "$['Flight']['EnableDCS']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['WeightUnitsKgs']"
+										},
+										"sink": {
+											"path": "$['Flight']['WeightUnitsKgs']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['IsOpenSeating']"
+										},
+										"sink": {
+											"path": "$['Flight']['IsOpenSeating']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['IsProgressiveFlight']"
+										},
+										"sink": {
+											"path": "$['Flight']['IsProgressiveFlight']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['EnableThroughCheckIn']"
+										},
+										"sink": {
+											"path": "$['Flight']['EnableThroughCheckIn']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['EnableIatciCheckIn']"
+										},
+										"sink": {
+											"path": "$['Flight']['EnableIatciCheckIn']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['EnableBoarding']"
+										},
+										"sink": {
+											"path": "$['Flight']['EnableBoarding']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['UseAveragePaxWeight']"
+										},
+										"sink": {
+											"path": "$['Flight']['UseAveragePaxWeight']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['UseAverageBagWeight']"
+										},
+										"sink": {
+											"path": "$['Flight']['UseAverageBagWeight']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['PnlImported']"
+										},
+										"sink": {
+											"path": "$['Flight']['PnlImported']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['IsCancelled']"
+										},
+										"sink": {
+											"path": "$['Flight']['IsCancelled']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['CancelledBy']"
+										},
+										"sink": {
+											"path": "$['Flight']['CancelledBy']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['CancelledReason']"
+										},
+										"sink": {
+											"path": "$['Flight']['CancelledReason']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['IsLocked']"
+										},
+										"sink": {
+											"path": "$['Flight']['IsLocked']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['LockedBy']"
+										},
+										"sink": {
+											"path": "$['Flight']['LockedBy']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['LockedReason']"
+										},
+										"sink": {
+											"path": "$['Flight']['LockedReason']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['AircraftCapacity']"
+										},
+										"sink": {
+											"path": "$['Flight']['AircraftCapacity']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['BookedPassengersCount']"
+										},
+										"sink": {
+											"path": "$['Flight']['BookedPassengersCount']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['TotalCargoLoad']"
+										},
+										"sink": {
+											"path": "$['Flight']['TotalCargoLoad']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['UpliftFuelLoad']"
+										},
+										"sink": {
+											"path": "$['Flight']['UpliftFuelLoad']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['TotalFuelLoad']"
+										},
+										"sink": {
+											"path": "$['Flight']['TotalFuelLoad']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['RemainingFuelLoad']"
+										},
+										"sink": {
+											"path": "$['Flight']['RemainingFuelLoad']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['AncillaryTemplateID']"
+										},
+										"sink": {
+											"path": "$['Flight']['AncillaryTemplateID']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['CustomerID']"
+										},
+										"sink": {
+											"path": "$['Flight']['CustomerID']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['ApiInterfaceIDs']"
+										},
+										"sink": {
+											"path": "$['Flight']['ApiInterfaceIDs']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['BatchPassengerMask']"
+										},
+										"sink": {
+											"path": "$['Flight']['BatchPassengerMask']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['BatchCrewMemberMask']"
+										},
+										"sink": {
+											"path": "$['Flight']['BatchCrewMemberMask']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['PreDepartureCloseOutPassengerMask']"
+										},
+										"sink": {
+											"path": "$['Flight']['PreDepartureCloseOutPassengerMask']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['PostDepartureCloseOutPassengerMask']"
+										},
+										"sink": {
+											"path": "$['Flight']['PostDepartureCloseOutPassengerMask']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['PreDepartureCloseOutCrewMemberMask']"
+										},
+										"sink": {
+											"path": "$['Flight']['PreDepartureCloseOutCrewMemberMask']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['PostDepartureCloseOutCrewMemberMask']"
+										},
+										"sink": {
+											"path": "$['Flight']['PostDepartureCloseOutCrewMemberMask']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['PaxFlightPreDepartureCloseOutStatus']"
+										},
+										"sink": {
+											"path": "$['Flight']['PaxFlightPreDepartureCloseOutStatus']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['PaxFlightPostDepartureCloseOutStatus']"
+										},
+										"sink": {
+											"path": "$['Flight']['PaxFlightPostDepartureCloseOutStatus']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['CrewFlightPreDepartureCloseOutStatus']"
+										},
+										"sink": {
+											"path": "$['Flight']['CrewFlightPreDepartureCloseOutStatus']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['CrewFlightPostDepartureCloseOutStatus']"
+										},
+										"sink": {
+											"path": "$['Flight']['CrewFlightPostDepartureCloseOutStatus']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['PaxBatchPreVetStatus']"
+										},
+										"sink": {
+											"path": "$['Flight']['PaxBatchPreVetStatus']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['HasPassengerSecurityTransactions']"
+										},
+										"sink": {
+											"path": "$['Flight']['HasPassengerSecurityTransactions']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['IsNotificationAlertsOptional']"
+										},
+										"sink": {
+											"path": "$['Flight']['IsNotificationAlertsOptional']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['IsContactTracingOptional']"
+										},
+										"sink": {
+											"path": "$['Flight']['IsContactTracingOptional']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['IsHealthCheckVerificationOptional']"
+										},
+										"sink": {
+											"path": "$['Flight']['IsHealthCheckVerificationOptional']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['IsHealthCheckAttestationOptional']"
+										},
+										"sink": {
+											"path": "$['Flight']['IsHealthCheckAttestationOptional']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['IsTestEnvironment']"
+										},
+										"sink": {
+											"path": "$['Flight']['IsTestEnvironment']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['CheckedInPassengersCount']"
+										},
+										"sink": {
+											"path": "$['Flight']['CheckedInPassengersCount']"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Flight']['CheckedBagsCount']"
+										},
+										"sink": {
+											"path": "$['Flight']['CheckedBagsCount']"
+										}
+									}
+								],
+								"collectionReference": ""
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MIS_Choice_Pax_Bag_SRC",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "MIS_Choice_Pax_Bags",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "MISChoicePaxBagsBlobToSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "MIS_PAX_BAGS_to_Blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "MIS_Choice_Pax_Bags_to_SQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"RunId": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"MISChoicePaxBagsBlob": {},
+									"MISCHOICEPAXBAGSSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NavBlue Flight List')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "NAVBLUE Copy XML to CSV",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "XmlSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "POST",
+									"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nSOAPAction: \"http://navtech.aero/NavtechPublicService/GetFlightList\"\nContent-Length: 802\nHost: nfp.navtechinc.com:444",
+									"requestBody": {
+										"value": "@{replace('<SOAP-ENV:Envelope\n\txmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n\txmlns:NavWeb=\"urn:NavWeb\">\n   <SOAP-ENV:Header>\n\t   <o:Security\n\t   \t\tSOAP-ENV:mustUnderstand=\"1\"\n\t\t\txmlns:o=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n\t\t<o:UsernameToken>\n\t\t\t<o:Username>EAL/bdavis</o:Username>\n\t\t\t<o:Password>T99oulon84@</o:Password>\n\t\t</o:UsernameToken>\n\t\t</o:Security>\n\t</SOAP-ENV:Header>\n   <SOAP-ENV:Body>\n      <NavWeb:GetFlightList>\n         <Input>\n            <User>\n               <EnvAlc>EAL</EnvAlc>\n               <UserId>bdavis</UserId>\n            </User>\n            <Input>\n               <ForDayUtc>?P1</ForDayUtc>\n            </Input>\n         </Input>\n      </NavWeb:GetFlightList>\n   </SOAP-ENV:Body>\n</SOAP-ENV:Envelope>', '?P1', formatDateTime(adddays(utcnow(),-1),'yyyy-MM-dd'))}",
+										"type": "Expression"
+									},
+									"requestTimeout": ""
+								},
+								"formatSettings": {
+									"type": "XmlReadSettings",
+									"validationMode": "none",
+									"namespaces": true
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings",
+									"copyBehavior": "FlattenHierarchy"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['Key']['WhoAlc']"
+										},
+										"sink": {
+											"name": "WhoAlc",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Key']['FltNum']"
+										},
+										"sink": {
+											"name": "FltNum",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Key']['StdUtc']"
+										},
+										"sink": {
+											"name": "StdUtc",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Key']['OrigApt']"
+										},
+										"sink": {
+											"name": "OrigApt",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Key']['TestFlight']"
+										},
+										"sink": {
+											"name": "TestFlight",
+											"type": "Boolean"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Key']['RepeatNumber']"
+										},
+										"sink": {
+											"name": "RepeatNumber",
+											"type": "Boolean"
+										}
+									}
+								],
+								"collectionReference": "$['s:Envelope']['s:Body']['GetFlightListResponse']['Flights']",
+								"mapComplexValuesToString": false
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "NavBlueSourceXML",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "NAVBLUE_CSV",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "NavBlue Flight List to SQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "NAVBLUE Copy XML to CSV",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "NAVBLUE FlightListToSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"NAVBLUEcsv": {},
+									"COPYtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "SQL Navblue Flight List Live Flts",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "NavBlue Flight List to SQL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SQL Navblue Flight List Live Flts",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SQLNavblueFlightListTest": {},
+									"SQLSFFlightProd": {},
+									"SQLAirportProd": {},
+									"SQLFlightListLiveFlights": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "NavBlue"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NavBlue Recall Flight TEST')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "NAVBLUE Copy XML to CSV",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "XmlSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "POST",
+									"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nSOAPAction: \"http://navtech.aero/NavtechPublicService/RecallFlight\"\nHost: nfp.navtechinc.com:444",
+									"requestBody": {
+										"value": "<s:Envelope\n\txmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"\n\txmlns:NavWeb=\"urn:NavWeb\"\n\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n   <s:Header>\n   \t<o:Security\n\t   \t\ts:mustUnderstand=\"1\"\n\t\t\txmlns:o=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n\t\t<o:UsernameToken>\n\t\t\t<o:Username>EAL/bdavis</o:Username>\n\t\t\t<o:Password>T99oulon84@</o:Password>\n\t\t</o:UsernameToken>\n\t</o:Security>\n   </s:Header>\n   <s:Body>\n      <NavWeb:RecallFlight>\n         <Input xsi:type=\"NavWeb:RecallFlightRequest\">\n           <User xsi:type=\"NavWeb:User\">\n               <EnvAlc>EAL</EnvAlc>\n               <UserId>bdavis</UserId>\n           </User>\n           <SerialNumber>20569</SerialNumber>\n         \t<Formats xsi:type=\"NavWeb:FormatInput\">\n\t\t\t<PackageLayoutFile>Arinc633</PackageLayoutFile>\n\t\t</Formats>\n\t   </Input>\t\n      </NavWeb:RecallFlight>\n   </s:Body>\n</s:Envelope>",
+										"type": "Expression"
+									},
+									"requestTimeout": ""
+								},
+								"formatSettings": {
+									"type": "XmlReadSettings",
+									"validationMode": "none",
+									"detectDataType": true,
+									"namespaces": false
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['s:Envelope']['s:Body']['RecallFlightResponse']['Formats']['Data']"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 1
+										}
+									}
+								],
+								"collectionReference": "",
+								"mapComplexValuesToString": true
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "NavBlueSourceXML",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "NAVBLUE_CSV_RecallFlight",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "NavBlue Flight List to SQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "NAVBLUE Copy XML to CSV",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "NAVBLUE FlightListToSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"NAVBLUEcsv": {},
+									"COPYtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "SQL Navblue Flight List Live Flts",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "NavBlue Flight List to SQL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SQL Navblue Flight List Live Flts",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SQLNavblueFlightListTest": {},
+									"SQLSFFlightProd": {},
+									"SQLAirportProd": {},
+									"SQLFlightListLiveFlights": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "NavBlue"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/P12_Accts_date')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "P12Accounts",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "P12_ACCOUNTS",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"P12Accts": {},
+									"P12AcctsSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"date": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "PROD"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Pairing_Item_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SF pairing item data to Azure blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "pairing_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['pairing_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "pairing_item_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['pairing_item_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "pairing_item_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['pairing_item_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "flight_id",
+											"type": "Int64"
+										},
+										"sink": {
+											"path": "$['flight_id']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_name",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_name']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_start_time",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_start_time']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_end_time",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_end_time']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_type",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['shift_type']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_work",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_work']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_reserve",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_reserve']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_sick",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_sick']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_training",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_training']"
+										}
+									},
+									{
+										"source": {
+											"name": "shift_is_vacation",
+											"type": "Boolean"
+										},
+										"sink": {
+											"path": "$['shift_is_vacation']"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['updated_at']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SF_source_bi_pairing_item",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SF_source_pairing_item",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "PAIRINGITEMblobtoSQL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SF pairing item data to Azure blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "PAIRINGITEMblobtoSQL",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SFPairingItem": {},
+									"PARINGITEMtoSQL": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"date": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Inactive"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Pairing_data')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1221,6 +2707,65 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Honeywell_FMS_Airports_Initial')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Honeywell_FMS_Airports_Initial",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Honeywell_FMS_Airports_Initial",
+								"type": "DataFlowReference",
+								"parameters": {
+									"run_id": {
+										"value": "'@{pipeline().RunId}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"HoneywellInitial": {},
+									"sink1": {}
+								},
+								"linkedServiceParameters": {}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"date": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Testing"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AIRPORT trigger after midnight UTC')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -1404,163 +2949,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/user_data')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DELAYS trigger 630 am')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "ETL populates dbo.SF_DELAYS_PROD SQL Server table at 6:30 a.m. EDT",
-				"annotations": [
-					"10:30 a.m. UTC"
-				],
-				"runtimeState": "Started",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "Delay_data",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
-				"type": "TumblingWindowTrigger",
-				"typeProperties": {
-					"frequency": "Hour",
-					"interval": 24,
-					"startTime": "2021-08-16T10:30:00Z",
-					"delay": "00:00:00",
-					"maxConcurrency": 50,
-					"retryPolicy": {
-						"count": 5,
-						"intervalInSeconds": 240
-					},
-					"dependsOn": [
-						{
-							"type": "TumblingWindowTriggerDependencyReference",
-							"offset": "-0:10:30:00",
-							"referenceTrigger": {
-								"referenceName": "AIRPORT trigger after midnight UTC",
-								"type": "TriggerReference"
-							}
-						}
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger after midnight UTC')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FLIGHT trigger after midnight UTC')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [
-					"Midnight UTC"
-				],
-				"runtimeState": "Stopped",
-				"type": "TumblingWindowTrigger",
-				"typeProperties": {
-					"frequency": "Hour",
-					"interval": 24,
-					"startTime": "2021-11-05T00:00:00Z",
-					"delay": "00:00:00",
-					"maxConcurrency": 50,
-					"retryPolicy": {
-						"count": 5,
-						"intervalInSeconds": 240
-					},
-					"dependsOn": [
-						{
-							"type": "TumblingWindowTriggerDependencyReference",
-							"referenceTrigger": {
-								"referenceName": "AIRPORT trigger after midnight UTC",
-								"type": "TriggerReference"
-							}
-						}
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/triggers/AIRPORT trigger after midnight UTC')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DELAYS trigger after midnight UTC')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [
-					"Midnight UTC"
-				],
-				"runtimeState": "Stopped",
-				"type": "TumblingWindowTrigger",
-				"typeProperties": {
-					"frequency": "Hour",
-					"interval": 24,
-					"startTime": "2021-11-05T00:00:00Z",
-					"delay": "00:00:00",
-					"maxConcurrency": 50,
-					"retryPolicy": {
-						"count": 5,
-						"intervalInSeconds": 240
-					},
-					"dependsOn": [
-						{
-							"type": "TumblingWindowTriggerDependencyReference",
-							"referenceTrigger": {
-								"referenceName": "FLIGHT trigger after midnight UTC",
-								"type": "TriggerReference"
-							}
-						}
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/triggers/FLIGHT trigger after midnight UTC')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FLIGHT trigger 630 am')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "ETL populates dbo.SF_FLIGHT_PROD SQL Server table at 6:30 a.m. EDT",
-				"annotations": [
-					"10:30 a.m. UTC"
-				],
-				"runtimeState": "Started",
-				"pipeline": {
-					"pipelineReference": {
-						"referenceName": "Flight_data",
-						"type": "PipelineReference"
-					},
-					"parameters": {}
-				},
-				"type": "TumblingWindowTrigger",
-				"typeProperties": {
-					"frequency": "Hour",
-					"interval": 24,
-					"startTime": "2021-08-16T10:30:00Z",
-					"delay": "00:00:00",
-					"maxConcurrency": 50,
-					"retryPolicy": {
-						"count": 5,
-						"intervalInSeconds": 240
-					},
-					"dependsOn": [
-						{
-							"type": "TumblingWindowTriggerDependencyReference",
-							"referenceTrigger": {
-								"referenceName": "DELAYS trigger 630 am",
-								"type": "TriggerReference"
-							}
-						}
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/triggers/DELAYS trigger 630 am')]"
 			]
 		}
 	]
