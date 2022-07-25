@@ -13,6 +13,456 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_OFFLINE_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SQL_FLIGHT_OFFLINE_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "actual_arrival_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_arrive_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_depart_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_departure_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_oooi_in",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_off",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_on",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_out",
+						"type": "datetime"
+					},
+					{
+						"name": "aircraft_registration_number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "aircraft_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "base_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "base_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cargo_off",
+						"type": "int"
+					},
+					{
+						"name": "cargo_on",
+						"type": "int"
+					},
+					{
+						"name": "cargo_weight",
+						"type": "int"
+					},
+					{
+						"name": "estimated_arrival",
+						"type": "datetime"
+					},
+					{
+						"name": "estimated_departure",
+						"type": "datetime"
+					},
+					{
+						"name": "flight_date",
+						"type": "date"
+					},
+					{
+						"name": "flight_id",
+						"type": "int"
+					},
+					{
+						"name": "flight_number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "flight_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "fuel_in",
+						"type": "float"
+					},
+					{
+						"name": "fuel_out",
+						"type": "float"
+					},
+					{
+						"name": "fuel_uplift",
+						"type": "int"
+					},
+					{
+						"name": "fuel_uplifts",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_canceled",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_verified",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_actual_braking",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_midfield",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_rollout",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_touchdown_zone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "maint_log_page",
+						"type": "nvarchar"
+					},
+					{
+						"name": "notes",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ops_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sched_arrive_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sched_depart_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "scheduled_arrival",
+						"type": "datetime2"
+					},
+					{
+						"name": "scheduled_arrival_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "scheduled_departure",
+						"type": "datetime"
+					},
+					{
+						"name": "scheduled_departure_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "updated_at",
+						"type": "datetime"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SF_FLIGHT_PROD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_FLT_TABLE_TEST')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "TEST Staging SQL Server table",
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "flight_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "flight_number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "flight_date",
+						"type": "date"
+					},
+					{
+						"name": "aircraft_registration_number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "aircraft_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ops_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "scheduled_departure_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "scheduled_arrival_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "scheduled_departure",
+						"type": "datetime"
+					},
+					{
+						"name": "scheduled_arrival",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_out",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_off",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_on",
+						"type": "datetime"
+					},
+					{
+						"name": "actual_oooi_in",
+						"type": "datetime"
+					},
+					{
+						"name": "estimated_arrival",
+						"type": "datetime"
+					},
+					{
+						"name": "estimated_departure",
+						"type": "datetime"
+					},
+					{
+						"name": "base_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sched_depart_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sched_arrive_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_depart_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_arrive_airport_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "base_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_departure_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "actual_arrival_airport",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_verified",
+						"type": "nvarchar"
+					},
+					{
+						"name": "notes",
+						"type": "nvarchar"
+					},
+					{
+						"name": "is_canceled",
+						"type": "nvarchar"
+					},
+					{
+						"name": "flight_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cargo_weight",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cargo_on",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cargo_off",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fuel_out",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "fuel_in",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "fuel_uplift",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fuel_uplifts",
+						"type": "nvarchar"
+					},
+					{
+						"name": "maint_log_page",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_touchdown_zone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_midfield",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_rollout",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lndg_actual_braking",
+						"type": "nvarchar"
+					},
+					{
+						"name": "pax",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "mission_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "updated_at",
+						"type": "datetime"
+					},
+					{
+						"name": "ADF_TIMESTAMP",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "RUN_ID",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SQL_FLIGHT_TABLE_TEST"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_MIS_CHOICE_PAX_BAGS_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_edw_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL tables"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "MIS_PAX_BAGS_TEST"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQL_NAVBLUE_FLIGHT_LIST_LIVE_FLTS')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -384,531 +834,6 @@
 						"type": "HttpServerLocation"
 					}
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Honeywell_FMS_Airports_initial')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Honeywell_FMS_Airports"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "ES72207002_Airports.csv",
-						"container": "honeywell-fms-airports"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "RecordIndex",
-						"type": "String"
-					},
-					{
-						"name": "Key",
-						"type": "String"
-					},
-					{
-						"name": "Ident",
-						"type": "String"
-					},
-					{
-						"name": "RevCode",
-						"type": "String"
-					},
-					{
-						"name": "ProceduresExist",
-						"type": "String"
-					},
-					{
-						"name": "RunwaysExist",
-						"type": "String"
-					},
-					{
-						"name": "SpeedLimitCoded",
-						"type": "String"
-					},
-					{
-						"name": "TransAltValid",
-						"type": "String"
-					},
-					{
-						"name": "TrueNorth",
-						"type": "String"
-					},
-					{
-						"name": "Latitude",
-						"type": "String"
-					},
-					{
-						"name": "Longitude",
-						"type": "String"
-					},
-					{
-						"name": "MagVar",
-						"type": "String"
-					},
-					{
-						"name": "Elevation",
-						"type": "String"
-					},
-					{
-						"name": "SpeedLimit",
-						"type": "String"
-					},
-					{
-						"name": "SpeedLimitAltitude",
-						"type": "String"
-					},
-					{
-						"name": "TransAltitude",
-						"type": "String"
-					},
-					{
-						"name": "GatesExist",
-						"type": "String"
-					},
-					{
-						"name": "AlternatesExist",
-						"type": "String"
-					},
-					{
-						"name": "MaxRunwayLength",
-						"type": "String"
-					},
-					{
-						"name": "RevState",
-						"type": "String"
-					},
-					{
-						"name": "CC",
-						"type": "String"
-					},
-					{
-						"name": "SidExist",
-						"type": "String"
-					},
-					{
-						"name": "StarExist",
-						"type": "String"
-					},
-					{
-						"name": "ApproachExist",
-						"type": "String"
-					},
-					{
-						"name": "EosidExist",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Honeywell_FMS_Airports')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Honeywell_FMS_Airports"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "HONEYWELL_FMS_AIRPORTS_PROD"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Json1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": "navblue-test"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"HTML": {
-							"type": "object",
-							"properties": {
-								"HEAD": {
-									"type": "object",
-									"properties": {
-										"link": {
-											"type": "object",
-											"properties": {
-												"@rel": {
-													"type": "string"
-												},
-												"@type": {
-													"type": "string"
-												},
-												"@href": {
-													"type": "string"
-												}
-											}
-										},
-										"STYLE": {
-											"type": "object",
-											"properties": {
-												"@type": {
-													"type": "string"
-												},
-												"_value_": {
-													"type": "string"
-												}
-											}
-										},
-										"TITLE": {
-											"type": "string"
-										}
-									}
-								},
-								"BODY": {
-									"type": "object",
-									"properties": {
-										"DIV": {
-											"type": "object",
-											"properties": {
-												"P": {
-													"type": "array",
-													"items": {
-														"type": "object",
-														"properties": {
-															"@class": {
-																"type": "string"
-															},
-															"_value_": {
-																"type": "string"
-															}
-														}
-													}
-												},
-												"BR": {
-													"type": "array",
-													"items": {
-														"type": "null"
-													}
-												},
-												"PRE": {
-													"type": "array",
-													"items": {
-														"type": "object",
-														"properties": {
-															"font": {
-																"type": "array",
-																"items": {
-																	"type": "object",
-																	"properties": {
-																		"@color": {
-																			"type": "string"
-																		},
-																		"_value_": {
-																			"type": "string"
-																		}
-																	}
-																}
-															},
-															"_value_": {
-																"type": "array",
-																"items": {
-																	"type": "string"
-																}
-															}
-														}
-													}
-												},
-												"@id": {
-													"type": "string"
-												},
-												"_value_": {
-													"type": "string"
-												}
-											}
-										}
-									}
-								}
-							}
-						},
-						"s:Envelope": {
-							"type": "object",
-							"properties": {
-								"s:Header": {
-									"type": "object",
-									"properties": {
-										"o:Security": {
-											"type": "object",
-											"properties": {
-												"u:Timestamp": {
-													"type": "object",
-													"properties": {
-														"u:Created": {
-															"type": "string"
-														},
-														"u:Expires": {
-															"type": "string"
-														},
-														"u:@Id": {
-															"type": "string"
-														}
-													}
-												},
-												"s:@mustUnderstand": {
-													"type": "integer"
-												}
-											}
-										}
-									}
-								},
-								"s:Body": {
-									"type": "object",
-									"properties": {
-										"GetFlightListResponse": {
-											"type": "object",
-											"properties": {
-												"Error": {
-													"type": "object",
-													"properties": {
-														"xsi:@nil": {
-															"type": "boolean"
-														}
-													}
-												},
-												"Warning": {
-													"type": "object",
-													"properties": {
-														"xsi:@nil": {
-															"type": "boolean"
-														}
-													}
-												},
-												"ExecutionTimeSec": {
-													"type": "number"
-												},
-												"Flights": {
-													"type": "array",
-													"items": {
-														"type": "object",
-														"properties": {
-															"Key": {
-																"type": "object",
-																"properties": {
-																	"WhoAlc": {
-																		"type": "string"
-																	},
-																	"FltNum": {
-																		"type": "integer"
-																	},
-																	"StdUtc": {
-																		"type": "string"
-																	},
-																	"OrigApt": {
-																		"type": "string"
-																	},
-																	"TestFlight": {
-																		"type": "boolean"
-																	},
-																	"RepeatNumber": {
-																		"type": "integer"
-																	}
-																}
-															},
-															"DestApt": {
-																"type": "object",
-																"properties": {
-																	"xsi:@nil": {
-																		"type": "boolean"
-																	}
-																}
-															},
-															"AircraftId": {
-																"type": "object",
-																"properties": {
-																	"xsi:@nil": {
-																		"type": "boolean"
-																	}
-																}
-															},
-															"AtcAlc": {
-																"type": "object",
-																"properties": {
-																	"xsi:@nil": {
-																		"type": "boolean"
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Honeywell_FMS_Airports_Incremental')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_main_blob_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Honeywell_FMS_Airports"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "ES62206002.csv",
-						"container": "honeywell-fms-airports"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "RecordIndex",
-						"type": "String"
-					},
-					{
-						"name": "Key",
-						"type": "String"
-					},
-					{
-						"name": "Ident",
-						"type": "String"
-					},
-					{
-						"name": "RevCode",
-						"type": "String"
-					},
-					{
-						"name": "ProceduresExist",
-						"type": "String"
-					},
-					{
-						"name": "RunwaysExist",
-						"type": "String"
-					},
-					{
-						"name": "GatesExist",
-						"type": "String"
-					},
-					{
-						"name": "AlternatesExist",
-						"type": "String"
-					},
-					{
-						"name": "SpeedLimitCoded",
-						"type": "String"
-					},
-					{
-						"name": "TransAltValid",
-						"type": "String"
-					},
-					{
-						"name": "Latitude",
-						"type": "String"
-					},
-					{
-						"name": "Longitude",
-						"type": "String"
-					},
-					{
-						"name": "Elevation",
-						"type": "String"
-					},
-					{
-						"name": "SpeedLimit",
-						"type": "String"
-					},
-					{
-						"name": "SpeedLimitAltitude",
-						"type": "String"
-					},
-					{
-						"name": "TransAltitude",
-						"type": "String"
-					},
-					{
-						"name": "MaxRunwayLength",
-						"type": "String"
-					},
-					{
-						"name": "RevState",
-						"type": "String"
-					},
-					{
-						"name": "TrueNorth",
-						"type": "String"
-					},
-					{
-						"name": "MagVar",
-						"type": "String"
-					},
-					{
-						"name": "CC",
-						"type": "String"
-					},
-					{
-						"name": "SidExist",
-						"type": "String"
-					},
-					{
-						"name": "StarExist",
-						"type": "String"
-					},
-					{
-						"name": "ApproachExist",
-						"type": "String"
-					},
-					{
-						"name": "EosidExist",
-						"type": "String"
-					}
-				]
 			},
 			"dependsOn": []
 		},

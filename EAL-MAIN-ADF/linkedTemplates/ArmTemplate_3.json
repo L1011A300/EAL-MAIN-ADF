@@ -13,6 +13,119 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_bi_shift')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SkedFlexConnection_SSL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "bi",
+					"table": "shift"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_bi_user')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SkedFlexConnection_SSL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "bi",
+					"table": "user"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_bi_user_category')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SkedFlexConnection_SSL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Source"
+				},
+				"annotations": [],
+				"type": "PostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "bi",
+					"table": "user_category"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SF_source_delays')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "eal_main_blob_connection",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Azure blob"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@concat(concat('bi-flights-',split(utcnow(),'T')[0]),'.json')",
+							"type": "Expression"
+						},
+						"container": "sf-source-delays"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"flight_id": {
+							"type": "integer"
+						},
+						"delay_type": {
+							"type": "string"
+						},
+						"duration_mins": {
+							"type": "integer"
+						},
+						"delay_code": {
+							"type": "string"
+						},
+						"delay_code_name": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SF_source_equip_sched')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1166,456 +1279,6 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "SF_FLIGHT_CREW_PROD"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_OFFLINE_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SQL_FLIGHT_OFFLINE_PROD"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_FLIGHT_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "actual_arrival_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "actual_arrive_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "actual_depart_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "actual_departure_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "actual_oooi_in",
-						"type": "datetime"
-					},
-					{
-						"name": "actual_oooi_off",
-						"type": "datetime"
-					},
-					{
-						"name": "actual_oooi_on",
-						"type": "datetime"
-					},
-					{
-						"name": "actual_oooi_out",
-						"type": "datetime"
-					},
-					{
-						"name": "aircraft_registration_number",
-						"type": "nvarchar"
-					},
-					{
-						"name": "aircraft_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "base_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "base_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "cargo_off",
-						"type": "int"
-					},
-					{
-						"name": "cargo_on",
-						"type": "int"
-					},
-					{
-						"name": "cargo_weight",
-						"type": "int"
-					},
-					{
-						"name": "estimated_arrival",
-						"type": "datetime"
-					},
-					{
-						"name": "estimated_departure",
-						"type": "datetime"
-					},
-					{
-						"name": "flight_date",
-						"type": "date"
-					},
-					{
-						"name": "flight_id",
-						"type": "int"
-					},
-					{
-						"name": "flight_number",
-						"type": "nvarchar"
-					},
-					{
-						"name": "flight_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "fuel_in",
-						"type": "float"
-					},
-					{
-						"name": "fuel_out",
-						"type": "float"
-					},
-					{
-						"name": "fuel_uplift",
-						"type": "int"
-					},
-					{
-						"name": "fuel_uplifts",
-						"type": "nvarchar"
-					},
-					{
-						"name": "is_canceled",
-						"type": "nvarchar"
-					},
-					{
-						"name": "is_verified",
-						"type": "nvarchar"
-					},
-					{
-						"name": "lndg_actual_braking",
-						"type": "nvarchar"
-					},
-					{
-						"name": "lndg_midfield",
-						"type": "nvarchar"
-					},
-					{
-						"name": "lndg_rollout",
-						"type": "nvarchar"
-					},
-					{
-						"name": "lndg_touchdown_zone",
-						"type": "nvarchar"
-					},
-					{
-						"name": "maint_log_page",
-						"type": "nvarchar"
-					},
-					{
-						"name": "notes",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ops_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "sched_arrive_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "sched_depart_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "scheduled_arrival",
-						"type": "datetime2"
-					},
-					{
-						"name": "scheduled_arrival_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "scheduled_departure",
-						"type": "datetime"
-					},
-					{
-						"name": "scheduled_departure_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "updated_at",
-						"type": "datetime"
-					},
-					{
-						"name": "ADF_TIMESTAMP",
-						"type": "datetime",
-						"scale": 7
-					},
-					{
-						"name": "RUN_ID",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SF_FLIGHT_PROD"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_FLT_TABLE_TEST')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "TEST Staging SQL Server table",
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "flight_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "flight_number",
-						"type": "nvarchar"
-					},
-					{
-						"name": "flight_date",
-						"type": "date"
-					},
-					{
-						"name": "aircraft_registration_number",
-						"type": "nvarchar"
-					},
-					{
-						"name": "aircraft_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ops_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "scheduled_departure_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "scheduled_arrival_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "scheduled_departure",
-						"type": "datetime"
-					},
-					{
-						"name": "scheduled_arrival",
-						"type": "datetime"
-					},
-					{
-						"name": "actual_oooi_out",
-						"type": "datetime"
-					},
-					{
-						"name": "actual_oooi_off",
-						"type": "datetime"
-					},
-					{
-						"name": "actual_oooi_on",
-						"type": "datetime"
-					},
-					{
-						"name": "actual_oooi_in",
-						"type": "datetime"
-					},
-					{
-						"name": "estimated_arrival",
-						"type": "datetime"
-					},
-					{
-						"name": "estimated_departure",
-						"type": "datetime"
-					},
-					{
-						"name": "base_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "sched_depart_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "sched_arrive_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "actual_depart_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "actual_arrive_airport_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "base_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "actual_departure_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "actual_arrival_airport",
-						"type": "nvarchar"
-					},
-					{
-						"name": "is_verified",
-						"type": "nvarchar"
-					},
-					{
-						"name": "notes",
-						"type": "nvarchar"
-					},
-					{
-						"name": "is_canceled",
-						"type": "nvarchar"
-					},
-					{
-						"name": "flight_type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "cargo_weight",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "cargo_on",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "cargo_off",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "fuel_out",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "fuel_in",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "fuel_uplift",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "fuel_uplifts",
-						"type": "nvarchar"
-					},
-					{
-						"name": "maint_log_page",
-						"type": "nvarchar"
-					},
-					{
-						"name": "lndg_touchdown_zone",
-						"type": "nvarchar"
-					},
-					{
-						"name": "lndg_midfield",
-						"type": "nvarchar"
-					},
-					{
-						"name": "lndg_rollout",
-						"type": "nvarchar"
-					},
-					{
-						"name": "lndg_actual_braking",
-						"type": "nvarchar"
-					},
-					{
-						"name": "pax",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "mission_id",
-						"type": "nvarchar"
-					},
-					{
-						"name": "updated_at",
-						"type": "datetime"
-					},
-					{
-						"name": "ADF_TIMESTAMP",
-						"type": "datetime2",
-						"scale": 7
-					},
-					{
-						"name": "RUN_ID",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SQL_FLIGHT_TABLE_TEST"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SQL_MIS_CHOICE_PAX_BAGS_TABLE')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "eal_edw_connection",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SQL tables"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "MIS_PAX_BAGS_TEST"
 				}
 			},
 			"dependsOn": []
