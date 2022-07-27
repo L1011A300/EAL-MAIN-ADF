@@ -4666,7 +4666,7 @@
 						]
 					},
 					{
-						"name": "NavBlue Flight List to SQL",
+						"name": "Data flow1",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
@@ -4686,56 +4686,12 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "NAVBLUE FlightListToSQL",
-								"type": "DataFlowReference",
-								"parameters": {
-									"run_id": {
-										"value": "'@{pipeline().RunId}'",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"NAVBLUEcsv": {},
-									"COPYtoSQL": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "SQL Navblue Flight List Live Flts",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "NavBlue Flight List to SQL",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "SQL Navblue Flight List Live Flts",
+								"referenceName": "Parse NavBlue RecallFlight XML",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"SQLNavblueFlightListTest": {},
-									"SQLSFFlightProd": {},
-									"SQLAirportProd": {},
-									"SQLFlightListLiveFlights": {}
+									"NavBlueCSVreallyXML": {},
+									"OutputToJSON": {}
 								}
 							},
 							"staging": {},
@@ -4759,8 +4715,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/NavBlueSourceXML')]",
 				"[concat(variables('factoryId'), '/datasets/NAVBLUE_CSV_RecallFlight')]",
-				"[concat(variables('factoryId'), '/dataflows/NAVBLUE FlightListToSQL')]",
-				"[concat(variables('factoryId'), '/dataflows/SQL Navblue Flight List Live Flts')]"
+				"[concat(variables('factoryId'), '/dataflows/Parse NavBlue RecallFlight XML')]"
 			]
 		},
 		{
@@ -7272,6 +7227,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "NAVBLUE-RECALL-FLT-JSON-OUTPUT",
 						"container": "navblue-test"
 					}
 				},
@@ -13638,7 +13594,7 @@
 								"referenceName": "Json1",
 								"type": "DatasetReference"
 							},
-							"name": "sink1"
+							"name": "OutputToJSON"
 						}
 					],
 					"transformations": [
@@ -13685,7 +13641,7 @@
 						"          {s:Envelope} as ({s:Header} as ({o:Security} as ({u:Timestamp} as ({u:Created} as string, {u:Expires} as string, {u:@Id} as string), {s:@mustUnderstand} as integer)), {s:Body} as (GetFlightListResponse as (Error as ({xsi:@nil} as boolean), Warning as ({xsi:@nil} as boolean), ExecutionTimeSec as double, Flights as (Key as (WhoAlc as string, FltNum as integer, StdUtc as string, OrigApt as string, TestFlight as boolean, RepeatNumber as integer), DestApt as ({xsi:@nil} as boolean), AircraftId as ({xsi:@nil} as boolean), AtcAlc as ({xsi:@nil} as boolean))[])))",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink1"
+						"     skipDuplicateMapOutputs: true) ~> OutputToJSON"
 					]
 				}
 			},
