@@ -21,7 +21,7 @@
 						"referenceName": "Json1",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "OutputToJSON"
 				}
 			],
 			"transformations": [
@@ -68,7 +68,7 @@
 				"          {s:Envelope} as ({s:Header} as ({o:Security} as ({u:Timestamp} as ({u:Created} as string, {u:Expires} as string, {u:@Id} as string), {s:@mustUnderstand} as integer)), {s:Body} as (GetFlightListResponse as (Error as ({xsi:@nil} as boolean), Warning as ({xsi:@nil} as boolean), ExecutionTimeSec as double, Flights as (Key as (WhoAlc as string, FltNum as integer, StdUtc as string, OrigApt as string, TestFlight as boolean, RepeatNumber as integer), DestApt as ({xsi:@nil} as boolean), AircraftId as ({xsi:@nil} as boolean), AtcAlc as ({xsi:@nil} as boolean))[])))",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true) ~> OutputToJSON"
 			]
 		}
 	}
