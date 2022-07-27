@@ -77,7 +77,7 @@
 				]
 			},
 			{
-				"name": "NavBlue Flight List to SQL",
+				"name": "Data flow1",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
@@ -97,44 +97,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "NAVBLUE FlightListToSQL",
-						"type": "DataFlowReference",
-						"parameters": {
-							"run_id": {
-								"value": "'@{pipeline().RunId}'",
-								"type": "Expression"
-							}
-						}
-					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					},
-					"traceLevel": "Fine"
-				}
-			},
-			{
-				"name": "SQL Navblue Flight List Live Flts",
-				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "NavBlue Flight List to SQL",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "1.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataflow": {
-						"referenceName": "SQL Navblue Flight List Live Flts",
+						"referenceName": "Parse NavBlue RecallFlight XML",
 						"type": "DataFlowReference"
 					},
 					"compute": {
