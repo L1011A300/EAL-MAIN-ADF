@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "NAVBLUE-RECALL-FLT-JSON-OUTPUT",
 				"container": "navblue-test"
 			}
 		},
