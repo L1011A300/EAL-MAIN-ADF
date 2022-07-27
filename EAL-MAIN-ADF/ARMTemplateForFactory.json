@@ -13603,9 +13603,6 @@
 						},
 						{
 							"name": "RemoveXMLcolumn"
-						},
-						{
-							"name": "flatten2"
 						}
 					],
 					"scriptLines": [
@@ -13628,12 +13625,6 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> RemoveXMLcolumn",
-						"NavBlueCSVreallyXML foldDown(unroll(),",
-						"     mapColumn(",
-						"          {_col0_}",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> flatten2",
 						"RemoveXMLcolumn sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
