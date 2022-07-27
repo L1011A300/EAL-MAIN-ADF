@@ -44,7 +44,7 @@
 				"          TakeOffFuelWeightUnit = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (EstimatedWeight as ({@unit} as string))))),",
 				"          TakeOffFuelWeightKG = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (EstimatedWeight as string)))),",
 				"     format: 'xml',",
-				"     namespaces: true) ~> ParseXML",
+				"     namespaces: false) ~> ParseXML",
 				"ParseXML select(mapColumn(",
 				"          EstOutTime,",
 				"          TakeOffFuelDuration,",
