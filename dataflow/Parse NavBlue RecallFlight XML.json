@@ -50,6 +50,8 @@
 				"     format: 'xml',",
 				"     namespaces: false) ~> ParseXML",
 				"ParseXML select(mapColumn(",
+				"          FlightPlanID = FlightPlanID.FlightPlan.{@flightPlanId},",
+				"          FltNbr = FltNbr.FlightPlan.M633SupplementaryHeader.Flight.FlightIdentification.FlightNumber.{@number},",
 				"          EstOutTime = EstOutTime.FlightPlan.FlightPlanSummary.OutTime.EstimatedTime.Value,",
 				"          TakeOffFuelDuration = TakeOffFuelDuration.FlightPlan.FuelHeader.TakeOffFuel.Duration.Value,",
 				"          TakeOffFuelEstWeightUnit = TakeOffFuelEstWeight.FlightPlan.FuelHeader.TakeOffFuel.EstimatedWeight.Value.{@unit},",
@@ -68,10 +70,14 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     mapColumn(",
+				"          FlightPlanID,",
+				"          FltNbr,",
 				"          EstOutTime,",
 				"          TakeOffFuelDuration,",
-				"          TakeOffFuelWeightUnit2 = TakeOffFuelEstWeightUnit,",
-				"          TakeOffFuelWeightValue = TakeOffFuelEstWeightValue",
+				"          TakeOffFuelEstWeightUnit,",
+				"          TakeOffFuelEstWeightValue,",
+				"          ArrFuelEstWeightUnit,",
+				"          ArrFuelEstWeightValue",
 				"     )) ~> OutputToJSON"
 			]
 		}
