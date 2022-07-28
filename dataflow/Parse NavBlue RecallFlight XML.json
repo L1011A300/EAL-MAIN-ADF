@@ -45,6 +45,8 @@
 				"          {_value_} as string)))))),",
 				"          ArrFuelEstWeight = {_col0_} ? (FlightPlan as (FuelHeader as (ArrivalFuel as (EstimatedWeight as (Value as ({@unit} as string,",
 				"          {_value_} as string)))))),",
+				"          FlightPlanID = {_col0_} ? (FlightPlan as ({@flightPlanId} as string)),",
+				"          FltNbr = {_col0_} ? (FlightPlan as (M633SupplementaryHeader as (Flight as (FlightIdentification as (FlightNumber as ({@number} as string)))))),",
 				"     format: 'xml',",
 				"     namespaces: false) ~> ParseXML",
 				"ParseXML select(mapColumn(",
