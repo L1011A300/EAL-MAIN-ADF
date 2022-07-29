@@ -30,7 +30,8 @@
 						"formatSettings": {
 							"type": "XmlReadSettings",
 							"validationMode": "none",
-							"namespaces": true
+							"detectDataType": true,
+							"namespaces": false
 						}
 					},
 					"sink": {
@@ -100,7 +101,7 @@
 								},
 								"sink": {
 									"name": "RepeatNumber",
-									"type": "Boolean"
+									"type": "String"
 								}
 							},
 							{
@@ -145,7 +146,7 @@
 								},
 								"sink": {
 									"name": "EstTripTimeMins",
-									"type": "Int32"
+									"type": "String"
 								}
 							},
 							{
@@ -154,7 +155,7 @@
 								},
 								"sink": {
 									"name": "SchedTripTimeMins",
-									"type": "Int32"
+									"type": "String"
 								}
 							},
 							{

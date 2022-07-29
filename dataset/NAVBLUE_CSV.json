@@ -24,6 +24,59 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "WhoAlc",
+				"type": "String"
+			},
+			{
+				"name": "FltNum",
+				"type": "String"
+			},
+			{
+				"name": "StdUtc",
+				"type": "String"
+			},
+			{
+				"name": "OrigApt",
+				"type": "String"
+			},
+			{
+				"name": "TestFlight",
+				"type": "String"
+			},
+			{
+				"name": "RepeatNumber",
+				"type": "String"
+			},
+			{
+				"name": "DestApt",
+				"type": "String"
+			},
+			{
+				"name": "AircraftId",
+				"type": "String"
+			},
+			{
+				"name": "EtdUtc",
+				"type": "String"
+			},
+			{
+				"name": "AtcAlc",
+				"type": "String"
+			},
+			{
+				"name": "EstTripTimeMins",
+				"type": "String"
+			},
+			{
+				"name": "SchedTripTimeMins",
+				"type": "String"
+			},
+			{
+				"name": "LastSerialNumber",
+				"type": "String"
+			}
+		]
 	}
 }
