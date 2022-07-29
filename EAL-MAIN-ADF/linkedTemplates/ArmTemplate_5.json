@@ -13,6 +13,46 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DELAYSblobtoSQL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Populates SF_DELAYS_PROD SQL table with data from blob storage.",
+				"folder": {
+					"name": "PROD"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SF_source_delays",
+								"type": "DatasetReference"
+							},
+							"name": "SFDelay"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SQL_DELAYS_TABLE",
+								"type": "DatasetReference"
+							},
+							"name": "DelaysToSQL"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddWrkflwIDandTS",
+							"description": "Add columns for ADF workflow ID and timestamp."
+						}
+					],
+					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tflight_id as string,\n\t\tdelay_type as string,\n\t\tduration_mins as string,\n\t\tdelay_code as string,\n\t\tdelay_code_name as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFDelay\nSFDelay derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tflight_id as integer,\n\t\tdelay_type as string,\n\t\tduration_mins as integer,\n\t\tdelay_code as string,\n\t\tdelay_code_name as string,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DelaysToSQL"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DODCntrlblDelayCodes')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -1726,44 +1766,6 @@
 						}
 					],
 					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tpairing_id as string,\n\t\tpairing_item_id as string,\n\t\tpairing_item_type as string,\n\t\tflight_id as string,\n\t\tshift_name as string,\n\t\tshift_start_time as string,\n\t\tshift_end_time as string,\n\t\tshift_type as string,\n\t\tshift_is_work as boolean,\n\t\tshift_is_reserve as boolean,\n\t\tshift_is_sick as boolean,\n\t\tshift_is_training as boolean,\n\t\tshift_is_vacation as boolean,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairingItem\nSFPairingItem derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tpairing_id as string,\n\t\tpairing_item_id as string,\n\t\tpairing_item_type as string,\n\t\tflight_id as string,\n\t\tshift_name as string,\n\t\tshift_start_time as timestamp,\n\t\tshift_end_time as timestamp,\n\t\tshift_type as string,\n\t\tshift_is_work as boolean,\n\t\tshift_is_reserve as boolean,\n\t\tshift_is_sick as boolean,\n\t\tshift_is_training as boolean,\n\t\tshift_is_vacation as boolean,\n\t\tupdated_at as timestamp,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> PARINGITEMtoSQL"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PAIRINGblobtoSQL')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"folder": {
-					"name": "Inactive"
-				},
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SF_source_pairing",
-								"type": "DatasetReference"
-							},
-							"name": "SFPairing"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SQL_PAIRING_TABLE",
-								"type": "DatasetReference"
-							},
-							"name": "PARINGtoSQL"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddWrkflwIDandTS"
-						}
-					],
-					"script": "parameters{\n\trun_id as string\n}\nsource(output(\n\t\tpairing_id as string,\n\t\tuser_id as string,\n\t\tposition as string,\n\t\tname as string,\n\t\tdate as string,\n\t\tstart_date as string,\n\t\tend_date as string,\n\t\tupdated_at as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> SFPairing\nSFPairing derive(ADF_TIMESTAMP = currentTimestamp(),\n\t\tRUN_ID = $run_id) ~> AddWrkflwIDandTS\nAddWrkflwIDandTS sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tdate as date,\n\t\tend_date as date,\n\t\tname as string,\n\t\tpairing_id as string,\n\t\tposition as string,\n\t\tstart_date as date,\n\t\tupdated_at as string,\n\t\tuser_id as string,\n\t\tADF_TIMESTAMP as timestamp,\n\t\tRUN_ID as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tdate,\n\t\tend_date,\n\t\tname,\n\t\tpairing_id,\n\t\tposition,\n\t\tstart_date,\n\t\tupdated_at,\n\t\tuser_id,\n\t\tADF_TIMESTAMP,\n\t\tRUN_ID\n\t)) ~> PARINGtoSQL"
 				}
 			},
 			"dependsOn": []
