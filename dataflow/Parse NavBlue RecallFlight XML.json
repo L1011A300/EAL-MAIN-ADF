@@ -30,6 +30,9 @@
 				},
 				{
 					"name": "RemoveColumns"
+				},
+				{
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -42,11 +45,13 @@
 				"NavBlueCSVreallyXML parse(EstOutTime = {_col0_} ? (FlightPlan as (FlightPlanSummary as (OutTime as (EstimatedTime as (Value as string))))),",
 				"          TakeOffFuelDuration = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (Duration as (Value as string))))),",
 				"          TakeOffFuelEstWeight = {_col0_} ? (FlightPlan as (FuelHeader as (TakeOffFuel as (EstimatedWeight as (Value as ({@unit} as string,",
-				"          {_value_} as string)))))),",
+				"          {_value_} as integer)))))),",
 				"          ArrFuelEstWeight = {_col0_} ? (FlightPlan as (FuelHeader as (ArrivalFuel as (EstimatedWeight as (Value as ({@unit} as string,",
-				"          {_value_} as string)))))),",
+				"          {_value_} as integer)))))),",
 				"          FlightPlanID = {_col0_} ? (FlightPlan as ({@flightPlanId} as string)),",
 				"          FltNbr = {_col0_} ? (FlightPlan as (M633SupplementaryHeader as (Flight as (FlightIdentification as (FlightNumber as ({@number} as string)))))),",
+				"          TailNbr = {_col0_} ? (FlightPlan as (M633SupplementaryHeader as (Aircraft as ({@aircraftRegistration} as string)))),",
+				"          DepICAOCode = {_col0_} ? (FlightPlan as (M633SupplementaryHeader as (Flight as (DepartureAirport as (AirportICAOCode as string))))),",
 				"     format: 'xml',",
 				"     namespaces: false) ~> ParseXML",
 				"ParseXML select(mapColumn(",
@@ -57,11 +62,14 @@
 				"          TakeOffFuelEstWeightUnit = TakeOffFuelEstWeight.FlightPlan.FuelHeader.TakeOffFuel.EstimatedWeight.Value.{@unit},",
 				"          TakeOffFuelEstWeightValue = TakeOffFuelEstWeight.FlightPlan.FuelHeader.TakeOffFuel.EstimatedWeight.Value.{_value_},",
 				"          ArrFuelEstWeightUnit = ArrFuelEstWeight.FlightPlan.FuelHeader.ArrivalFuel.EstimatedWeight.Value.{@unit},",
-				"          ArrFuelEstWeightValue = ArrFuelEstWeight.FlightPlan.FuelHeader.ArrivalFuel.EstimatedWeight.Value.{_value_}",
+				"          ArrFuelEstWeightValue = ArrFuelEstWeight.FlightPlan.FuelHeader.ArrivalFuel.EstimatedWeight.Value.{_value_},",
+				"          TailNbr = TailNbr.FlightPlan.M633SupplementaryHeader.Aircraft.{@aircraftRegistration},",
+				"          DepICAOcode = DepICAOCode.FlightPlan.M633SupplementaryHeader.Flight.DepartureAirport.AirportICAOCode",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RemoveColumns",
-				"RemoveColumns sink(allowSchemaDrift: true,",
+				"RemoveColumns derive(EstOutTime = toTimestamp(EstOutTime,'yyyy-MM-dd\\'T\\'HH:mm:ss')) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
