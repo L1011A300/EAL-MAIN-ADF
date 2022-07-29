@@ -62,18 +62,6 @@
 				"type": "String"
 			},
 			{
-				"name": "AtcAlc",
-				"type": "String"
-			},
-			{
-				"name": "EstTripTimeMins",
-				"type": "String"
-			},
-			{
-				"name": "SchedTripTimeMins",
-				"type": "String"
-			},
-			{
 				"name": "LastSerialNumber",
 				"type": "String"
 			}
