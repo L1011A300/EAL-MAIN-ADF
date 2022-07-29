@@ -1,0 +1,261 @@
+{
+	"name": "NavBlue Flight List_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "NAVBLUE Copy XML to CSV",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "XmlSource",
+						"storeSettings": {
+							"type": "HttpReadSettings",
+							"requestMethod": "POST",
+							"additionalHeaders": "Content-Type: text/xml;charset=UTF-8\nSOAPAction: \"http://navtech.aero/NavtechPublicService/GetFlightList\"\nContent-Length: 802\nHost: nfp.navtechinc.com:444",
+							"requestBody": {
+								"value": "@{replace('<SOAP-ENV:Envelope\n\txmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n\txmlns:NavWeb=\"urn:NavWeb\">\n   <SOAP-ENV:Header>\n\t   <o:Security\n\t   \t\tSOAP-ENV:mustUnderstand=\"1\"\n\t\t\txmlns:o=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n\t\t<o:UsernameToken>\n\t\t\t<o:Username>EAL/bdavis</o:Username>\n\t\t\t<o:Password>T99oulon84@</o:Password>\n\t\t</o:UsernameToken>\n\t\t</o:Security>\n\t</SOAP-ENV:Header>\n   <SOAP-ENV:Body>\n      <NavWeb:GetFlightList>\n         <Input>\n            <User>\n               <EnvAlc>EAL</EnvAlc>\n               <UserId>bdavis</UserId>\n            </User>\n            <Input>\n               <ForDayUtc>?P1</ForDayUtc>\n            </Input>\n         </Input>\n      </NavWeb:GetFlightList>\n   </SOAP-ENV:Body>\n</SOAP-ENV:Envelope>', '?P1', formatDateTime(adddays(utcnow(),-1),'yyyy-MM-dd'))}",
+								"type": "Expression"
+							},
+							"requestTimeout": ""
+						},
+						"formatSettings": {
+							"type": "XmlReadSettings",
+							"validationMode": "none",
+							"namespaces": true
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "FlattenHierarchy"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['Key']['WhoAlc']"
+								},
+								"sink": {
+									"name": "WhoAlc",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['Key']['FltNum']"
+								},
+								"sink": {
+									"name": "FltNum",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['Key']['StdUtc']"
+								},
+								"sink": {
+									"name": "StdUtc",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"path": "['Key']['OrigApt']"
+								},
+								"sink": {
+									"name": "OrigApt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['Key']['TestFlight']"
+								},
+								"sink": {
+									"name": "TestFlight",
+									"type": "Boolean"
+								}
+							},
+							{
+								"source": {
+									"path": "['Key']['RepeatNumber']"
+								},
+								"sink": {
+									"name": "RepeatNumber",
+									"type": "Boolean"
+								}
+							},
+							{
+								"source": {
+									"path": "['DestApt']"
+								},
+								"sink": {
+									"name": "DestApt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['AircraftId']"
+								},
+								"sink": {
+									"name": "AircraftId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['EtdUtc']"
+								},
+								"sink": {
+									"name": "EtdUtc",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"path": "['AtcAlc']"
+								},
+								"sink": {
+									"name": "AtcAlc",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['EstTripTimeMins']"
+								},
+								"sink": {
+									"name": "EstTripTimeMins",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "['SchedTripTimeMins']"
+								},
+								"sink": {
+									"name": "SchedTripTimeMins",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "['LastSerialNumber']"
+								},
+								"sink": {
+									"name": "LastSerialNumber",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['s:Envelope']['s:Body']['GetFlightListResponse']['Flights']",
+						"mapComplexValuesToString": false
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "NavBlueSourceXML",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "NAVBLUE_CSV",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "NavBlue Flight List to SQL",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "NAVBLUE Copy XML to CSV",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "NAVBLUE FlightListToSQL",
+						"type": "DataFlowReference",
+						"parameters": {
+							"run_id": {
+								"value": "'@{pipeline().RunId}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "SQL Navblue Flight List Live Flts",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "NavBlue Flight List to SQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "SQL Navblue Flight List Live Flts",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "NavBlue"
+		},
+		"annotations": []
+	}
+}
