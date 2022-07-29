@@ -133,33 +133,6 @@
 							},
 							{
 								"source": {
-									"path": "['AtcAlc']"
-								},
-								"sink": {
-									"name": "AtcAlc",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['EstTripTimeMins']"
-								},
-								"sink": {
-									"name": "EstTripTimeMins",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['SchedTripTimeMins']"
-								},
-								"sink": {
-									"name": "SchedTripTimeMins",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"path": "['LastSerialNumber']"
 								},
 								"sink": {
