@@ -77,7 +77,7 @@
 				]
 			},
 			{
-				"name": "Data flow1",
+				"name": "Parse NavBlue RecallFlight XML",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
